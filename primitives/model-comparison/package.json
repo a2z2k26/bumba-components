@@ -1,0 +1,21 @@
+{
+  "name": "@bumba/model-comparison",
+  "version": "1.0.0",
+  "description": "Multi-model A/B testing and comparison engine",
+  "main": "model-comparison.js",
+  "keywords": [
+    "comparison",
+    "a/b-testing",
+    "models",
+    "ai"
+  ],
+  "author": "BUMBA",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "@bumba/shared": "^1.0.0"
+  }
+}

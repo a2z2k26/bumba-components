@@ -1,0 +1,202 @@
+# Market Research and Competitive Analysis Workflow
+# Sprint 15: Strategic Workflows
+
+name: market-research-analysis
+id: strategic-market-001
+version: 1.0.0
+description: Deep market research and competitive intelligence workflow
+
+agents:
+  - market-researcher
+  - data-analyst
+  - competitive-analyst
+  - trend-analyst
+  - report-generator
+
+config:
+  executionMode: sequential
+  timeout: 5400000  # 1.5 hours
+  retries: 3
+  errorHandling: retry
+
+triggers:
+  - type: scheduled
+    schedule: "0 9 * * MON"  # Weekly on Mondays at 9 AM
+  - type: event
+    event: competitor-announcement
+  - type: manual
+    requiredRole: product-manager
+
+steps:
+  - name: data-collection-phase
+    type: parallel
+    description: Collect data from multiple sources simultaneously
+    tracks:
+      - name: market-data
+        agent: market-researcher
+        tasks:
+          - name: industry-reports
+            sources:
+              - gartner
+              - forrester
+              - idc
+          - name: market-sizing
+            methods:
+              - tam-calculation
+              - sam-estimation
+              - som-projection
+          - name: growth-trends
+            timeframe: 5-years
+            
+      - name: competitor-data
+        agent: competitive-analyst
+        tasks:
+          - name: competitor-mapping
+            depth: comprehensive
+            competitors:
+              tier1: direct-competitors
+              tier2: indirect-competitors
+              tier3: potential-entrants
+          - name: feature-comparison
+            categories:
+              - core-features
+              - pricing-models
+              - market-positioning
+          - name: swot-analysis
+            format: detailed
+            
+      - name: customer-data
+        agent: data-analyst
+        tasks:
+          - name: customer-surveys
+            sampleSize: 1000
+            confidence: 95
+          - name: behavioral-analysis
+            dataPoints:
+              - usage-patterns
+              - churn-indicators
+              - satisfaction-scores
+          - name: sentiment-analysis
+            sources:
+              - social-media
+              - review-sites
+              - support-tickets
+
+  - name: trend-identification
+    type: iterative
+    agent: trend-analyst
+    maxIterations: 4
+    qualityThreshold: 0.75
+    description: Identify and validate market trends
+    dependsOn: data-collection-phase
+    algorithm: pattern-recognition
+    inputs:
+      - market-data
+      - competitor-data
+      - customer-data
+    outputs:
+      - emerging-trends
+      - declining-trends
+      - stable-patterns
+    terminationConditions:
+      - type: confidence
+        threshold: 0.85
+      - type: convergence
+        threshold: 0.1
+
+  - name: opportunity-analysis
+    type: task
+    agent: data-analyst
+    dependsOn: trend-identification
+    description: Analyze market opportunities and threats
+    analysis:
+      - gap-analysis
+      - blue-ocean-opportunities
+      - risk-assessment
+      - market-timing
+    outputs:
+      - opportunity-matrix
+      - risk-register
+      - timing-recommendations
+
+  - name: competitive-positioning
+    type: iterative
+    agent: competitive-analyst
+    maxIterations: 3
+    qualityThreshold: 0.8
+    dependsOn:
+      - trend-identification
+      - opportunity-analysis
+    description: Develop competitive positioning strategy
+    methods:
+      - perceptual-mapping
+      - value-curve-analysis
+      - differentiation-strategy
+    successCriteria: |
+      return positioning.uniqueness > 0.7 &&
+             positioning.defensibility > 0.75 &&
+             positioning.marketFit > 0.8
+
+  - name: report-generation
+    type: task
+    agent: report-generator
+    dependsOn:
+      - opportunity-analysis
+      - competitive-positioning
+    description: Generate comprehensive market research report
+    sections:
+      - executive-summary
+      - market-overview
+      - competitive-landscape
+      - customer-insights
+      - trend-analysis
+      - opportunities-threats
+      - recommendations
+      - appendices
+    formats:
+      - pdf
+      - interactive-dashboard
+      - presentation
+
+  - name: stakeholder-review
+    type: condition
+    dependsOn: report-generation
+    condition: report.quality >= 0.85
+    ifTrue:
+      name: distribute-insights
+      type: task
+      agent: report-generator
+      distribution:
+        - executive-team
+        - product-management
+        - sales-team
+        - marketing-team
+    ifFalse:
+      name: refinement-loop
+      type: loop
+      backTo: opportunity-analysis
+      refinements:
+        - data-gaps
+        - analysis-depth
+        - clarity-improvements
+
+qualityGates:
+  - name: data-completeness
+    threshold: 0.9
+    measure: data-coverage
+  - name: analysis-confidence
+    threshold: 0.8
+    measure: statistical-significance
+  - name: insight-actionability
+    threshold: 0.75
+    measure: recommendation-clarity
+
+metrics:
+  - name: research-depth
+    target: comprehensive
+  - name: data-freshness
+    target: "< 30 days"
+  - name: competitor-coverage
+    target: "> 90%"
+  - name: customer-sample
+    target: "> 500"

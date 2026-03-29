@@ -1,0 +1,17 @@
+{
+  "name": "@bumba/task-preparer",
+  "version": "1.0.0",
+  "description": "Task preparation and planning utilities",
+  "main": "task-preparer.js",
+  "keywords": [
+    "task",
+    "preparation",
+    "planning"
+  ],
+  "author": "BUMBA",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {}
+}

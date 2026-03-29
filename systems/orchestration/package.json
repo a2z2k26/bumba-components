@@ -1,0 +1,23 @@
+{
+  "name": "@bumba/orchestration",
+  "version": "1.0.0",
+  "description": "Workflow automation and task orchestration framework",
+  "main": "orchestration/index.js",
+  "keywords": [
+    "orchestration",
+    "workflow",
+    "pipeline",
+    "tasks"
+  ],
+  "author": "BUMBA",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2"
+  },
+  "peerDependencies": {
+    "@bumba/shared": "^1.0.0"
+  }
+}

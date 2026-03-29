@@ -1,0 +1,361 @@
+# UX Research Workflow
+# Sprint 24: Design Workflows
+
+name: ux-research-workflow
+id: design-research-001
+version: 1.0.0
+description: Comprehensive UX research workflow with iterative insights generation
+
+agents:
+  - research-lead
+  - user-researcher
+  - data-analyst
+  - prototype-designer
+  - insight-synthesizer
+
+config:
+  executionMode: adaptive
+  parallel: true
+  timeout: 28800000  # 8 hours
+  retries: 1
+  errorHandling: continue
+
+triggers:
+  - type: product-planning
+    phase: discovery
+  - type: feature-request
+    validation: required
+  - type: usability-issue
+    severity: high
+  - type: schedule
+    cron: "0 10 1 * *"  # Monthly
+
+steps:
+  - name: research-planning
+    type: task
+    agent: research-lead
+    description: Define research objectives and methodology
+    planning:
+      - research-questions
+      - success-metrics
+      - target-audience
+      - methodology-selection
+      - timeline-definition
+    deliverables:
+      - research-plan
+      - recruitment-criteria
+      - consent-forms
+      - research-protocol
+
+  - name: participant-recruitment
+    type: parallel
+    dependsOn: research-planning
+    description: Recruit research participants
+    tracks:
+      - name: internal-recruitment
+        agent: user-researcher
+        sources:
+          - customer-database
+          - user-panels
+          - beta-testers
+          - power-users
+        screening:
+          - demographic-match
+          - behavior-criteria
+          - availability-check
+          - consent-verification
+
+      - name: external-recruitment
+        agent: user-researcher
+        sources:
+          - recruitment-agencies
+          - social-media
+          - community-forums
+          - incentive-platforms
+        validation:
+          - screening-survey
+          - qualification-check
+          - diversity-balance
+          - sample-size
+
+  - name: research-execution
+    type: iterative
+    agent: user-researcher
+    dependsOn: participant-recruitment
+    maxIterations: 10
+    qualityThreshold: 0.85
+    description: Execute research activities
+    methods:
+      - name: qualitative-research
+        techniques:
+          - user-interviews
+          - contextual-inquiry
+          - diary-studies
+          - card-sorting
+          - focus-groups
+        data-collection:
+          - audio-recording
+          - video-recording
+          - note-taking
+          - screen-recording
+      - name: quantitative-research
+        techniques:
+          - surveys
+          - analytics-analysis
+          - a-b-testing
+          - heat-mapping
+          - click-tracking
+        data-collection:
+          - response-data
+          - behavioral-metrics
+          - conversion-rates
+          - engagement-metrics
+    successCriteria: |
+      return sampleSize >= targetSize &&
+             dataQuality >= 0.85 &&
+             responseRate >= 0.7
+
+  - name: usability-testing
+    type: parallel
+    dependsOn: research-execution
+    description: Conduct usability testing sessions
+    tracks:
+      - name: moderated-testing
+        agent: user-researcher
+        setup:
+          - prototype-preparation
+          - task-scenarios
+          - think-aloud-protocol
+          - recording-setup
+        execution:
+          - task-completion
+          - error-tracking
+          - satisfaction-rating
+          - feedback-collection
+        metrics:
+          - task-success-rate
+          - time-on-task
+          - error-rate
+          - satisfaction-score
+
+      - name: unmoderated-testing
+        agent: data-analyst
+        platform: remote-testing-tool
+        configuration:
+          - task-definition
+          - success-criteria
+          - recording-settings
+          - survey-questions
+        collection:
+          - session-recordings
+          - click-paths
+          - completion-rates
+          - abandonment-points
+
+      - name: accessibility-testing
+        agent: user-researcher
+        participants:
+          - screen-reader-users
+          - keyboard-only-users
+          - color-blind-users
+          - motor-impaired-users
+        evaluation:
+          - task-completion
+          - barrier-identification
+          - workaround-documentation
+          - severity-rating
+
+  - name: data-analysis
+    type: iterative
+    agent: data-analyst
+    dependsOn: usability-testing
+    maxIterations: 5
+    qualityThreshold: 0.9
+    description: Analyze research data
+    analysis:
+      - name: qualitative-analysis
+        methods:
+          - thematic-analysis
+          - affinity-mapping
+          - journey-mapping
+          - persona-development
+        coding:
+          - open-coding
+          - axial-coding
+          - selective-coding
+      - name: quantitative-analysis
+        methods:
+          - statistical-analysis
+          - correlation-analysis
+          - regression-analysis
+          - significance-testing
+        visualization:
+          - charts
+          - graphs
+          - heat-maps
+          - flow-diagrams
+    synthesis:
+      - pattern-identification
+      - insight-extraction
+      - hypothesis-validation
+      - recommendation-formation
+    successCriteria: |
+      return interRaterReliability >= 0.8 &&
+             statisticalSignificance >= 0.95 &&
+             insightCoverage >= 0.9
+
+  - name: prototype-iteration
+    type: iterative
+    agent: prototype-designer
+    dependsOn: data-analysis
+    maxIterations: 3
+    qualityThreshold: 0.8
+    description: Iterate on prototypes based on insights
+    iterations:
+      - low-fidelity:
+          - wireframes
+          - paper-prototypes
+          - sketches
+          - user-flows
+      - mid-fidelity:
+          - interactive-wireframes
+          - clickable-prototypes
+          - basic-interactions
+          - navigation-flows
+      - high-fidelity:
+          - visual-design
+          - micro-interactions
+          - real-content
+          - responsive-design
+    validation:
+      - design-principles
+      - usability-heuristics
+      - accessibility-standards
+      - brand-guidelines
+    successCriteria: |
+      return usabilityScore >= 0.8 &&
+             feedbackIncorporated >= 0.9
+
+  - name: insight-synthesis
+    type: task
+    agent: insight-synthesizer
+    dependsOn: prototype-iteration
+    description: Synthesize research insights
+    synthesis:
+      - finding-prioritization
+      - insight-clustering
+      - opportunity-identification
+      - recommendation-development
+    frameworks:
+      - jobs-to-be-done
+      - user-stories
+      - design-principles
+      - success-metrics
+    deliverables:
+      - insight-report
+      - design-recommendations
+      - prototype-documentation
+      - implementation-guide
+
+  - name: stakeholder-validation
+    type: iterative
+    agent: research-lead
+    dependsOn: insight-synthesis
+    maxIterations: 2
+    qualityThreshold: 0.85
+    description: Validate findings with stakeholders
+    presentation:
+      - executive-summary
+      - key-findings
+      - design-recommendations
+      - prototype-demos
+      - next-steps
+    feedback:
+      - feasibility-assessment
+      - business-alignment
+      - resource-requirements
+      - priority-adjustment
+    successCriteria: |
+      return stakeholderBuyIn >= 0.85 &&
+             alignmentScore >= 0.9
+
+  - name: knowledge-sharing
+    type: parallel
+    dependsOn: stakeholder-validation
+    description: Share research knowledge
+    tracks:
+      - name: documentation
+        agent: insight-synthesizer
+        outputs:
+          - research-repository
+          - case-studies
+          - best-practices
+          - design-patterns
+          - persona-updates
+
+      - name: presentation
+        agent: research-lead
+        formats:
+          - workshop-sessions
+          - lunch-and-learns
+          - team-presentations
+          - video-summaries
+          - newsletter-articles
+
+      - name: artifact-creation
+        agent: prototype-designer
+        artifacts:
+          - design-system-updates
+          - component-library
+          - pattern-library
+          - interaction-guidelines
+          - content-guidelines
+
+  - name: impact-tracking
+    type: task
+    agent: data-analyst
+    dependsOn: knowledge-sharing
+    schedule: post-implementation
+    description: Track research impact
+    metrics:
+      - implementation-rate
+      - design-changes
+      - success-metrics
+      - user-satisfaction
+      - business-impact
+    analysis:
+      - before-after-comparison
+      - roi-calculation
+      - success-validation
+      - learning-extraction
+    outputs:
+      - impact-report
+      - lessons-learned
+      - future-recommendations
+
+qualityGates:
+  - name: sample-validity
+    threshold: 0.9
+    measure: statistical-validity
+    critical: true
+  - name: insight-quality
+    threshold: 0.85
+    measure: actionability-score
+    critical: true
+  - name: stakeholder-alignment
+    threshold: 0.8
+    measure: approval-rate
+    critical: false
+  - name: ethical-compliance
+    threshold: 1.0
+    measure: consent-compliance
+    critical: true
+
+outputs:
+  - research-report
+  - design-recommendations
+  - prototypes
+  - persona-documentation
+  - journey-maps
+  - usability-findings
+  - implementation-guide

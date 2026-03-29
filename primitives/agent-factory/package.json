@@ -1,0 +1,21 @@
+{
+  "name": "@bumba/agent-factory",
+  "version": "1.0.0",
+  "description": "Agent creation and lifecycle management",
+  "main": "agent-factory.js",
+  "keywords": [
+    "agents",
+    "factory",
+    "lifecycle",
+    "ai"
+  ],
+  "author": "BUMBA",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "@bumba/shared": "^1.0.0"
+  }
+}

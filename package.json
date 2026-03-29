@@ -1,0 +1,36 @@
+{
+  "name": "@bumba/ecosystem",
+  "version": "1.0.0",
+  "description": "BUMBA AI Framework - Modular primitives and systems for AI-powered development",
+  "private": true,
+  "workspaces": [
+    "primitives/*",
+    "systems/*",
+    "shared"
+  ],
+  "scripts": {
+    "test": "npm run test --workspaces",
+    "lint": "eslint .",
+    "build": "npm run build --workspaces --if-present"
+  },
+  "keywords": [
+    "ai",
+    "llm",
+    "multi-agent",
+    "orchestration",
+    "primitives"
+  ],
+  "author": "BUMBA",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "jest": "^29.0.0"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "chalk": "^4.1.2"
+  }
+}

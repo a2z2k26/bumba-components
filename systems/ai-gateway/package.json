@@ -1,0 +1,24 @@
+{
+  "name": "@bumba/ai-gateway",
+  "version": "1.0.0",
+  "description": "Unified multi-provider AI interface with cost optimization",
+  "main": "connectors/ai-integration-manager.js",
+  "keywords": [
+    "ai",
+    "gateway",
+    "openai",
+    "anthropic",
+    "google"
+  ],
+  "author": "BUMBA",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2"
+  },
+  "peerDependencies": {
+    "@bumba/shared": "^1.0.0"
+  }
+}

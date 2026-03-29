@@ -1,0 +1,17 @@
+{
+  "name": "@bumba/shell-security",
+  "version": "1.0.0",
+  "description": "Safe shell command execution with validation",
+  "main": "shell-security.js",
+  "keywords": [
+    "security",
+    "shell",
+    "command-execution"
+  ],
+  "author": "BUMBA",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {}
+}

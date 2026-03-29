@@ -1,0 +1,21 @@
+{
+  "name": "@bumba/unified-memory",
+  "version": "1.0.0",
+  "description": "Unified memory system with semantic search",
+  "main": "unified-memory-system.js",
+  "keywords": [
+    "memory",
+    "semantic",
+    "storage",
+    "ai"
+  ],
+  "author": "BUMBA",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "@bumba/shared": "^1.0.0"
+  }
+}

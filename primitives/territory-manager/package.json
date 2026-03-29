@@ -1,0 +1,21 @@
+{
+  "name": "@bumba/territory-manager",
+  "version": "1.0.0",
+  "description": "Territory-based resource allocation for agents",
+  "main": "territory-manager.js",
+  "keywords": [
+    "territory",
+    "resources",
+    "agents",
+    "allocation"
+  ],
+  "author": "BUMBA",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "@bumba/shared": "^1.0.0"
+  }
+}

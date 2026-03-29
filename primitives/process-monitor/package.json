@@ -1,0 +1,21 @@
+{
+  "name": "@bumba/process-monitor",
+  "version": "1.0.0",
+  "description": "MCP server health monitoring",
+  "main": "health-monitor.js",
+  "keywords": [
+    "process",
+    "monitoring",
+    "health",
+    "mcp"
+  ],
+  "author": "BUMBA",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "@bumba/shared": "^1.0.0"
+  }
+}

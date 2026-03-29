@@ -1,0 +1,17 @@
+{
+  "name": "@bumba/config-manager",
+  "version": "1.0.0",
+  "description": "Configuration management with scopes and validation",
+  "main": "config-manager.js",
+  "keywords": [
+    "config",
+    "configuration",
+    "settings"
+  ],
+  "author": "BUMBA",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {}
+}

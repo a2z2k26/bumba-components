@@ -1,0 +1,329 @@
+# Regulatory Compliance Workflow
+# Sprint 29: Cross-department Workflows
+
+name: regulatory-compliance-assessment
+id: cross-dept-compliance-001
+version: 1.0.0
+description: Comprehensive regulatory compliance across all departments
+
+agents:
+  - compliance-officer
+  - legal-advisor
+  - data-protection-officer
+  - financial-auditor
+  - operations-reviewer
+  - technology-assessor
+  - risk-manager
+  - documentation-specialist
+
+config:
+  executionMode: adaptive
+  parallel: true
+  timeout: 5184000000  # 60 days
+  retries: 1
+  errorHandling: continue
+  checkpoints: enabled
+
+regulations:
+  - gdpr
+  - ccpa
+  - hipaa
+  - sox
+  - pci-dss
+  - iso27001
+  - fedramp
+
+steps:
+  - name: compliance-discovery
+    type: parallel
+    description: Discover compliance requirements
+    tracks:
+      - name: regulatory-mapping
+        agent: compliance-officer
+        discovery:
+          - applicable-regulations
+          - jurisdictional-requirements
+          - industry-standards
+          - contractual-obligations
+          - certification-requirements
+
+      - name: data-inventory
+        agent: data-protection-officer
+        inventory:
+          - personal-data-mapping
+          - sensitive-data-classification
+          - data-flow-analysis
+          - retention-policies
+          - processing-activities
+
+      - name: system-inventory
+        agent: technology-assessor
+        assessment:
+          - application-inventory
+          - infrastructure-mapping
+          - third-party-services
+          - data-storage-locations
+          - integration-points
+
+  - name: gap-analysis
+    type: iterative
+    agent: compliance-officer
+    dependsOn: compliance-discovery
+    maxIterations: 3
+    qualityThreshold: 0.95
+    description: Identify compliance gaps
+    analysis:
+      - current-state-assessment
+      - required-state-definition
+      - gap-identification
+      - risk-scoring
+      - priority-ranking
+    validation:
+      - completeness-check
+      - accuracy-verification
+      - stakeholder-review
+    successCriteria: |
+      return gapsIdentified >= 0.95 &&
+             riskAssessed == true &&
+             prioritized == true
+
+  - name: remediation-planning
+    type: parallel
+    dependsOn: gap-analysis
+    description: Plan remediation activities
+    tracks:
+      - name: policy-remediation
+        agent: compliance-officer
+        planning:
+          - policy-updates
+          - procedure-changes
+          - governance-improvements
+          - training-requirements
+          - awareness-campaigns
+
+      - name: technical-remediation
+        agent: technology-assessor
+        planning:
+          - security-controls
+          - system-configurations
+          - access-management
+          - encryption-requirements
+          - monitoring-implementation
+
+      - name: process-remediation
+        agent: operations-reviewer
+        planning:
+          - workflow-changes
+          - approval-processes
+          - documentation-updates
+          - audit-trails
+          - reporting-mechanisms
+
+  - name: implementation-phase
+    type: iterative
+    agent: compliance-officer
+    dependsOn: remediation-planning
+    maxIterations: 10
+    qualityThreshold: 0.9
+    description: Implement compliance measures
+    implementation:
+      - priority-1-items:
+          - critical-security-controls
+          - regulatory-mandates
+          - legal-requirements
+      - priority-2-items:
+          - process-improvements
+          - documentation-updates
+          - training-rollout
+      - priority-3-items:
+          - optimization-measures
+          - nice-to-have-controls
+          - future-preparations
+    tracking:
+      - implementation-progress
+      - resource-utilization
+      - timeline-adherence
+      - issue-resolution
+    successCriteria: |
+      return criticalItems == 1.0 &&
+             highPriorityItems >= 0.95 &&
+             mediumPriorityItems >= 0.8
+
+  - name: validation-testing
+    type: parallel
+    dependsOn: implementation-phase
+    description: Validate compliance measures
+    tracks:
+      - name: control-testing
+        agent: financial-auditor
+        testing:
+          - control-effectiveness
+          - process-validation
+          - system-testing
+          - user-acceptance
+          - performance-metrics
+
+      - name: data-protection-validation
+        agent: data-protection-officer
+        validation:
+          - privacy-controls
+          - consent-mechanisms
+          - data-subject-rights
+          - breach-procedures
+          - cross-border-transfers
+
+      - name: security-assessment
+        agent: technology-assessor
+        assessment:
+          - vulnerability-scanning
+          - penetration-testing
+          - configuration-review
+          - access-control-testing
+          - encryption-validation
+
+  - name: audit-preparation
+    type: iterative
+    agent: documentation-specialist
+    dependsOn: validation-testing
+    maxIterations: 5
+    qualityThreshold: 1.0
+    description: Prepare for compliance audit
+    preparation:
+      - evidence-collection
+      - documentation-compilation
+      - process-documentation
+      - control-matrices
+      - audit-packages
+    review:
+      - completeness-check
+      - accuracy-validation
+      - consistency-verification
+    successCriteria: |
+      return documentationComplete == true &&
+             evidenceCollected == true &&
+             auditReady == true
+
+  - name: internal-audit
+    type: task
+    agent: financial-auditor
+    dependsOn: audit-preparation
+    description: Conduct internal audit
+    audit:
+      - control-testing
+      - sample-selection
+      - evidence-review
+      - finding-identification
+      - recommendation-development
+    deliverables:
+      - audit-report
+      - findings-summary
+      - risk-assessment
+      - recommendations
+      - action-plan
+
+  - name: external-audit
+    type: condition
+    dependsOn: internal-audit
+    condition: |
+      internalScore >= 0.9 &&
+      criticalFindings == 0
+    ifTrue:
+      name: proceed-external
+      type: task
+      agent: compliance-officer
+      activities:
+        - schedule-audit
+        - prepare-team
+        - coordinate-resources
+        - support-auditors
+    ifFalse:
+      name: remediate-findings
+      type: loop
+      backTo: implementation-phase
+      adjustments:
+        - address-findings
+        - implement-recommendations
+        - retest-controls
+
+  - name: certification-management
+    type: parallel
+    dependsOn: external-audit
+    description: Manage compliance certifications
+    tracks:
+      - name: certification-applications
+        agent: compliance-officer
+        certifications:
+          - iso-certifications
+          - soc-reports
+          - industry-attestations
+          - regulatory-approvals
+
+      - name: continuous-monitoring
+        agent: risk-manager
+        monitoring:
+          - compliance-dashboards
+          - kpi-tracking
+          - alert-configuration
+          - trend-analysis
+
+      - name: stakeholder-reporting
+        agent: documentation-specialist
+        reporting:
+          - board-reports
+          - regulatory-filings
+          - customer-attestations
+          - partner-certifications
+
+  - name: continuous-improvement
+    type: iterative
+    agent: compliance-officer
+    dependsOn: certification-management
+    maxIterations: 12
+    qualityThreshold: 0.95
+    duration: 365d
+    description: Maintain and improve compliance
+    activities:
+      - regulatory-updates
+      - control-optimization
+      - process-improvement
+      - training-updates
+      - technology-enhancement
+    measurement:
+      - compliance-score
+      - audit-findings
+      - incident-metrics
+      - cost-efficiency
+    successCriteria: |
+      return complianceScore >= 0.95 &&
+             auditFindings.trend == "decreasing"
+
+qualityGates:
+  - name: gap-coverage
+    threshold: 0.95
+    measure: gaps-addressed
+    critical: true
+  - name: control-effectiveness
+    threshold: 0.9
+    measure: controls-tested
+    critical: true
+  - name: audit-readiness
+    threshold: 1.0
+    measure: documentation-complete
+    critical: true
+  - name: regulatory-compliance
+    threshold: 1.0
+    measure: requirements-met
+    critical: true
+  - name: risk-mitigation
+    threshold: 0.9
+    measure: risks-controlled
+    critical: false
+
+outputs:
+  - compliance-assessment
+  - gap-analysis-report
+  - remediation-plan
+  - audit-reports
+  - certification-documents
+  - compliance-dashboard
+  - improvement-roadmap

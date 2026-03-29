@@ -1,0 +1,21 @@
+{
+  "name": "@bumba/context-window",
+  "version": "1.0.0",
+  "description": "Context window management with multiple truncation strategies",
+  "main": "context-window-manager.js",
+  "keywords": [
+    "context",
+    "window",
+    "truncation",
+    "llm"
+  ],
+  "author": "BUMBA",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "@bumba/shared": "^1.0.0"
+  }
+}

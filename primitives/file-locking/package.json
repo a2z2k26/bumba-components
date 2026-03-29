@@ -1,0 +1,20 @@
+{
+  "name": "@bumba/file-locking",
+  "version": "1.0.0",
+  "description": "File conflict prevention for parallel agent execution",
+  "main": "file-locking-system.js",
+  "keywords": [
+    "file-locking",
+    "concurrency",
+    "agents"
+  ],
+  "author": "BUMBA",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "@bumba/shared": "^1.0.0"
+  }
+}

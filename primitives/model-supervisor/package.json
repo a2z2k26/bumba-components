@@ -1,0 +1,21 @@
+{
+  "name": "@bumba/model-supervisor",
+  "version": "1.0.0",
+  "description": "AI model supervision and monitoring",
+  "main": "claude-supervisor.js",
+  "keywords": [
+    "supervisor",
+    "monitoring",
+    "ai",
+    "claude"
+  ],
+  "author": "BUMBA",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "@bumba/shared": "^1.0.0"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "@bumba/token-cost-manager",
+  "version": "1.0.0",
+  "description": "Cost tracking and budget management for AI APIs",
+  "main": "token-cost-manager.js",
+  "keywords": [
+    "cost",
+    "budget",
+    "tokens",
+    "ai"
+  ],
+  "author": "BUMBA",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "@bumba/shared": "^1.0.0"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "@bumba/mcp",
+  "version": "1.0.0",
+  "description": "MCP server lifecycle management with resilience",
+  "main": "mcp-manager.js",
+  "keywords": [
+    "mcp",
+    "servers",
+    "resilience",
+    "lifecycle"
+  ],
+  "author": "BUMBA",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2"
+  },
+  "peerDependencies": {
+    "@bumba/shared": "^1.0.0"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "@bumba/health-monitor",
+  "version": "1.0.0",
+  "description": "Provider health monitoring and alerting",
+  "main": "health-monitor.js",
+  "keywords": [
+    "health",
+    "monitoring",
+    "alerting",
+    "providers"
+  ],
+  "author": "BUMBA",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "@bumba/shared": "^1.0.0"
+  }
+}

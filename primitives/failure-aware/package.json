@@ -1,0 +1,20 @@
+{
+  "name": "@bumba/failure-aware",
+  "version": "1.0.0",
+  "description": "Failure-aware command execution patterns",
+  "main": "failure-aware-commands.js",
+  "keywords": [
+    "failure",
+    "resilience",
+    "commands"
+  ],
+  "author": "BUMBA",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "@bumba/shared": "^1.0.0"
+  }
+}

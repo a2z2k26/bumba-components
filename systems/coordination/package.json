@@ -1,0 +1,23 @@
+{
+  "name": "@bumba/coordination",
+  "version": "1.0.0",
+  "description": "Department-based agent coordination with collaboration protocols",
+  "main": "index.js",
+  "keywords": [
+    "coordination",
+    "agents",
+    "collaboration",
+    "departments"
+  ],
+  "author": "BUMBA",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2"
+  },
+  "peerDependencies": {
+    "@bumba/shared": "^1.0.0"
+  }
+}

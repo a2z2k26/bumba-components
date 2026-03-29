@@ -1,0 +1,271 @@
+# Automated Code Review Workflow
+# Sprint 18: Engineering Workflows
+
+name: automated-code-review
+id: engineering-review-001
+version: 1.0.0
+description: Intelligent code review with iterative improvement loops
+
+agents:
+  - code-analyzer
+  - security-reviewer
+  - performance-reviewer
+  - architecture-reviewer
+  - documentation-reviewer
+
+config:
+  executionMode: adaptive
+  parallel: true
+  timeout: 1800000  # 30 minutes
+  retries: 1
+  errorHandling: continue
+
+triggers:
+  - type: pull-request
+    events:
+      - opened
+      - updated
+      - ready-for-review
+  - type: commit
+    pattern: "fix:|feat:|refactor:"
+
+steps:
+  - name: pr-context-analysis
+    type: task
+    agent: code-analyzer
+    description: Analyze PR context and scope
+    analysis:
+      - diff-size
+      - files-changed
+      - change-type
+      - affected-modules
+      - risk-level
+    outputs:
+      - review-strategy
+      - focus-areas
+      - risk-assessment
+
+  - name: automated-checks
+    type: parallel
+    dependsOn: pr-context-analysis
+    description: Run automated review checks
+    tracks:
+      - name: static-analysis
+        agent: code-analyzer
+        checks:
+          - name: code-complexity
+            tool: complexity-analyzer
+            thresholds:
+              cyclomatic: 10
+              cognitive: 15
+              lines-per-function: 50
+          - name: code-duplication
+            tool: duplication-detector
+            threshold: 5%
+          - name: code-smells
+            tool: sonarqube
+            severity: major
+          - name: dead-code
+            tool: dead-code-analyzer
+            action: flag-for-removal
+      
+      - name: security-review
+        agent: security-reviewer
+        checks:
+          - name: vulnerability-scan
+            tools:
+              - snyk
+              - owasp-dependency-check
+            severity: medium
+          - name: secrets-detection
+            tool: git-secrets
+            action: block
+          - name: injection-risks
+            patterns:
+              - sql-injection
+              - xss
+              - command-injection
+          - name: auth-patterns
+            validate:
+              - authentication-flows
+              - authorization-checks
+              - session-management
+      
+      - name: performance-analysis
+        agent: performance-reviewer
+        checks:
+          - name: complexity-analysis
+            metrics:
+              - time-complexity
+              - space-complexity
+              - database-queries
+          - name: bundle-impact
+            analyze:
+              - bundle-size-delta
+              - tree-shaking
+              - lazy-loading
+          - name: runtime-patterns
+            detect:
+              - n+1-queries
+              - memory-leaks
+              - infinite-loops
+              - blocking-operations
+
+  - name: architecture-review
+    type: iterative
+    agent: architecture-reviewer
+    dependsOn: automated-checks
+    maxIterations: 3
+    qualityThreshold: 0.8
+    description: Review architectural compliance
+    review:
+      - design-patterns
+      - solid-principles
+      - dependency-direction
+      - module-boundaries
+      - api-contracts
+    validation:
+      - layering-rules
+      - naming-conventions
+      - folder-structure
+      - import-restrictions
+    suggestions:
+      - refactoring-opportunities
+      - pattern-improvements
+      - decoupling-options
+
+  - name: documentation-check
+    type: task
+    agent: documentation-reviewer
+    dependsOn: automated-checks
+    description: Verify documentation completeness
+    checks:
+      - inline-comments
+      - function-documentation
+      - api-documentation
+      - readme-updates
+      - changelog-entries
+    requirements:
+      - public-api: 100%
+      - complex-functions: 90%
+      - configuration: 100%
+
+  - name: feedback-synthesis
+    type: task
+    agent: code-analyzer
+    dependsOn:
+      - architecture-review
+      - documentation-check
+    description: Synthesize all review feedback
+    synthesis:
+      - categorize-issues
+      - prioritize-feedback
+      - group-related-items
+      - generate-suggestions
+    outputs:
+      - must-fix-items
+      - should-fix-items
+      - consider-items
+      - positive-feedback
+
+  - name: improvement-loop
+    type: iterative
+    agent: code-analyzer
+    dependsOn: feedback-synthesis
+    maxIterations: 5
+    qualityThreshold: 0.85
+    description: Guide iterative improvements
+    process:
+      - present-feedback
+      - wait-for-updates
+      - re-analyze-changes
+      - validate-fixes
+    successCriteria: |
+      return mustFix.resolved == true &&
+             shouldFix.resolved >= 0.8 &&
+             newIssues.count == 0
+    terminationConditions:
+      - type: all-critical-resolved
+      - type: quality-threshold-met
+      - type: reviewer-approval
+
+  - name: final-validation
+    type: parallel
+    dependsOn: improvement-loop
+    description: Final validation before approval
+    tracks:
+      - name: regression-check
+        agent: code-analyzer
+        verify:
+          - no-new-issues
+          - existing-tests-pass
+          - coverage-maintained
+      
+      - name: integration-check
+        agent: architecture-reviewer
+        verify:
+          - api-compatibility
+          - database-migrations
+          - configuration-changes
+      
+      - name: deployment-readiness
+        agent: code-analyzer
+        verify:
+          - feature-flags
+          - rollback-plan
+          - monitoring-setup
+
+  - name: review-decision
+    type: condition
+    dependsOn: final-validation
+    condition: |
+      validation.passed == true &&
+      criticalIssues.count == 0 &&
+      testCoverage.delta >= 0
+    ifTrue:
+      name: approve-pr
+      type: task
+      agent: code-analyzer
+      actions:
+        - add-approval
+        - add-labels
+        - update-status-checks
+        - notify-author
+    ifFalse:
+      name: request-changes
+      type: task
+      agent: code-analyzer
+      actions:
+        - add-review-comments
+        - request-changes
+        - suggest-improvements
+        - provide-resources
+
+qualityGates:
+  - name: code-quality
+    threshold: 0.8
+    measure: quality-score
+    metrics:
+      - complexity
+      - duplication
+      - test-coverage
+  - name: security
+    threshold: 1.0  # No critical issues
+    measure: security-score
+    metrics:
+      - vulnerabilities
+      - secrets
+      - unsafe-patterns
+  - name: performance
+    threshold: 0.9
+    measure: performance-score
+    metrics:
+      - complexity-increase
+      - bundle-size
+      - query-efficiency
+
+outputs:
+  - review-report
+  - improvement-suggestions
+  - approval-status
+  - metrics-summary

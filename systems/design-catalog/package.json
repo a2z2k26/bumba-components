@@ -1,0 +1,24 @@
+{
+  "name": "@bumba/design-catalog",
+  "version": "1.0.0",
+  "description": "Design token extraction, validation, and catalog generation",
+  "main": "index.js",
+  "keywords": [
+    "design",
+    "tokens",
+    "figma",
+    "catalog",
+    "css"
+  ],
+  "author": "BUMBA",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2"
+  },
+  "peerDependencies": {
+    "@bumba/shared": "^1.0.0"
+  }
+}

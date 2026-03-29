@@ -1,0 +1,20 @@
+{
+  "name": "@bumba/token-optimizer",
+  "version": "1.0.0",
+  "description": "Intelligent token usage optimization for LLM conversations",
+  "main": "token-optimizer.js",
+  "keywords": [
+    "tokens",
+    "optimization",
+    "llm",
+    "ai"
+  ],
+  "author": "BUMBA",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "peerDependencies": {
+    "@bumba/shared": "^1.0.0"
+  }
+}

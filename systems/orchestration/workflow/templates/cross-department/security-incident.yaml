@@ -1,0 +1,295 @@
+# Security Incident Response Workflow
+# Sprint 27: Cross-department Workflows
+
+name: security-incident-response
+id: cross-dept-security-001
+version: 1.0.0
+description: Cross-functional security incident response and recovery
+
+agents:
+  - security-analyst
+  - incident-commander
+  - engineering-responder
+  - legal-counsel
+  - communications-lead
+  - executive-liaison
+  - forensics-specialist
+
+config:
+  executionMode: adaptive
+  parallel: true
+  timeout: 43200000  # 12 hours
+  retries: 0  # No retries for security incidents
+  errorHandling: escalate
+  priority: critical
+
+triggers:
+  - type: security-alert
+    severity: [critical, high]
+  - type: breach-detection
+  - type: vulnerability-disclosure
+  - type: manual
+    requiredRole: security-team
+
+steps:
+  - name: incident-triage
+    type: task
+    agent: security-analyst
+    description: Initial incident assessment
+    timeout: 300000  # 5 minutes
+    assessment:
+      - threat-classification
+      - severity-determination
+      - impact-scope
+      - attack-vector
+      - initial-containment
+    outputs:
+      - incident-classification
+      - severity-level
+      - affected-systems
+      - immediate-actions
+
+  - name: incident-escalation
+    type: condition
+    dependsOn: incident-triage
+    condition: severity >= "high"
+    ifTrue:
+      name: activate-response-team
+      type: parallel
+      tracks:
+        - name: command-setup
+          agent: incident-commander
+          tasks:
+            - establish-war-room
+            - assign-roles
+            - setup-communications
+            - initialize-tracking
+
+        - name: legal-notification
+          agent: legal-counsel
+          tasks:
+            - regulatory-assessment
+            - disclosure-requirements
+            - evidence-preservation
+            - liability-analysis
+
+        - name: executive-briefing
+          agent: executive-liaison
+          tasks:
+            - prepare-summary
+            - risk-assessment
+            - business-impact
+            - decision-points
+    ifFalse:
+      name: standard-response
+      type: task
+      agent: security-analyst
+      action: handle-low-severity
+
+  - name: containment-phase
+    type: iterative
+    agent: engineering-responder
+    dependsOn: incident-escalation
+    maxIterations: 5
+    qualityThreshold: 0.95
+    description: Contain the security incident
+    actions:
+      - isolate-affected-systems
+      - block-attack-vectors
+      - revoke-compromised-credentials
+      - implement-firewall-rules
+      - disable-vulnerable-services
+    validation:
+      - threat-contained
+      - no-lateral-movement
+      - access-restricted
+    successCriteria: |
+      return containmentComplete == true &&
+             spreadingStopped == true &&
+             criticalAssetsProtected == true
+
+  - name: forensics-investigation
+    type: parallel
+    dependsOn: containment-phase
+    description: Conduct forensic analysis
+    tracks:
+      - name: technical-forensics
+        agent: forensics-specialist
+        analysis:
+          - log-collection
+          - memory-dumps
+          - network-traces
+          - malware-analysis
+          - timeline-reconstruction
+
+      - name: data-impact-assessment
+        agent: security-analyst
+        assessment:
+          - data-accessed
+          - data-exfiltrated
+          - integrity-violations
+          - confidentiality-breaches
+
+      - name: attack-attribution
+        agent: forensics-specialist
+        investigation:
+          - threat-actor-identification
+          - ttps-analysis
+          - infrastructure-mapping
+          - motivation-assessment
+
+  - name: eradication-phase
+    type: iterative
+    agent: engineering-responder
+    dependsOn: forensics-investigation
+    maxIterations: 3
+    qualityThreshold: 1.0
+    description: Remove threat from environment
+    eradication:
+      - remove-malware
+      - patch-vulnerabilities
+      - close-backdoors
+      - clean-infected-systems
+      - update-security-controls
+    verification:
+      - scan-for-persistence
+      - validate-removal
+      - check-indicators
+    successCriteria: |
+      return threatsRemoved == true &&
+             noResidualRisk == true
+
+  - name: recovery-phase
+    type: parallel
+    dependsOn: eradication-phase
+    description: Restore normal operations
+    tracks:
+      - name: system-restoration
+        agent: engineering-responder
+        restoration:
+          - restore-services
+          - validate-functionality
+          - performance-verification
+          - data-integrity-check
+
+      - name: security-hardening
+        agent: security-analyst
+        hardening:
+          - implement-new-controls
+          - update-policies
+          - enhance-monitoring
+          - strengthen-authentication
+
+      - name: business-resumption
+        agent: incident-commander
+        resumption:
+          - coordinate-restart
+          - verify-operations
+          - monitor-stability
+          - communicate-status
+
+  - name: stakeholder-communication
+    type: parallel
+    dependsOn: recovery-phase
+    description: Communicate to stakeholders
+    tracks:
+      - name: internal-communication
+        agent: communications-lead
+        audiences:
+          - employees:
+              message: incident-summary
+              guidance: security-reminders
+          - management:
+              message: detailed-report
+              metrics: impact-analysis
+          - board:
+              message: executive-summary
+              recommendations: strategic-changes
+
+      - name: external-communication
+        agent: communications-lead
+        condition: externalImpact == true
+        audiences:
+          - customers:
+              message: transparency-notice
+              actions: recommended-steps
+          - partners:
+              message: technical-details
+              mitigations: joint-actions
+          - regulators:
+              message: compliance-report
+              timeline: disclosure-schedule
+
+      - name: legal-notifications
+        agent: legal-counsel
+        notifications:
+          - regulatory-filings
+          - law-enforcement
+          - insurance-claims
+          - contractual-obligations
+
+  - name: lessons-learned
+    type: task
+    agent: incident-commander
+    dependsOn: stakeholder-communication
+    schedule: post-72h
+    description: Post-incident analysis
+    activities:
+      - timeline-review
+      - decision-analysis
+      - effectiveness-assessment
+      - gap-identification
+      - improvement-recommendations
+    deliverables:
+      - post-mortem-report
+      - action-items
+      - policy-updates
+      - training-requirements
+      - investment-recommendations
+
+  - name: continuous-monitoring
+    type: iterative
+    agent: security-analyst
+    dependsOn: lessons-learned
+    maxIterations: 30
+    qualityThreshold: 0.99
+    duration: 30d
+    description: Enhanced monitoring period
+    monitoring:
+      - threat-indicators
+      - system-anomalies
+      - performance-metrics
+      - security-events
+    response:
+      - investigate-anomalies
+      - adjust-controls
+      - update-signatures
+    successCriteria: |
+      return noRecurrence == true &&
+             metricsNormal == true
+
+qualityGates:
+  - name: containment-effectiveness
+    threshold: 1.0
+    measure: threat-contained
+    critical: true
+  - name: eradication-completeness
+    threshold: 1.0
+    measure: threats-removed
+    critical: true
+  - name: recovery-validation
+    threshold: 0.95
+    measure: systems-restored
+    critical: true
+  - name: compliance-met
+    threshold: 1.0
+    measure: regulatory-requirements
+    critical: true
+
+outputs:
+  - incident-report
+  - forensics-findings
+  - remediation-log
+  - communication-records
+  - post-mortem-analysis
+  - improvement-plan

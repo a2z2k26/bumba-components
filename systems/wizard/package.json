@@ -1,0 +1,24 @@
+{
+  "name": "@bumba/wizard",
+  "version": "1.0.0",
+  "description": "Interactive setup wizard for configuration and API key management",
+  "main": "index.js",
+  "keywords": [
+    "setup",
+    "wizard",
+    "configuration",
+    "api-keys"
+  ],
+  "author": "BUMBA",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "inquirer": "^8.0.0"
+  },
+  "peerDependencies": {
+    "@bumba/shared": "^1.0.0"
+  }
+}

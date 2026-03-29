@@ -1,0 +1,21 @@
+{
+  "name": "@bumba/shared",
+  "version": "1.0.0",
+  "description": "Shared utilities for the BUMBA ecosystem",
+  "main": "index.js",
+  "keywords": [
+    "bumba",
+    "shared",
+    "utilities",
+    "logger",
+    "events"
+  ],
+  "author": "BUMBA",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2"
+  }
+}

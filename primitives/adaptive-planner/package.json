@@ -1,0 +1,17 @@
+{
+  "name": "@bumba/adaptive-planner",
+  "version": "1.0.0",
+  "description": "Complexity-based adaptive planning",
+  "main": "adaptive-planner.js",
+  "keywords": [
+    "planning",
+    "adaptive",
+    "complexity"
+  ],
+  "author": "BUMBA",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {}
+}

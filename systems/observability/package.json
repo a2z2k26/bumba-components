@@ -1,0 +1,23 @@
+{
+  "name": "@bumba/observability",
+  "version": "1.0.0",
+  "description": "Distributed tracing, metrics, and A/B testing for agent systems",
+  "main": "index.js",
+  "keywords": [
+    "observability",
+    "tracing",
+    "metrics",
+    "dashboard"
+  ],
+  "author": "BUMBA",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2"
+  },
+  "peerDependencies": {
+    "@bumba/shared": "^1.0.0"
+  }
+}

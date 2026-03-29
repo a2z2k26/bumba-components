@@ -1,0 +1,243 @@
+# Customer Onboarding Workflow
+# Sprint 26: Cross-department Workflows
+
+name: customer-onboarding
+id: cross-dept-onboarding-001
+version: 1.0.0
+description: End-to-end customer onboarding with multi-department coordination
+
+agents:
+  - sales-representative
+  - customer-success-manager
+  - technical-specialist
+  - finance-processor
+  - legal-reviewer
+  - product-trainer
+
+config:
+  executionMode: adaptive
+  parallel: true
+  timeout: 86400000  # 24 hours
+  retries: 2
+  errorHandling: continue
+
+triggers:
+  - type: contract-signed
+  - type: payment-received
+  - type: manual
+    requiredRole: account-manager
+
+steps:
+  - name: onboarding-initiation
+    type: parallel
+    description: Initialize onboarding process
+    tracks:
+      - name: account-setup
+        agent: sales-representative
+        tasks:
+          - create-account
+          - assign-account-manager
+          - setup-crm-record
+          - configure-preferences
+
+      - name: legal-compliance
+        agent: legal-reviewer
+        tasks:
+          - verify-contract
+          - compliance-check
+          - data-privacy-setup
+          - terms-acceptance
+
+      - name: financial-setup
+        agent: finance-processor
+        tasks:
+          - payment-verification
+          - billing-setup
+          - invoice-generation
+          - credit-limit-setup
+
+  - name: technical-provisioning
+    type: iterative
+    agent: technical-specialist
+    dependsOn: onboarding-initiation
+    maxIterations: 3
+    qualityThreshold: 0.95
+    description: Provision technical resources
+    provisioning:
+      - environment-setup
+      - user-accounts
+      - api-keys
+      - integrations
+      - data-migration
+    validation:
+      - connectivity-test
+      - permission-verification
+      - data-integrity
+      - performance-baseline
+    successCriteria: |
+      return provisioningComplete == true &&
+             validationPassed == true &&
+             errorCount == 0
+
+  - name: customization-phase
+    type: parallel
+    dependsOn: technical-provisioning
+    description: Customize solution for customer
+    tracks:
+      - name: configuration
+        agent: technical-specialist
+        customization:
+          - workflow-setup
+          - branding-configuration
+          - feature-toggles
+          - integration-mapping
+
+      - name: data-import
+        agent: technical-specialist
+        import:
+          - historical-data
+          - user-profiles
+          - existing-configurations
+          - third-party-data
+
+      - name: training-preparation
+        agent: product-trainer
+        preparation:
+          - training-materials
+          - demo-environment
+          - use-case-scenarios
+          - documentation
+
+  - name: training-delivery
+    type: iterative
+    agent: product-trainer
+    dependsOn: customization-phase
+    maxIterations: 5
+    qualityThreshold: 0.85
+    description: Deliver customer training
+    sessions:
+      - admin-training
+      - end-user-training
+      - advanced-features
+      - best-practices
+      - troubleshooting
+    assessment:
+      - knowledge-check
+      - hands-on-exercises
+      - certification
+    successCriteria: |
+      return completionRate >= 0.9 &&
+             satisfactionScore >= 0.85
+
+  - name: go-live-preparation
+    type: parallel
+    dependsOn: training-delivery
+    description: Prepare for production launch
+    tracks:
+      - name: final-validation
+        agent: technical-specialist
+        checks:
+          - security-audit
+          - performance-test
+          - backup-verification
+          - disaster-recovery
+
+      - name: support-readiness
+        agent: customer-success-manager
+        setup:
+          - support-tickets
+          - escalation-paths
+          - knowledge-base
+          - monitoring-alerts
+
+      - name: communication-plan
+        agent: customer-success-manager
+        communications:
+          - launch-announcement
+          - team-notifications
+          - documentation-distribution
+          - feedback-channels
+
+  - name: production-launch
+    type: condition
+    dependsOn: go-live-preparation
+    condition: |
+      readinessScore >= 0.95 &&
+      customerApproval == true
+    ifTrue:
+      name: activate-production
+      type: task
+      agent: technical-specialist
+      activation:
+        - enable-production
+        - monitor-initial-usage
+        - verify-functionality
+        - capture-metrics
+    ifFalse:
+      name: address-gaps
+      type: loop
+      backTo: go-live-preparation
+      maxRetries: 2
+
+  - name: post-launch-support
+    type: iterative
+    agent: customer-success-manager
+    dependsOn: production-launch
+    maxIterations: 10
+    qualityThreshold: 0.9
+    duration: 30d
+    description: Provide post-launch support
+    activities:
+      - daily-check-ins
+      - issue-resolution
+      - optimization-recommendations
+      - usage-analysis
+      - success-metrics
+    escalation:
+      - technical-issues
+      - business-concerns
+      - feature-requests
+    successCriteria: |
+      return adoptionRate >= 0.8 &&
+             issuesResolved >= 0.95
+
+  - name: value-realization
+    type: task
+    agent: customer-success-manager
+    dependsOn: post-launch-support
+    schedule: day-30
+    measurement:
+      - roi-calculation
+      - goal-achievement
+      - usage-metrics
+      - satisfaction-survey
+      - expansion-opportunities
+    outputs:
+      - success-report
+      - optimization-plan
+      - expansion-proposal
+
+qualityGates:
+  - name: provisioning-complete
+    threshold: 1.0
+    measure: provisioning-status
+    critical: true
+  - name: training-effectiveness
+    threshold: 0.85
+    measure: training-score
+    critical: true
+  - name: customer-readiness
+    threshold: 0.95
+    measure: readiness-score
+    critical: true
+  - name: adoption-rate
+    threshold: 0.75
+    measure: usage-percentage
+    critical: false
+
+outputs:
+  - onboarding-report
+  - training-certificates
+  - configuration-documentation
+  - success-metrics
+  - optimization-recommendations

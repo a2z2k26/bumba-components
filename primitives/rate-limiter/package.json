@@ -1,0 +1,20 @@
+{
+  "name": "@bumba/rate-limiter",
+  "version": "1.0.0",
+  "description": "Token bucket rate limiting with request queuing",
+  "main": "rate-limiter.js",
+  "keywords": [
+    "rate-limiting",
+    "tokens",
+    "api"
+  ],
+  "author": "BUMBA",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "@bumba/shared": "^1.0.0"
+  }
+}

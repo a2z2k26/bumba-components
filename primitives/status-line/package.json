@@ -1,0 +1,17 @@
+{
+  "name": "@bumba/status-line",
+  "version": "1.0.0",
+  "description": "Terminal status line display with dynamic updates",
+  "main": "dynamic-status-line.js",
+  "keywords": [
+    "terminal",
+    "status",
+    "display",
+    "cli"
+  ],
+  "author": "BUMBA",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

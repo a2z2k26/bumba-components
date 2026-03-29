@@ -1,0 +1,21 @@
+{
+  "name": "@bumba/error-recovery",
+  "version": "1.0.0",
+  "description": "Error recovery patterns for MCP and AI systems",
+  "main": "error-recovery.js",
+  "keywords": [
+    "error",
+    "recovery",
+    "resilience",
+    "mcp"
+  ],
+  "author": "BUMBA",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "@bumba/shared": "^1.0.0"
+  }
+}

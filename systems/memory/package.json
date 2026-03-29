@@ -1,0 +1,23 @@
+{
+  "name": "@bumba/memory",
+  "version": "1.0.0",
+  "description": "Semantic memory management with SQLite backend",
+  "main": "index.js",
+  "keywords": [
+    "memory",
+    "sqlite",
+    "semantic",
+    "caching"
+  ],
+  "author": "BUMBA",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "better-sqlite3": "^9.0.0"
+  },
+  "peerDependencies": {
+    "@bumba/shared": "^1.0.0"
+  }
+}
