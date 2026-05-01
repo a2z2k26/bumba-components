@@ -8,6 +8,22 @@ const path = require('path');
 
 const baseDir = __dirname;
 
+// Resolve a package's entry point, honoring package.json#main when present.
+function resolveEntry(pkgDir) {
+  const pkgJsonPath = path.join(pkgDir, 'package.json');
+  if (fs.existsSync(pkgJsonPath)) {
+    try {
+      const pkg = JSON.parse(fs.readFileSync(pkgJsonPath, 'utf8'));
+      if (pkg.main) return path.join(pkgDir, pkg.main);
+    } catch (_) { /* fall through to heuristics */ }
+  }
+  if (fs.existsSync(path.join(pkgDir, 'index.js'))) {
+    return path.join(pkgDir, 'index.js');
+  }
+  const firstJs = fs.readdirSync(pkgDir).find(f => f.endsWith('.js'));
+  return firstJs ? path.join(pkgDir, firstJs) : path.join(pkgDir, 'index.js');
+}
+
 // Test all primitives
 const primDir = path.join(baseDir, 'primitives');
 const prims = fs.readdirSync(primDir).filter(d => {
@@ -18,11 +34,9 @@ console.log('=== TESTING PRIMITIVES ===');
 let primPassed = 0, primFailed = 0;
 
 prims.forEach(p => {
-  const pDir = path.join(primDir, p);
-  const files = fs.readdirSync(pDir).filter(f => f.endsWith('.js') && f !== 'index.js');
-  const mainFile = files[0] || 'index.js';
+  const entry = resolveEntry(path.join(primDir, p));
   try {
-    require(path.join(pDir, mainFile));
+    require(entry);
     console.log('✓', p);
     primPassed++;
   } catch(e) {
@@ -43,15 +57,9 @@ const systems = fs.readdirSync(sysDir).filter(d => {
 let sysPassed = 0, sysFailed = 0;
 
 systems.forEach(sys => {
-  const sDir = path.join(sysDir, sys);
-  // Try index.js first, then first .js file
-  let mainFile = 'index.js';
-  if (!fs.existsSync(path.join(sDir, mainFile))) {
-    const files = fs.readdirSync(sDir).filter(f => f.endsWith('.js'));
-    mainFile = files[0] || 'index.js';
-  }
+  const entry = resolveEntry(path.join(sysDir, sys));
   try {
-    require(path.join(sDir, mainFile));
+    require(entry);
     console.log('✓', sys);
     sysPassed++;
   } catch(e) {

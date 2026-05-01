@@ -97,24 +97,28 @@ class UnifiedMemorySystem extends UnifiedManagerBase {
     this.memoryEmbeddings = new Map();
     this.aiEnhancedStorage = new Map();
 
-    // Initialize optimization engine
-    this.optimizationEngine = new MemoryOptimizationEngine({
-      maxHotMemory: options.maxHotMemory || 500,
-      maxWarmMemory: options.maxWarmMemory || 2000,
-      optimizationInterval: options.optimizationInterval || 60000,
-      compressionEnabled: options.compressionEnabled !== false,
-      analyticsEnabled: options.analyticsEnabled !== false
-    });
+    // Initialize optimization engine (optional dependency)
+    this.optimizationEngine = MemoryOptimizationEngine
+      ? new MemoryOptimizationEngine({
+        maxHotMemory: options.maxHotMemory || 500,
+        maxWarmMemory: options.maxWarmMemory || 2000,
+        optimizationInterval: options.optimizationInterval || 60000,
+        compressionEnabled: options.compressionEnabled !== false,
+        analyticsEnabled: options.analyticsEnabled !== false
+      })
+      : null;
 
-    // Initialize enhanced optimizations
-    this.enhancedOptimizations = new EnhancedMemoryOptimizations({
-      enableIndexing: options.enableIndexing !== false,
-      enableCompression: options.enableCompression !== false,
-      enableSmartCaching: options.enableSmartCaching !== false,
-      enablePrefetching: options.enablePrefetching !== false,
-      enableBatchOperations: options.enableBatchOperations !== false,
-      maxCacheSize: options.maxCacheSize || 1000
-    });
+    // Initialize enhanced optimizations (optional dependency)
+    this.enhancedOptimizations = EnhancedMemoryOptimizations
+      ? new EnhancedMemoryOptimizations({
+        enableIndexing: options.enableIndexing !== false,
+        enableCompression: options.enableCompression !== false,
+        enableSmartCaching: options.enableSmartCaching !== false,
+        enablePrefetching: options.enablePrefetching !== false,
+        enableBatchOperations: options.enableBatchOperations !== false,
+        maxCacheSize: options.maxCacheSize || 1000
+      })
+      : null;
   }
 
   async onInitialize() {
