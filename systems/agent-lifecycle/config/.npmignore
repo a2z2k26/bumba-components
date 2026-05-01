@@ -1,0 +1,21 @@
+# Source files
+test/
+benchmark/
+docs/
+.github/
+
+# Config files
+.gitignore
+.editorconfig
+jest.config.js
+.eslintrc*
+.prettierrc*
+
+# Development files
+*.log
+.DS_Store
+coverage/
+.nyc_output/
+
+# Keep only essentials for npm package
+# lib/, src/, examples/, README.md, LICENSE, package.json will be included

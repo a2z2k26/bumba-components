@@ -1,0 +1,32 @@
+{
+  "name": "@bumba/agent-lifecycle",
+  "version": "1.0",
+  "description": "Agent Lifecycle - Lightweight finite state machine for managing agent lifecycles with automatic timeouts and resource cleanup",
+  "main": "src/index.js",
+  "keywords": ["state-machine", "agent", "lifecycle", "orchestration", "async", "timeout", "agent-lifecycle", "bumba", "fsm"],
+  "author": "BUMBA Contributors",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "events": "^3.3.0"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0"
+  },
+  "scripts": {
+    "test": "jest --config config/jest.config.js",
+    "test:watch": "jest --config config/jest.config.js --watch",
+    "test:coverage": "jest --config config/jest.config.js --coverage",
+    "benchmark": "node benchmark/performance.js",
+    "example:basic": "node examples/basic.js",
+    "example:llm": "node examples/llm-orchestration.js"
+  },
+  "files": [
+    "src/",
+    "examples/",
+    "README.md",
+    "LICENSE"
+  ]
+}

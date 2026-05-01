@@ -1,0 +1,42 @@
+{
+  "name": "@bumba/command-routing",
+  "version": "1.2.0",
+  "description": "Command Routing - Command routing system for agent orchestration with pattern matching and middleware support. Part of the BUMBA platform.",
+  "main": "index.js",
+  "types": "types/index.d.ts",
+  "keywords": ["router", "command", "agent", "orchestration", "pattern-matching", "middleware", "dispatcher", "bumba", "command-routing", "platform"],
+  "author": "BUMBA Contributors",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "events": "^3.3.0"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0"
+  },
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "example": "node examples/basic.js",
+    "example:basic": "node examples/basic.js"
+  },
+  "files": [
+    "src/",
+    "lib/",
+    "types/",
+    "index.js",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/a2z2k26/bumba-features.git"
+  },
+  "bugs": {
+    "url": "https://github.com/a2z2k26/bumba-features/issues"
+  },
+  "homepage": "https://github.com/a2z2k26/bumba-features#readme"
+}

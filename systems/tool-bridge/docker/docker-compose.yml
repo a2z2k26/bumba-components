@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  tool-bridge:
+    build: .
+    image: tool-bridge:latest
+    container_name: tool-bridge
+    ports:
+      - "3456:3456"
+    environment:
+      - NODE_ENV=production
+      - TOOL_BRIDGE_PORT=3456
+      - TOOL_BRIDGE_HOST=0.0.0.0
+      # API Keys - replace with your actual keys or use .env file
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      # Security
+      - JWT_SECRET=${JWT_SECRET:-random_jwt_secret_change_me}
+      - MASTER_API_KEY=${MASTER_API_KEY:-random_master_key_change_me}
+    volumes:
+      - ./config:/app/.tool-bridge
+      - ./logs:/app/logs
+    restart: unless-stopped
+    networks:
+      - tool-bridge-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3456/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Optional: Redis for caching (uncomment if needed)
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: tool-bridge-redis
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - redis-data:/data
+  #   networks:
+  #     - tool-bridge-network
+  #   restart: unless-stopped
+
+networks:
+  tool-bridge-network:
+    driver: bridge
+
+volumes:
+  redis-data:

@@ -1,0 +1,64 @@
+# Source files (only ship built files)
+src/
+
+# Development files
+test/
+tests/
+*.test.js
+*.spec.js
+
+# Documentation source
+docs/
+*.md
+!README.md
+
+# Examples (optional - you might want to include these)
+# examples/
+
+# Configuration files
+.gitignore
+.eslintrc*
+.prettierrc*
+.babelrc*
+jest.config.*
+tsconfig.json
+.editorconfig
+
+# CI/CD
+.github/
+.gitlab/
+.travis.yml
+.circleci/
+azure-pipelines.yml
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+tmp/
+temp/
+
+# Logs
+*.log
+logs/
+
+# Coverage reports
+coverage/
+.nyc_output/
+
+# Development dependencies
+.env*
+.npmrc
+
+# Miscellaneous
+reflections.json
+notes/
+*.bak
