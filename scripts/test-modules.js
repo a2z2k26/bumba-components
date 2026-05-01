@@ -6,7 +6,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const baseDir = __dirname;
+const baseDir = path.resolve(__dirname, '..');
 
 // Resolve a package's entry point, honoring package.json#main when present.
 function resolveEntry(pkgDir) {

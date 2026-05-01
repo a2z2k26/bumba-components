@@ -6,7 +6,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const baseDir = __dirname;
+const baseDir = path.resolve(__dirname, '..');
 
 // Primitives that need @bumba/shared
 const primitivesNeedingShared = [

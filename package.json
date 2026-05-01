@@ -10,8 +10,10 @@
   ],
   "scripts": {
     "test": "npm run test --workspaces",
+    "test:smoke": "node scripts/test-modules.js",
     "lint": "eslint .",
-    "build": "npm run build --workspaces --if-present"
+    "build": "npm run build --workspaces --if-present",
+    "update-packages": "node scripts/update-packages.js"
   },
   "keywords": [
     "ai",
