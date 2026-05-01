@@ -9,7 +9,7 @@
 
 <br>
 
-### The distilled building blocks of a production multi-agent system — extracted from Bumba CLI 1.0 and released as composable, framework-agnostic Node.js primitives. ###
+### The distilled building blocks of a production multi-agent system — extracted from Bumba 1.0 and released as composable, framework-agnostic Node.js primitives. ###
 
 ---
 
@@ -40,7 +40,7 @@ Bumba Components exists because we needed all of these, and the npm ecosystem di
 
 ### 🟢 What's Included ###
 
-31 packages split into two tiers. Use any package standalone — or compose them into larger systems the way they're used in Bumba.
+31 packages split into two tiers. Use any package standalone — or compose them into larger systems the way they're used in Bumba 1.0.
 
 **20 Primitives** — zero-to-light dependency, single-purpose modules.
 
@@ -207,7 +207,7 @@ If you adopt a package and hit a rough edge, open an issue. Contributions welcom
 
 ### 🏁 Origin ###
 
-Bumba Components was extracted from **Bumba CLI 1.0** — a private multi-agent orchestration platform built for production AI development workflows. These packages represent the infrastructure layer: the modules that had to work before anything else could. They've been in use under real load across parallel agent workforces, multiple AI providers, and continuous autonomous execution.
+Bumba Components was extracted from **Bumba 1.0** — a private multi-agent orchestration platform built for production AI development workflows. These packages represent the infrastructure layer: the modules that had to work before anything else could. They've been in use under real load across parallel agent workforces, multiple AI providers, and continuous autonomous execution.
 
 The extraction was deliberate. This infrastructure is useful on its own — and it's better in the open than locked in a private repo.
 
