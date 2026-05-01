@@ -200,7 +200,7 @@ class CommandRouter extends EventEmitter {
       handler: handlerFunction,
       priority: options.priority || 'normal',
       timeout: options.timeout || this.config.timeout,
-      retries: options.retries || this.config.maxRetries,
+      retries: options.retries !== undefined ? options.retries : this.config.maxRetries,
       middleware: options.middleware || []
     });
     
