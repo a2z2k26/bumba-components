@@ -3,11 +3,8 @@
  * Consolidates all orchestration functionality into a single unified manager
  */
 
-// [OPTIONAL] const { UnifiedManagerBase, ManagerState } = require('../managers/unified-manager-base'); // May need @bumba/* package
-// [OPTIONAL] const { EventPatterns } = require('../patterns/event-emitter-patterns'); // May need @bumba/* package
+const { UnifiedManagerBase } = require('@bumba/shared');
 const { EnhancedCoordinationCapabilities } = require('./enhanced-coordination-capabilities');
-// [OPTIONAL] const { logger } = require('../logging/bumba-logger'); // May need @bumba/* package
-// [OPTIONAL] const { agentCache } = require('../performance/agent-cache'); // May need @bumba/* package
 
 class UnifiedOrchestrator extends UnifiedManagerBase {
   constructor(options = {}) {

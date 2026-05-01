@@ -5,7 +5,6 @@
  */
 
 const { EventEmitter } = require('events');
-// [OPTIONAL] const { logger } = require('../logging/bumba-logger'); // May need @bumba/* package
 
 /**
  * Sprint 13: Progress Tracking Dashboard

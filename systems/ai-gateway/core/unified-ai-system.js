@@ -6,9 +6,6 @@
  * orchestration, caching, and fallback capabilities.
  */
 
-// [OPTIONAL] const { UnifiedManagerBase, ManagerState } = require('../managers/unified-manager-base'); // May need @bumba/* package
-// [OPTIONAL] const { EventPatterns } = require('../patterns/event-emitter-patterns'); // May need @bumba/* package
-// [OPTIONAL] const { logger } = require('../logging/bumba-logger'); // May need @bumba/* package
 const { ResponseProcessor } = require('./response-processor');
 const { AIPerformanceOptimizer } = require('./ai-performance-optimizer');
 const { ContextManager } = require('./context-manager');

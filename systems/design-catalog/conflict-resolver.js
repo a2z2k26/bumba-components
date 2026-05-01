@@ -9,7 +9,6 @@
 const EventEmitter = require('events');
 const crypto = require('crypto');
 const chalk = require('chalk');
-// [OPTIONAL] const { logger } = require('../logging'); // May need @bumba/* package
 
 /**
  * Conflict Types

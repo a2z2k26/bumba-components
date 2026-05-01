@@ -5,12 +5,8 @@
  */
 
 const { EventEmitter } = require('events');
-// [OPTIONAL] const { logger } = require('../logging/bumba-logger'); // May need @bumba/* package
 const { DependencyManager } = require('./dependency-manager');
 const notionClientModule = require('./notion-client');
-// [OPTIONAL] const SprintDecompositionSystem = require('../planning/sprint-decomposition-system'); // May need @bumba/* package
-// [OPTIONAL] const PromptIntelligence = require('../intelligence/prompt-intelligence'); // May need @bumba/* package
-// [OPTIONAL] const { PredictiveOrchestrationEngine } = require('../intelligence/predictive-orchestration'); // May need @bumba/* package
 
 class TaskOrchestrator extends EventEmitter {
   constructor(config = {}) {

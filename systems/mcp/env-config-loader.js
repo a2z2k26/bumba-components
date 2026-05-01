@@ -85,7 +85,6 @@ class MCPEnvConfigLoader {
    * Process MCP-specific configuration from environment
    */
   processMCPConfiguration() {
-    // [OPTIONAL] const mcpSchema = require('../../../config/mcp-env-schema'); // May need @bumba/* package
 
     // Process each category
     for (const [category, categoryConfig] of Object.entries(mcpSchema)) {

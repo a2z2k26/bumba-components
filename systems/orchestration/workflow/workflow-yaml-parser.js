@@ -6,7 +6,6 @@
 const yaml = require('js-yaml');
 const fs = require('fs').promises;
 const path = require('path');
-// [OPTIONAL] const { logger } = require('../logging/bumba-logger'); // May need @bumba/* package
 
 class WorkflowYamlParser {
   constructor() {

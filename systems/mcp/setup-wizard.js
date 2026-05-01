@@ -9,8 +9,6 @@ const fs = require('fs').promises;
 const path = require('path');
 const os = require('os');
 const { EventEmitter } = require('events');
-// [OPTIONAL] const { BumbaBrand } = require('../brand'); // May need @bumba/* package
-// [OPTIONAL] const TemplateBuilder = require('../template/template-builder'); // May need @bumba/* package
 
 // BUMBA color palette - smooth 6-step gradient (standardized)
 const green = chalk.hex('#00FF00');        // Bright green
@@ -205,7 +203,6 @@ class MCPSetupWizard extends EventEmitter {
     console.log(lime('\n🔴 Step 4: MCP Server Credentials\n'));
 
     // Use EnvManager for comprehensive credential handling
-    // [OPTIONAL] const { getInstance: getEnvManager } = require('../../utils/env-manager'); // May need @bumba/* package
     const envManager = getEnvManager();
 
     // Show vital MCPs (auto-enabled, no credentials needed)

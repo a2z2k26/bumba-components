@@ -8,7 +8,6 @@
  * - Structured spec generation from dialogue
  */
 
-// [OPTIONAL] const BaseNLPProcessor = require('../spec-driven/nlp-processor'); // May need @bumba/* package
 
 /**
  * Intent types for spec creation

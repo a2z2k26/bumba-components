@@ -5,7 +5,6 @@
 
 const EventEmitter = require('events');
 const chalk = require('chalk');
-// [OPTIONAL] const { logger } = require('../../logging/bumba-logger'); // May need @bumba/* package
 
 class AICatalogAPI extends EventEmitter {
   constructor(orchestrator) {

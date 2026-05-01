@@ -5,7 +5,6 @@
  */
 
 const { EventEmitter } = require('events');
-// [OPTIONAL] const { logger } = require('../logging/bumba-logger'); // May need @bumba/* package
 
 /**
  * Optimizer for workflow execution paths and resource allocation

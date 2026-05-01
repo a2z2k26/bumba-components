@@ -4,7 +4,6 @@
  * Ensures templates are valid, complete, and executable
  */
 
-// [OPTIONAL] const { logger } = require('../logging/bumba-logger'); // May need @bumba/* package
 const path = require('path');
 
 class TemplateValidator {

@@ -1,7 +1,6 @@
 const fs = require('fs').promises;
 const fsSync = require('fs');
 const path = require('path');
-// // [OPTIONAL] const { getComponentPageRouter } = require('../../../.bumba-design/component-page-router'); // May need @bumba/* package
 const { getPatternLibrary } = require('./pattern-library');
 
 /**

@@ -1,4 +1,3 @@
-// [OPTIONAL] SemanticMemory - not available in standalone mode
 let SemanticMemory = null;
 
 const Logger = require('../lib/bumba-logger');

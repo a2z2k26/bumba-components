@@ -5,7 +5,6 @@
  */
 
 const { EventEmitter } = require('events');
-// [OPTIONAL] const { logger } = require('../logging/bumba-logger'); // May need @bumba/* package
 const { NotionWorkspaceSchema, NotionViews, PageTemplates } = require('./notion-schema');
 
 class NotionOrchestrationClient extends EventEmitter {

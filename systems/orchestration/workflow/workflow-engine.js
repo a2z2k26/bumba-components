@@ -4,9 +4,6 @@
  */
 
 const { EventEmitter } = require('events');
-// [OPTIONAL] const { logger } = require('../logging/bumba-logger'); // May need @bumba/* package
-// [OPTIONAL] const { getInstance: getConfig } = require('../config/bumba-config'); // May need @bumba/* package
-// [OPTIONAL] const UnifiedSpecialistBase = require('../specialists/unified-specialist-base'); // May need @bumba/* package
 
 // Enhanced workflow components
 const WorkflowScheduler = require('./workflow-scheduler');

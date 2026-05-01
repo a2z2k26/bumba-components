@@ -11,7 +11,6 @@
  */
 
 const chalk = require('chalk');
-// [OPTIONAL] const { logger } = require('../logging'); // May need @bumba/* package
 
 /**
  * Change Types

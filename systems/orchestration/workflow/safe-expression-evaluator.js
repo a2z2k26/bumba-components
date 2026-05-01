@@ -4,7 +4,6 @@
  * Sprint 2 - Security Fix
  */
 
-// [OPTIONAL] const { logger } = require('../logging/bumba-logger'); // May need @bumba/* package
 
 class SafeExpressionEvaluator {
   constructor() {

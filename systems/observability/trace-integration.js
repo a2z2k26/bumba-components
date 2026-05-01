@@ -6,7 +6,6 @@
  */
 
 const TraceRecorder = require('./trace-recorder');
-// [OPTIONAL] const OrchestrationLiveView = require('../../ui/orchestration-live-view'); // May need @bumba/* package
 
 class TraceIntegration {
   constructor(options = {}) {

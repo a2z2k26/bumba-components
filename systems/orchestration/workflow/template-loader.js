@@ -7,7 +7,6 @@ const fs = require('fs').promises;
 const path = require('path');
 const { promisify } = require('util');
 const WorkflowYamlParser = require('./workflow-yaml-parser');
-// [OPTIONAL] const { logger } = require('../logging/bumba-logger'); // May need @bumba/* package
 
 class TemplateLoader {
   constructor(config = {}) {

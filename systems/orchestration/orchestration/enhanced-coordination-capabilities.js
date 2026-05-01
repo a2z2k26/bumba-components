@@ -3,7 +3,6 @@
  * Advanced intelligent coordination features for orchestration system
  */
 
-// [OPTIONAL] const { logger } = require('../logging/bumba-logger'); // May need @bumba/* package
 
 class EnhancedCoordinationCapabilities {
   constructor(options = {}) {

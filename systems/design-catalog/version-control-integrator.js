@@ -28,7 +28,7 @@ class VersionControlIntegrator extends EventEmitter {
       branchPrefix: options.branchPrefix || 'design/',
       tagPrefix: options.tagPrefix || 'design-v',
       gitDir: options.gitDir || process.cwd(),
-      commitAuthor: options.commitAuthor || 'BUMBA Design Bridge <design@bumba.dev>',
+      commitAuthor: options.commitAuthor || 'BUMBA Design Bridge',
       ...options
     };
 

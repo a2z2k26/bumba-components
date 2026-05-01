@@ -6,7 +6,6 @@
 const path = require('path');
 const fs = require('fs').promises;
 const chalk = require('chalk');
-// [OPTIONAL] const { logger } = require('../../logging/bumba-logger'); // May need @bumba/* package
 const { getInstance: getCatalogOrchestrator } = require('./catalog-orchestrator');
 
 class ProjectHooks {

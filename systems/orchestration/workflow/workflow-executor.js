@@ -6,10 +6,6 @@
 
 const EventEmitter = require('events');
 const chalk = require('chalk');
-// [OPTIONAL] const { getInstance: getAgentFactory } = require('../agents/agent-factory'); // May need @bumba/* package
-// [OPTIONAL] const { getInstance: getHub } = require('../communication/communication-hub'); // May need @bumba/* package
-// [OPTIONAL] const { TaskRouter } = require('../execution/task-router'); // May need @bumba/* package
-// [OPTIONAL] const { ErrorHandler } = require('../execution/error-handler'); // May need @bumba/* package
 
 class WorkflowExecutor extends EventEmitter {
   constructor() {

@@ -5,8 +5,6 @@
 
 const { execSync, exec } = require('child_process');
 const { logger } = require('@bumba/shared');
-// [OPTIONAL] const { getInstance: getUniversalHooks } = require('../unified-hook-system'); // May need @bumba/* package
-// [OPTIONAL] const { BumbaError, BumbaErrorBoundary } = require('../error-handling/bumba-error-system'); // May need @bumba/* package
 const { CircuitBreaker, MCPResilienceSystem } = require('./circuit-breaker');
 
 /**
@@ -458,7 +456,6 @@ class MCPServerManager {
   async testOpenRouterServer() {
     try {
       // Check if OpenRouter integration is available
-      // [OPTIONAL] const { getInstance } = require('../integrations/openrouter-integration'); // May need @bumba/* package
       const openrouter = getInstance();
       
       // Test connection
@@ -476,7 +473,6 @@ class MCPServerManager {
   async testShadCNServer() {
     try {
       // Check if ShadCN integration is available
-      // [OPTIONAL] const { getInstance } = require('../integrations/shadcn-mcp-integration'); // May need @bumba/* package
       const shadcn = getInstance();
       
       // Test if integration is operational

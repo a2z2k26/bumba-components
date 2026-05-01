@@ -11,7 +11,6 @@
 const { exec } = require('child_process');
 const { promisify } = require('util');
 const http = require('http');
-// [OPTIONAL] const { logger } = require('../core/logging/bumba-logger'); // May need @bumba/* package
 
 const execAsync = promisify(exec);
 

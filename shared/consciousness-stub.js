@@ -1,57 +1,40 @@
 /**
- * Consciousness Layer - Standalone stub
- * Agent self-awareness and introspection patterns
+ * Consciousness Stub
  *
- * Replace this with your own implementation if needed
+ * No-op compatibility shim. The original consciousness layer was an internal
+ * concept from an earlier version of the framework that scored decisions for
+ * ethical alignment and awareness. This stub preserves the API surface so that
+ * modules referencing it continue to load and operate, while always returning
+ * neutral/passing values.
+ *
+ * Replace with your own implementation if you want real validation behavior.
  */
 
-const EventEmitter = require('events');
-
-class ConsciousnessLayer extends EventEmitter {
+class ConsciousnessLayer {
   constructor(options = {}) {
-    super();
-    this.agentId = options.agentId || 'unknown';
-    this.state = {
-      awareness: 'active',
-      focus: null,
-      memory: [],
-      goals: []
+    this.options = options;
+    this.enabled = options.enabled !== false;
+  }
+
+  async validate(_payload = {}) {
+    return {
+      score: 1,
+      passed: true,
+      reasoning: 'consciousness-stub: no-op validator',
+      issues: []
     };
   }
 
-  setFocus(focus) {
-    this.state.focus = focus;
-    this.emit('focus:changed', { focus });
+  async evaluate(_payload = {}) {
+    return this.validate(_payload);
   }
 
-  getFocus() {
-    return this.state.focus;
-  }
-
-  addMemory(memory) {
-    this.state.memory.push({
-      ...memory,
-      timestamp: Date.now()
-    });
-    this.emit('memory:added', memory);
-  }
-
-  setGoal(goal) {
-    this.state.goals.push(goal);
-    this.emit('goal:set', { goal });
-  }
-
-  getState() {
-    return { ...this.state };
-  }
-
-  introspect() {
+  getMetrics() {
     return {
-      agentId: this.agentId,
-      awareness: this.state.awareness,
-      currentFocus: this.state.focus,
-      memoryCount: this.state.memory.length,
-      activeGoals: this.state.goals.length
+      average_consciousness_score: 1,
+      ethical_alignment: 1,
+      decision_quality: 1,
+      total_decisions: 0
     };
   }
 }

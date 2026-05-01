@@ -4,7 +4,6 @@
  * @module orchestration
  */
 
-// [OPTIONAL] const { logger } = require('../logging/bumba-logger'); // May need @bumba/* package
 
 // Unified orchestration system
 const { UnifiedOrchestrator } = require('./unified-orchestrator');
@@ -40,7 +39,6 @@ const {
 // Product-Strategist enhancements (optional)
 let enhanceProductStrategist = null;
 try {
-  // [OPTIONAL] const productStrategistModule = require('../departments/product-strategist-orchestrator'); // May need @bumba/* package
   enhanceProductStrategist = productStrategistModule.enhanceProductStrategist;
 } catch (error) {
   // Product strategist orchestrator not available
@@ -454,7 +452,6 @@ class BumbaOrchestrationSystem {
    */
   getTestingFramework() {
     try {
-      // [OPTIONAL] const { getInstance } = require('../testing/comprehensive-testing-framework'); // May need @bumba/* package
       return getInstance();
     } catch (error) {
       logger.warn('Testing framework not available');

@@ -6,7 +6,6 @@
  */
 
 const http = require('http');
-// [OPTIONAL] const { logger } = require('../core/logging/bumba-logger'); // May need @bumba/* package
 
 /**
  * OllamaClient - Interface for Ollama API

@@ -8,7 +8,6 @@ const EventEmitter = require('events');
 const path = require('path');
 const fs = require('fs').promises;
 const chalk = require('chalk');
-// [OPTIONAL] const { logger } = require('../../logging/bumba-logger'); // May need @bumba/* package
 
 class CatalogOrchestrator extends EventEmitter {
   constructor() {
@@ -615,7 +614,6 @@ ${Object.entries(properties).map(([key, value]) =>
    * Generate visual catalog
    */
   async generateVisualizer(catalog, catalogPath) {
-    // [OPTIONAL] const EnhancedCatalogGenerator = require('../catalog-generator/enhanced-catalog-generator'); // May need @bumba/* package
     const generator = new EnhancedCatalogGenerator();
 
     await generator.generate(catalog.tokens, {}, catalogPath);

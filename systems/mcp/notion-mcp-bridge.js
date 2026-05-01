@@ -104,7 +104,6 @@ class NotionMCPBridge extends EventEmitter {
   
   async executeLocalOperation(operation, params) {
     // Use simulator for local operations
-    // [OPTIONAL] const { getInstance: getSimulator } = require('../notion/notion-simulator'); // May need @bumba/* package
     const simulator = getSimulator();
     
     logger.debug(`Local simulation: ${operation}`);

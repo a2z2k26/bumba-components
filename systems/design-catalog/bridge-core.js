@@ -4,8 +4,6 @@
  */
 
 const { EventEmitter } = require('events');
-// [OPTIONAL] const { logger } = require('../logging/bumba-logger'); // May need @bumba/* package
-// [OPTIONAL] const { WebSocketServer } = require('../websocket/websocket-server'); // May need @bumba/* package
 const dotenv = require('dotenv');
 const path = require('path');
 const fs = require('fs');

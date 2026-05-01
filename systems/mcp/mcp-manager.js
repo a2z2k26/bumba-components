@@ -11,8 +11,17 @@ const { MCPServerRegistry, getInstance: getRegistry } = require('./server-regist
 const { MCPEnvConfigLoader, getInstance: getConfigLoader } = require('./env-config-loader');
 const { MCPDynamicLoader, getInstance: getDynamicLoader } = require('./dynamic-loader');
 const { MCPSessionState, getInstance: getSessionState } = require('./session-state');
-const { MCPHealthMonitor, getInstance: getHealthMonitor } = require('./health-monitor');
-const { MCPErrorRecovery, getInstance: getErrorRecovery } = require('./error-recovery');
+// Optional resilience components — graceful fallback if not present
+let MCPHealthMonitor = null;
+let getHealthMonitor = () => null;
+let MCPErrorRecovery = null;
+let getErrorRecovery = () => null;
+try {
+  ({ MCPHealthMonitor, getInstance: getHealthMonitor } = require('./health-monitor'));
+} catch (_) { /* health-monitor optional */ }
+try {
+  ({ MCPErrorRecovery, getInstance: getErrorRecovery } = require('./error-recovery'));
+} catch (_) { /* error-recovery optional */ }
 
 // UI components
 const MCPNaturalLanguageParser = require('./nl-parser');

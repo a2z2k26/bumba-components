@@ -7,7 +7,6 @@
  */
 
 const { EventEmitter } = require('events');
-// [OPTIONAL] const { logger } = require('../logging/bumba-logger'); // May need @bumba/* package
 const crypto = require('crypto');
 
 class IntelligentTaskAutomation extends EventEmitter {

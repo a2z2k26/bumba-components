@@ -5,8 +5,6 @@
  */
 
 const { EventEmitter } = require('events');
-// [OPTIONAL] const { logger } = require('../logging/bumba-logger'); // May need @bumba/* package
-// [OPTIONAL] const PromptIntelligence = require('../intelligence/prompt-intelligence'); // May need @bumba/* package
 
 class DependencyManager extends EventEmitter {
   constructor() {

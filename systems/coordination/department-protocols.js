@@ -395,7 +395,6 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
     if (executionResult.overall_success) {
       try {
         // NOTE: audio-fallback-system was removed
-        // [OPTIONAL] const { audioFallbackSystem } = require('../audio-fallback-system'); // May need @bumba/* package
         await audioFallbackSystem.playAchievementAudio('MAJOR_TASK_COMPLETE', {
           type: 'department_coordination',
           coordination_type: coordination.type,

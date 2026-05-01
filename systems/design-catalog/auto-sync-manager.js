@@ -10,7 +10,6 @@ const EventEmitter = require('events');
 const path = require('path');
 const fs = require('fs').promises;
 const chalk = require('chalk');
-// [OPTIONAL] const { logger } = require('../logging'); // May need @bumba/* package
 const ConflictResolver = require('./conflict-resolver');
 const SyncHistoryManager = require('./sync-history');
 

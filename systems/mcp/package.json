@@ -12,10 +12,16 @@
   "author": "BUMBA",
   "license": "MIT",
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=18.0.0"
   },
   "dependencies": {
-    "chalk": "^4.1.2"
+    "blessed": "^0.1.81",
+    "blessed-contrib": "^4.11.0",
+    "boxen": "^7.1.1",
+    "chalk": "^4.1.2",
+    "cli-table3": "^0.6.5",
+    "inquirer": "^8.2.7",
+    "ora": "^5.4.1"
   },
   "peerDependencies": {
     "@bumba/shared": "^1.0.0"

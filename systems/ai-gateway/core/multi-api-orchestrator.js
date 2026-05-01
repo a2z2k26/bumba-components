@@ -5,9 +5,6 @@
  */
 
 const chalk = require('chalk');
-// [OPTIONAL] const { logger } = require('../logging/bumba-logger'); // May need @bumba/* package
-// [OPTIONAL] const EnvLoader = require('../../utils/env-loader'); // May need @bumba/* package
-// [OPTIONAL] const { FreeTierManager } = require('../agents/free-tier-manager'); // May need @bumba/* package
 const fs = require('fs');
 const path = require('path');
 
@@ -43,7 +40,6 @@ class MultiAPIOrchestrator {
 
     // OpenRouter (200+ models)
     if (this.availableAPIs.openrouter) {
-      // [OPTIONAL] const { OpenRouterIntegration } = require('../integrations/openrouter-integration'); // May need @bumba/* package
       this.providers.set('openrouter', new OpenRouterIntegration({
         apiKey: process.env.OPENROUTER_API_KEY,
         cacheEnabled: false

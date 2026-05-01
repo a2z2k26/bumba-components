@@ -3,7 +3,6 @@
  * Intelligent consolidation and analysis methods for wave orchestration
  */
 
-// [OPTIONAL] const { logger } = require('../logging/bumba-logger'); // May need @bumba/* package
 
 class ConsolidationStrategies {
   constructor(mlIntegration, semanticAnalyzer) {

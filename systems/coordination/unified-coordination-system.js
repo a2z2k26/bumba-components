@@ -6,11 +6,9 @@
 
 const { UnifiedManagerBase, ManagerState } = require('@bumba/shared');
 const { EventPatterns } = require('@bumba/shared');
-// [OPTIONAL] EnhancedCoordinationCapabilities from @bumba/orchestration
 let EnhancedCoordinationCapabilities = null;
 try { EnhancedCoordinationCapabilities = require('./enhanced-coordination-capabilities').EnhancedCoordinationCapabilities; } catch(e) {}
 const { logger } = require('@bumba/shared');
-// [OPTIONAL] const optimisticCoordinator = require('../performance/optimistic-coordinator'); // May need @bumba/* package
 
 /**
  * Department Coordination Subsystem

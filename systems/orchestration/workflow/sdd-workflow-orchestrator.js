@@ -8,10 +8,6 @@ const EventEmitter = require('events');
 const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
-// [OPTIONAL] const SpecManager = require('../spec-driven/spec-manager'); // May need @bumba/* package
-// [OPTIONAL] const SpecifyCommand = require('../../commands/specify'); // May need @bumba/* package
-// [OPTIONAL] const PlanCommand = require('../../commands/plan'); // May need @bumba/* package
-// [OPTIONAL] const TasksCommand = require('../../commands/tasks'); // May need @bumba/* package
 
 /**
  * Workflow states
@@ -339,7 +335,6 @@ class SDDWorkflowOrchestrator extends EventEmitter {
    */
   async updateGitHubIssue() {
     try {
-      // [OPTIONAL] const GitHubIssueBridge = require('../github/issue-bridge'); // May need @bumba/* package
       const bridge = new GitHubIssueBridge();
       await bridge.initialize();
 

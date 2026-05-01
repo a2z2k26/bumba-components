@@ -1,6 +1,5 @@
 const fs = require('fs');
 const path = require('path');
-// [OPTIONAL] const SpecManager = require('../spec-driven/spec-manager'); // May need @bumba/* package
 const Anthropic = require('@anthropic-ai/sdk');
 const { Octokit } = require('@octokit/rest');
 const { graphql } = require('@octokit/graphql');

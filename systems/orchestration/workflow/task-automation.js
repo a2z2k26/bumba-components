@@ -4,7 +4,6 @@
  */
 
 const { EventEmitter } = require('events');
-// [OPTIONAL] const { logger } = require('../logging/bumba-logger'); // May need @bumba/* package
 const { WorkflowEngine, getInstance: getWorkflowEngine } = require('./workflow-engine');
 const { PipelineManager, getInstance: getPipelineManager } = require('./pipeline-manager');
 

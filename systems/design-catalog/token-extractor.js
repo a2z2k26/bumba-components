@@ -3,7 +3,6 @@
  * Extracts design tokens from Figma designs
  */
 
-// [OPTIONAL] const { logger } = require('../logging/bumba-logger'); // May need @bumba/* package
 
 class TokenExtractor {
   constructor(config = {}) {

@@ -11,7 +11,6 @@ const path = require('path');
 const EventEmitter = require('events');
 const chalk = require('chalk');
 const crypto = require('crypto');
-// [OPTIONAL] const { logger } = require('../logging'); // May need @bumba/* package
 
 /**
  * Sync Event Status

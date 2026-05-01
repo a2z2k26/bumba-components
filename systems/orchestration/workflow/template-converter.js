@@ -4,7 +4,6 @@
  */
 
 const yaml = require('js-yaml');
-// [OPTIONAL] const { logger } = require('../logging/bumba-logger'); // May need @bumba/* package
 
 class TemplateConverter {
   constructor() {

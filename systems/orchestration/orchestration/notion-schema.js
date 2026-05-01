@@ -4,7 +4,6 @@
  * @module notion-schema
  */
 
-// [OPTIONAL] const { logger } = require('../logging/bumba-logger'); // May need @bumba/* package
 
 const NotionWorkspaceSchema = {
   /**

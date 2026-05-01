@@ -5,24 +5,19 @@
  */
 
 const { EventEmitter } = require('events');
-// [OPTIONAL] const { logger } = require('../logging/bumba-logger'); // May need @bumba/* package
 
 // NOTE: unified-memory-system-adapter was removed - using double-fallback
 let UnifiedMemorySystem;
 try {
-  // [OPTIONAL] const module = require('../memory/unified-memory-system-adapter'); // May need @bumba/* package
   UnifiedMemorySystem = module.UnifiedMemorySystem;
 } catch (e) {
   try {
-    // [OPTIONAL] const module = require('../memory/unified-memory-system'); // May need @bumba/* package
     UnifiedMemorySystem = module.UnifiedMemorySystem;
   } catch (e2) {
     UnifiedMemorySystem = null;
   }
 }
 
-// [OPTIONAL] const { AgentCommunicationProtocol } = require('../communication/agent-communication-protocol'); // May need @bumba/* package
-// [OPTIONAL] const { ConsciousnessLayer } = require('../consciousness/consciousness-stub'); // May need @bumba/* package
 const fs = require('fs').promises;
 const path = require('path');
 

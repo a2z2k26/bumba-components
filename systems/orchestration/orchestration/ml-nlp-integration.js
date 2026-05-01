@@ -3,7 +3,6 @@
  * Machine Learning and Natural Language Processing initialization and configuration
  */
 
-// [OPTIONAL] const { logger } = require('../logging/bumba-logger'); // May need @bumba/* package
 
 class MLNLPIntegration {
   constructor() {

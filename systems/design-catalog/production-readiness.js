@@ -207,7 +207,6 @@ class ProductionReadinessSystem extends EventEmitter {
 
   async checkDependencies() {
     try {
-      // [OPTIONAL] const packageJson = require('../../../package.json'); // May need @bumba/* package
       const dependencies = Object.keys(packageJson.dependencies || {});
 
       return {
@@ -591,7 +590,6 @@ class ProductionReadinessSystem extends EventEmitter {
 
   getSystemVersion() {
     try {
-      // [OPTIONAL] const packageJson = require('../../../package.json'); // May need @bumba/* package
       return packageJson.version || '1.0.0';
     } catch {
       return '1.0.0';

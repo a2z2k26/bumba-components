@@ -7,7 +7,6 @@
 
 const fs = require('fs').promises;
 const path = require('path');
-// [OPTIONAL] const { logger } = require('../core/logging/bumba-logger'); // May need @bumba/* package
 
 /**
  * Error categories

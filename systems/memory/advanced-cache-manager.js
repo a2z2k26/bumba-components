@@ -5,7 +5,6 @@
 
 const EventEmitter = require('events');
 const crypto = require('crypto');
-// [OPTIONAL] const Logger = require('../utils/logger'); // May need @bumba/* package
 
 class AdvancedCacheManager extends EventEmitter {
   constructor(config = {}) {

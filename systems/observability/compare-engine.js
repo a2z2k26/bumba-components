@@ -98,9 +98,6 @@ class CompareEngine {
 
     try {
       // Import required components
-      // [OPTIONAL] const CommandRouter = require('../command-intelligence/command-router'); // May need @bumba/* package
-      // [OPTIONAL] const ModelAwareDepartmentManager = require('../departments/model-aware-department-manager'); // May need @bumba/* package
-      // [OPTIONAL] const ResponseSynthesizer = require('../response-synthesis/response-synthesizer'); // May need @bumba/* package
 
       // Step 1: Query Analysis
       const router = new CommandRouter();

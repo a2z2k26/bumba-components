@@ -24,7 +24,7 @@ const {
   failureManager
 } = require('./resilience');
 
-// Consciousness layer
+// Consciousness compatibility stub
 const { ConsciousnessLayer } = require('./consciousness-stub');
 
 // Types (for documentation only)
@@ -52,7 +52,7 @@ module.exports = {
   getFailureManager,
   failureManager,
 
-  // Consciousness
+  // Consciousness (no-op compatibility stub)
   ConsciousnessLayer,
 
   // Types

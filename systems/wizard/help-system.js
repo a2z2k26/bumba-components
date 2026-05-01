@@ -73,9 +73,8 @@ The wizard will guide you through each step with validation and error recovery.
         }
       ],
       links: {
-        documentation: 'https://github.com/yourusername/bumba/wiki',
-        issues: 'https://github.com/yourusername/bumba/issues',
-        discord: 'https://discord.gg/bumba'
+        documentation: 'https://github.com/a2z2k26/bumba-features/wiki',
+        issues: 'https://github.com/a2z2k26/bumba-features/issues'
       }
     };
   }

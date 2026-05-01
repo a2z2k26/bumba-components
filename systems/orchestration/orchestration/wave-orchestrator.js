@@ -4,8 +4,6 @@
  * This is where the "swarm intelligence" becomes real
  */
 
-// [OPTIONAL] const { ParallelAgentSystem } = require('../agents/parallel-agent-system'); // May need @bumba/* package
-// [OPTIONAL] const { logger } = require('../logging/bumba-logger'); // May need @bumba/* package
 const { EventEmitter } = require('events');
 const { MLNLPIntegration } = require('./ml-nlp-integration');
 const { ConsolidationStrategies } = require('./consolidation-strategies');
