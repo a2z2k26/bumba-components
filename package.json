@@ -23,13 +23,20 @@
   "author": "BUMBA",
   "license": "MIT",
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=18.0.0"
   },
   "devDependencies": {
     "eslint": "^8.0.0",
     "jest": "^29.0.0"
   },
-  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/a2z2k26/bumba-features.git"
+  },
+  "bugs": {
+    "url": "https://github.com/a2z2k26/bumba-features/issues"
+  },
+  "homepage": "https://github.com/a2z2k26/bumba-features#readme",
   "dependencies": {
     "chalk": "^4.1.2"
   }

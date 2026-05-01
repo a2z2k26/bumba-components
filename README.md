@@ -1,55 +1,89 @@
 # BUMBA Ecosystem
 
-Modular primitives and systems extracted from the BUMBA AI Framework for reusable, composable AI-powered development.
+Modular primitives and systems for AI-powered development. A toolkit of focused, composable Node.js modules covering the day-to-day infrastructure needs of multi-agent AI applications: rate limiting, token accounting, file locking, memory, orchestration, observability, MCP integration, and more.
+
+## Quick start
+
+```bash
+# Clone and install the workspace
+git clone https://github.com/a2z2k26/bumba-features.git
+cd bumba-features
+npm install
+```
+
+Each primitive and system is its own npm workspace package. Use them individually or compose them into larger applications.
 
 ## Architecture
 
 ```
 bumba-ecosystem/
-├── primitives/          # Zero-dependency, single-purpose modules
-│   ├── token-optimizer/     # Token usage optimization
-│   ├── file-locking/        # File conflict prevention
-│   ├── shell-security/      # Safe shell command execution
-│   ├── environment-detector/# Environment detection (Claude/Terminal/CI)
-│   ├── config-manager/      # Configuration with scopes
-│   ├── task-preparer/       # Task preparation and planning
-│   ├── adaptive-planner/    # Complexity-based planning
-│   ├── rate-limiter/        # Token bucket rate limiting
-│   ├── token-cost-manager/  # Cost tracking and budgets
-│   ├── context-window/      # Context window management
-│   ├── model-comparison/    # Multi-model comparison
-│   ├── health-monitor/      # Provider health monitoring
-│   └── status-line/         # Terminal status display
-│
-├── systems/             # Higher-level composed systems
-│   ├── orchestration/       # Multi-agent orchestration
-│   ├── ai-gateway/          # Unified AI provider gateway
-│   ├── memory/              # Persistent agent memory
-│   ├── observability/       # Logging and tracing
-│   ├── mcp/                 # MCP protocol integration
-│   ├── coordination/        # Sprint and task coordination
-│   ├── wizard/              # Setup and onboarding
-│   └── design-catalog/      # Component catalog system
-│
-└── shared/              # Shared utilities and types
+├── primitives/    # Zero-/light-dependency, single-purpose modules
+├── systems/       # Higher-level composed systems
+└── shared/        # Common utilities (logger, events, resilience, types)
 ```
 
-## Installation
+## Status
 
-```bash
-# Install the entire ecosystem
-npm install
+This is an early public release of internal tooling. Maturity varies across the workspace:
 
-# Or install individual primitives
-cd primitives/token-optimizer && npm install
-```
+- All 20 primitives and all 11 systems load and expose their documented APIs.
+- Three systems (`agent-lifecycle`, `command-routing`, `tool-bridge`) ship with examples and tests.
+- The remaining packages currently have READMEs but no examples or test suites yet — contributions welcome.
+
+If you adopt a package and find a rough edge, open an issue and we'll prioritize.
 
 ## Primitives
 
-### Token Optimizer
-Intelligent token usage optimization for LLM conversations.
+20 focused modules. Each does one thing well and has its own README.
 
-```javascript
+| Package | Purpose |
+|---|---|
+| [`adaptive-planner`](primitives/adaptive-planner) | Complexity-based task planning |
+| [`agent-factory`](primitives/agent-factory) | Agent instantiation patterns |
+| [`config-manager`](primitives/config-manager) | Configuration with scopes (env / file / runtime) |
+| [`context-window`](primitives/context-window) | LLM context-window truncation strategies |
+| [`environment-detector`](primitives/environment-detector) | Detect Claude Code / Terminal / CI runtime |
+| [`error-recovery`](primitives/error-recovery) | Retry, fallback, and recovery strategies |
+| [`failure-aware`](primitives/failure-aware) | Failure-aware execution wrappers |
+| [`file-locking`](primitives/file-locking) | File conflict prevention for parallel agents |
+| [`health-monitor`](primitives/health-monitor) | AI provider health checks and alerts |
+| [`model-comparison`](primitives/model-comparison) | Multi-model output comparison |
+| [`model-supervisor`](primitives/model-supervisor) | Model supervision and routing |
+| [`process-monitor`](primitives/process-monitor) | Process lifecycle monitoring |
+| [`rate-limiter`](primitives/rate-limiter) | Token-bucket rate limiting with queuing |
+| [`shell-security`](primitives/shell-security) | Safe shell command execution |
+| [`status-line`](primitives/status-line) | Terminal status display |
+| [`task-preparer`](primitives/task-preparer) | Task preparation and planning helpers |
+| [`territory-manager`](primitives/territory-manager) | Resource territory allocation |
+| [`token-cost-manager`](primitives/token-cost-manager) | Token cost tracking and budgets |
+| [`token-optimizer`](primitives/token-optimizer) | Token usage optimization for LLM messages |
+| [`unified-memory`](primitives/unified-memory) | Unified memory primitives |
+
+## Systems
+
+11 higher-level systems composed from primitives. Each has its own README; `agent-lifecycle`, `command-routing`, and `tool-bridge` also include examples and tests.
+
+| Package | Purpose |
+|---|---|
+| [`agent-lifecycle`](systems/agent-lifecycle) | Lightweight FSM for agent lifecycles with timeouts and cleanup |
+| [`ai-gateway`](systems/ai-gateway) | Unified AI provider gateway with fallback + cost tracking |
+| [`command-routing`](systems/command-routing) | Pattern-matching command router with middleware support |
+| [`coordination`](systems/coordination) | Department-based agent coordination protocols |
+| [`design-catalog`](systems/design-catalog) | Design token extraction, validation, and catalog generation |
+| [`mcp`](systems/mcp) | Model Context Protocol server lifecycle management |
+| [`memory`](systems/memory) | Persistent agent memory with semantic search |
+| [`observability`](systems/observability) | Distributed tracing, metrics, and A/B comparison |
+| [`orchestration`](systems/orchestration) | Multi-agent task orchestration, pipelines, and workflows |
+| [`tool-bridge`](systems/tool-bridge) | Universal AI development gateway |
+| [`wizard`](systems/wizard) | Interactive setup and onboarding |
+
+## Highlights
+
+A few representative examples to give you a feel. See each package's README for full APIs.
+
+### Token Optimizer
+
+```js
 const { TokenOptimizer } = require('@bumba/token-optimizer');
 
 const optimizer = new TokenOptimizer();
@@ -58,9 +92,8 @@ console.log(`Saved ${result.tokensSaved} tokens`);
 ```
 
 ### Rate Limiter
-Token bucket rate limiting with request queuing.
 
-```javascript
+```js
 const { RateLimiter } = require('@bumba/rate-limiter');
 
 const limiter = new RateLimiter();
@@ -73,9 +106,8 @@ if (check.allowed) {
 ```
 
 ### File Locking
-Prevents file conflicts during parallel agent execution.
 
-```javascript
+```js
 const { FileLockingSystem } = require('@bumba/file-locking');
 
 const locker = new FileLockingSystem();
@@ -84,101 +116,9 @@ const token = await locker.acquireLock('/path/to/file', 'agent-1');
 await locker.releaseLock('/path/to/file', token);
 ```
 
-### Environment Detector
-Detects if running in Claude Code, Terminal, or CI/CD.
-
-```javascript
-const { getEnvironmentDetector } = require('@bumba/environment-detector');
-
-const detector = getEnvironmentDetector();
-const env = detector.detect();
-
-if (env.type === 'claude') {
-  // Running in Claude Code
-} else if (env.type === 'terminal') {
-  // Running in terminal
-}
-```
-
-### Context Window Manager
-Manages context window truncation with multiple strategies.
-
-```javascript
-const { ContextWindowManager } = require('@bumba/context-window');
-
-const manager = new ContextWindowManager();
-const result = manager.truncate(messages, 'gpt-4o', {
-  strategy: 'smart',
-  outputTokens: 4096
-});
-```
-
-### Token Cost Manager
-Track spending, set budgets, and get alerts.
-
-```javascript
-const { TokenCostManager } = require('@bumba/token-cost-manager');
-
-const manager = new TokenCostManager({
-  budget: { dailyLimit: 10, monthlyLimit: 100 }
-});
-
-manager.on('budget:alert', (data) => {
-  console.warn(`Budget ${data.period} at ${data.percentage}%`);
-});
-
-manager.recordUsage('openai', 'gpt-4o', {
-  inputTokens: 1000,
-  outputTokens: 500
-});
-```
-
-### Health Monitor
-Monitor AI provider health and collect metrics.
-
-```javascript
-const { HealthMonitor, HealthStatus } = require('@bumba/health-monitor');
-
-const monitor = new HealthMonitor();
-monitor.registerProvider('openai', { url: 'https://api.openai.com/v1/health' });
-
-monitor.on('alert:fired', (alert) => {
-  console.error(`Alert: ${alert.name} - ${alert.severity}`);
-});
-
-const health = monitor.getSystemHealth();
-```
-
-## Design Principles
-
-1. **Zero Dependencies**: Primitives have no external runtime dependencies
-2. **Single Purpose**: Each primitive does one thing well
-3. **Event-Driven**: All modules extend EventEmitter for observability
-4. **Composable**: Systems compose primitives, don't replace them
-5. **Framework Agnostic**: Works with any AI provider or framework
-
-## Higher-Level Systems
-
-### Orchestration
-Multi-agent task orchestration with pipelines and workflows.
-
-```javascript
-const { TaskOrchestrator, PipelineManager, WorkflowEngine } = require('@bumba/orchestration');
-
-const orchestrator = new TaskOrchestrator();
-orchestrator.registerAgent('research-agent', { capabilities: ['search', 'analyze'] });
-
-const taskId = await orchestrator.addTask({
-  type: 'research',
-  description: 'Research AI models',
-  priority: 'high'
-});
-```
-
 ### AI Gateway
-Unified interface to multiple AI providers with fallback and cost tracking.
 
-```javascript
+```js
 const { AIGateway } = require('@bumba/ai-gateway');
 
 const gateway = new AIGateway({
@@ -194,110 +134,33 @@ const response = await gateway.chat({
 });
 ```
 
-### Memory System
-Persistent agent memory with semantic search and optimization.
+### Orchestration
 
-```javascript
-const { UnifiedMemory, MemoryOptimizationEngine } = require('@bumba/memory');
+```js
+const { TaskOrchestrator } = require('@bumba/orchestration');
 
-const memory = new UnifiedMemory();
-await memory.initialize();
+const orchestrator = new TaskOrchestrator();
+orchestrator.registerAgent('research-agent', { capabilities: ['search', 'analyze'] });
 
-await memory.store({
-  type: 'knowledge',
-  content: 'BUMBA is a multi-agent AI framework',
-  tags: ['architecture', 'ai']
-});
-
-const results = await memory.search('multi-agent', { limit: 5 });
-```
-
-### Observability
-Distributed tracing, metrics, and A/B testing for AI systems.
-
-```javascript
-const { AgentObservability, TraceRecorder, CompareEngine } = require('@bumba/observability');
-
-const observability = new AgentObservability();
-await observability.initialize();
-
-const trace = observability.startTrace('task-execution');
-trace.span('api-call');
-// ... work ...
-trace.end();
-```
-
-### MCP Management
-Model Context Protocol server lifecycle management.
-
-```javascript
-const { MCPManager, MCPServer } = require('@bumba/mcp');
-
-const manager = new MCPManager({ autoRestart: true });
-await manager.discover();
-
-manager.register('filesystem', {
-  command: 'npx',
-  args: ['-y', '@modelcontextprotocol/server-filesystem']
-});
-
-await manager.start('filesystem');
-```
-
-### Coordination
-Department-based agent coordination with collaboration protocols.
-
-```javascript
-const { CoordinationFramework, CollaborationMode } = require('@bumba/coordination');
-
-const framework = new CoordinationFramework();
-
-framework.registerDepartment('engineering', {
-  agents: ['code-writer', 'reviewer'],
-  protocols: ['coding-standards']
-});
-
-await framework.coordinate('engineering', {
-  task: 'Implement feature',
-  mode: CollaborationMode.PARALLEL
+const taskId = await orchestrator.addTask({
+  type: 'research',
+  description: 'Research AI models',
+  priority: 'high'
 });
 ```
 
-### Setup Wizard
-Interactive setup wizard for configuration and API key management.
+## Design principles
 
-```javascript
-const { SetupWizard, ConfigDetector, MCPConfigGenerator } = require('@bumba/wizard');
+1. **Single purpose** — Each primitive does one thing well.
+2. **Composable** — Systems compose primitives; they don't replace them.
+3. **Event-driven** — Modules extend `EventEmitter` for observability.
+4. **Framework agnostic** — Works with any AI provider or framework.
+5. **Light dependencies** — Primitives keep external dependencies minimal; systems may depend on `@bumba/shared`.
 
-const wizard = new SetupWizard();
+## Contributing
 
-wizard.on('step:complete', (step) => {
-  console.log(`Completed: ${step.name}`);
-});
-
-const result = await wizard.run();
-```
-
-### Design Catalog
-Design token extraction, validation, export, and catalog generation.
-
-```javascript
-const { DesignBridge, TokenValidator, ExportEngine, CatalogGenerator } = require('@bumba/design-catalog');
-
-const bridge = new DesignBridge();
-await bridge.initialize();
-
-const tokens = await bridge.extractTokens({
-  fileId: 'figma-file-id',
-  token: process.env.FIGMA_TOKEN
-});
-
-const validation = await bridge.validateTokens(tokens, 'wcag-aa');
-
-const exporter = new ExportEngine();
-await exporter.exportForWeb(tokens);
-```
+Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for our community standards.
 
 ## License
 
-MIT
+[MIT](LICENSE)
