@@ -6,7 +6,7 @@
 const chalk = require('chalk');
 const Table = require('cli-table3');
 const ora = require('ora');
-const { default: boxen } = require('boxen');
+const boxen = require('boxen');
 
 class MCPStatusDisplay {
   constructor(registry, loader, healthMonitor, sessionState, errorRecovery) {
