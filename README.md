@@ -9,17 +9,17 @@
 
 <br>
 
-### The distilled building blocks of a production multi-agent system — extracted from Bumba 1.0 and released as composable, framework-agnostic Node.js primitives. ###
+### Extracted primitives and compoennts from BUMBA 1.0, a production grade multi-agent system.
 
 ---
 
 ### 🔴 What This Is ###
 
-Bumba Components is the open-source artifact of [Bumba](https://github.com/a2z2k26) — a private, production multi-agent AI system built to orchestrate parallel agent workforces, manage LLM costs at scale, and ship design-to-code pipelines autonomously.
+Bumba Components is the open-source artifact from a private, production multi-agent AI system built to orchestrate parallel agent workforces, manage LLM costs at scale, and ship design-to-code pipelines autonomously.
 
 These modules were not designed for release. They were designed to work — under real production load, across multiple AI providers, with multiple agents writing to the same files at the same time. When we extracted them from the larger system, we got something worth sharing: **31 focused packages** that solve the unglamorous infrastructure problems every serious AI application eventually hits.
 
-If you're building anything non-trivial with LLMs — a multi-agent pipeline, an AI gateway, a developer tool — you'll hit the same walls we did. This is what we built to get through them.
+If you're building anything non-trivial with LLMs — a multi-agent pipeline, an AI gateway, a developer tool, these early experimental primitves and components might be a helpful reference point.
 
 ---
 
