@@ -78,7 +78,9 @@ class AgentLifecycle extends EventEmitter {
   defineTransitions() {
     return {
       [AgentState.IDLE]: {
-        [StateEvent.SPAWN]: AgentState.SPAWNING
+        [StateEvent.SPAWN]: AgentState.SPAWNING,
+        [StateEvent.RETRY]: AgentState.SPAWNING,
+        [StateEvent.TIMEOUT]: AgentState.COMPLETED
       },
       [AgentState.SPAWNING]: {
         [StateEvent.ACTIVATE]: AgentState.ACTIVE,
@@ -149,11 +151,8 @@ class AgentLifecycle extends EventEmitter {
     // Clear old timers and set new ones
     this.clearTimers(fromState);
     this.setTimers(toState);
-    
-    // Handle state-specific logic
-    await this.handleStateEntry(toState, data);
-    
-    // Emit events
+
+    // Emit synchronously before any async work so fake timers / sync tests see it
     this.emit('stateChange', {
       agentId: this.agentId,
       from: fromState,
@@ -162,27 +161,31 @@ class AgentLifecycle extends EventEmitter {
       data
     });
 
-    debug(`Agent ${this.agentId}: transitioned ${fromState} → ${toState}`);
-    
     this.emit(`enter:${toState}`, {
       agentId: this.agentId,
       previousState: fromState,
       data
     });
+
+    // Handle state-specific logic (may be async)
+    await this.handleStateEntry(toState, data);
+
+    debug(`Agent ${this.agentId}: transitioned ${fromState} → ${toState}`);
     
     return true;
   }
   
   canTransition(from, to, data) {
-    // Add custom validation logic
     if (to === AgentState.SPAWNING && data.resourceCheck === false) {
       return false;
     }
-    
-    if (to === AgentState.COMPLETED && data.forceComplete !== true && this.hasActiveTasks()) {
+
+    // Block normal completion (to COMPLETING or COMPLETED) when tasks are active
+    if ([AgentState.COMPLETING, AgentState.COMPLETED].includes(to) &&
+        data.forceComplete !== true && this.hasActiveTasks()) {
       return false;
     }
-    
+
     return true;
   }
   
@@ -264,10 +267,13 @@ class AgentLifecycle extends EventEmitter {
     if (this.config.maxIdleTime > 0 && this.currentState === AgentState.IDLE) {
       this.setTimers(AgentState.IDLE);
     }
-    
-    this.emit('lifecycle:started', {
-      agentId: this.agentId,
-      config: this.config
+
+    // Defer so callers can attach listeners before the event fires
+    Promise.resolve().then(() => {
+      this.emit('lifecycle:started', {
+        agentId: this.agentId,
+        config: this.config
+      });
     });
   }
   
@@ -289,12 +295,20 @@ class AgentLifecycle extends EventEmitter {
   
   async forceComplete(reason = 'forced') {
     try {
-      await this.transition(StateEvent.COMPLETE, {
-        reason,
-        forceComplete: true
-      });
+      // Drive to COMPLETED, passing through intermediate states as needed
+      while (this.currentState !== AgentState.COMPLETED) {
+        const validTransitions = this.transitions[this.currentState];
+        if (!validTransitions || !validTransitions[StateEvent.COMPLETE]) {
+          // No COMPLETE transition from current state — jump directly
+          break;
+        }
+        await this.transition(StateEvent.COMPLETE, { reason, forceComplete: true });
+      }
     } catch (error) {
-      // Force to completed state if transition fails
+      // ignore
+    }
+    // Ensure we land in COMPLETED
+    if (this.currentState !== AgentState.COMPLETED) {
       this.currentState = AgentState.COMPLETED;
       this.cleanup();
     }
@@ -334,13 +348,19 @@ class AgentLifecycle extends EventEmitter {
   
   getStatistics() {
     const totalTime = Date.now() - this.stats.createdAt;
-    
+    const currentStateElapsed = Date.now() - this.stats.lastStateChange;
+
+    // Build timeInStates including elapsed time in current state
+    const timeInStates = { ...this.stats.timeInStates };
+    timeInStates[this.currentState] = (timeInStates[this.currentState] || 0) + currentStateElapsed;
+
     return {
       ...this.stats,
+      timeInStates,
       currentState: this.currentState,
       totalLifetime: totalTime,
       retryCount: this.retryCount,
-      statePercentages: Object.entries(this.stats.timeInStates).reduce((acc, [state, time]) => {
+      statePercentages: Object.entries(timeInStates).reduce((acc, [state, time]) => {
         acc[state] = totalTime > 0 ? `${((time / totalTime) * 100).toFixed(1)}%` : '0%';
         return acc;
       }, {})
@@ -427,9 +447,9 @@ class AgentOrchestrator extends EventEmitter {
   removeAgent(agentId) {
     const agent = this.agents.get(agentId);
     if (agent) {
-      agent.cleanup();
       this.agents.delete(agentId);
       this.metrics.totalCompleted++;
+      agent.cleanup();
     }
   }
   

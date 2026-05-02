@@ -1,4 +1,5 @@
 module.exports = {
+  rootDir: '..',
   testEnvironment: 'node',
   collectCoverageFrom: [
     'src/**/*.js',
@@ -18,7 +19,8 @@ module.exports = {
   ],
   verbose: true,
   testTimeout: 10000,
-  coverageThresholds: {
+  forceExit: true,
+  coverageThreshold: {
     global: {
       branches: 80,
       functions: 90,

@@ -1,4 +1,4 @@
-const { AgentLifecycle, AgentState, StateEvent } = require('../src/index');
+const { AgentLifecycle, AgentState, StateEvent } = require('../../src/index');
 
 describe('Agent Lifecycle AgentLifecycle', () => {
   let agent;
@@ -78,11 +78,26 @@ describe('Agent Lifecycle AgentLifecycle', () => {
   });
 
   describe('Timeouts', () => {
-    jest.useFakeTimers();
+    let timerAgent;
 
-    test('should timeout in IDLE state', async () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+      // Create agent after fake timers are installed so its setTimeout calls are captured
+      timerAgent = new AgentLifecycle('timer-agent', {
+        maxIdleTime: 1000,
+        maxActiveTime: 2000,
+        maxValidationTime: 500
+      });
+    });
+
+    afterEach(() => {
+      timerAgent.cleanup();
+      jest.useRealTimers();
+    });
+
+    test('should timeout in IDLE state', () => {
       const stateChangeHandler = jest.fn();
-      agent.on('stateChange', stateChangeHandler);
+      timerAgent.on('stateChange', stateChangeHandler);
 
       jest.advanceTimersByTime(1001);
 
@@ -95,11 +110,11 @@ describe('Agent Lifecycle AgentLifecycle', () => {
     });
 
     test('should timeout in ACTIVE state', async () => {
-      await agent.transition(StateEvent.SPAWN);
-      await agent.transition(StateEvent.ACTIVATE);
+      await timerAgent.transition(StateEvent.SPAWN);
+      await timerAgent.transition(StateEvent.ACTIVATE);
 
       const stateChangeHandler = jest.fn();
-      agent.on('stateChange', stateChangeHandler);
+      timerAgent.on('stateChange', stateChangeHandler);
 
       jest.advanceTimersByTime(2001);
 
@@ -113,14 +128,11 @@ describe('Agent Lifecycle AgentLifecycle', () => {
     });
 
     test('should clear timers on state change', async () => {
-      await agent.transition(StateEvent.SPAWN);
-      const activeTimer = agent.timers.spawning;
+      await timerAgent.transition(StateEvent.SPAWN);
 
-      await agent.transition(StateEvent.ACTIVATE);
-      expect(agent.timers.spawning).toBeUndefined();
+      await timerAgent.transition(StateEvent.ACTIVATE);
+      expect(timerAgent.timers.spawning).toBeUndefined();
     });
-
-    jest.useRealTimers();
   });
 
   describe('State History', () => {

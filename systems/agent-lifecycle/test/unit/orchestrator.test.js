@@ -1,4 +1,4 @@
-const { AgentOrchestrator, AgentState, StateEvent } = require('../src/index');
+const { AgentOrchestrator, AgentState, StateEvent } = require('../../src/index');
 
 describe('Agent Lifecycle AgentOrchestrator', () => {
   let orchestrator;
