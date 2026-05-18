@@ -379,10 +379,10 @@ The Universal Bridge allows non-Claude AI models to access tools:
       title: 'Configuration Examples',
       env_file: `
 # Example .env file
-OPENAI_API_KEY=<openai-api-key>
-ANTHROPIC_API_KEY=sk-ant-api03-xyz789...
-GITHUB_TOKEN=<github-token>
-NOTION_API_KEY=<notion-token>
+OPENAI_API_KEY=<your-openai-api-key>
+ANTHROPIC_API_KEY=<your-anthropic-api-key>
+GITHUB_TOKEN=<your-github-token>
+NOTION_API_KEY=<your-notion-api-key>
 
 # Bridge Configuration
 BRIDGE_PORT=3456

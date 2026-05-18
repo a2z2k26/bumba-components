@@ -9,23 +9,23 @@
 
 <br>
 
-### Extracted primitives and compoennts from BUMBA 1.0, a production grade multi-agent system.
+### Extracted primitives and components from BUMBA 1.0, an experimental multi-agent system.
 
 ---
 
 ### 🔴 What This Is ###
 
-Bumba Components is the open-source artifact from a private, production multi-agent AI system built to orchestrate parallel agent workforces, manage LLM costs at scale, and ship design-to-code pipelines autonomously.
+Bumba Components is a public snapshot of primitives and systems extracted from Bumba 1.0, a private multi-agent AI experiment. The code explores orchestration, cost tracking, provider routing, memory, setup workflows, and design-to-code infrastructure.
 
-These modules were not designed for release. They were designed to work — under real production load, across multiple AI providers, with multiple agents writing to the same files at the same time. When we extracted them from the larger system, we got something worth sharing: **31 focused packages** that solve the unglamorous infrastructure problems every serious AI application eventually hits.
+These modules were first built for a larger internal project, not as polished standalone packages. Some pieces are usable as-is, some are better treated as references, and maturity varies by package. The goal of this repo is to share **31 focused packages** that capture practical patterns for the infrastructure problems that show up around agentic AI systems.
 
-If you're building anything non-trivial with LLMs — a multi-agent pipeline, an AI gateway, a developer tool, these early experimental primitves and components might be a helpful reference point.
+If you're building an LLM tool, a multi-agent workflow, or an AI gateway, these early experimental primitives and components may be a useful starting point or source of implementation ideas.
 
 ---
 
 ### 🟡 Why It Exists ###
 
-Building production AI systems means solving the same problems over and over:
+Building AI systems tends to surface the same operational problems:
 
 - **Token budgets blow up** — you need real-time tracking, not post-hoc billing surprises
 - **Parallel agents corrupt shared files** — you need locking that actually works
@@ -34,13 +34,13 @@ Building production AI systems means solving the same problems over and over:
 - **Context windows overflow silently** — you need truncation strategies before the API rejects your request
 - **Agent state evaporates** — you need memory that survives process restarts
 
-Bumba Components exists because we needed all of these, and the npm ecosystem didn't have them in a form we trusted.
+Bumba Components exists because these were the problems Bumba 1.0 had to solve during development. Rather than leave the work buried inside a private repo, this project makes the patterns available for others to inspect, reuse, or improve.
 
 ---
 
 ### 🟢 What's Included ###
 
-31 packages split into two tiers. Use any package standalone — or compose them into larger systems the way they're used in Bumba 1.0.
+31 packages split into two tiers. Many can be used standalone; others are more useful as examples of how the larger Bumba 1.0 system was structured.
 
 **20 Primitives** — zero-to-light dependency, single-purpose modules.
 
@@ -67,7 +67,7 @@ Bumba Components exists because we needed all of these, and the npm ecosystem di
 | [`token-optimizer`](primitives/token-optimizer) | Token usage optimization and message compression for LLM calls |
 | [`unified-memory`](primitives/unified-memory) | Unified memory primitives with pluggable storage backends |
 
-**11 Systems** — higher-level compositions. Each has its own README; `agent-lifecycle`, `command-routing`, and `tool-bridge` ship with examples and tests.
+**11 Systems** — higher-level compositions. Each has its own README; `agent-lifecycle`, `command-routing`, and `tool-bridge` currently have the most complete examples and tests.
 
 | Package | Purpose |
 |---|---|
@@ -93,7 +93,7 @@ cd bumba-components
 npm install
 ```
 
-Each package is an independent npm workspace. Install and use individually:
+Each package is organized as an npm workspace. Some packages may still need publishing, packaging, or API cleanup before they are comfortable to consume from npm:
 
 ```bash
 # Use a single primitive in your own project
@@ -102,7 +102,7 @@ npm install @bumba/token-cost-manager
 npm install @bumba/file-locking
 ```
 
-Or clone the workspace and import directly for local development.
+For now, cloning the workspace and importing locally is the most reliable way to explore the code.
 
 ---
 
@@ -195,9 +195,9 @@ bumba-components/
 
 ### 🏁 Status ###
 
-This is the first public release of internal production tooling. Maturity varies:
+This is an early public extraction from a larger private system. Maturity varies:
 
-- All 31 packages load and expose their documented APIs ✓
+- All 31 packages are present in the workspace and expose intended APIs ✓
 - `agent-lifecycle`, `command-routing`, and `tool-bridge` ship with examples and tests ✓
 - The remaining packages have READMEs — example suites and test coverage are in progress
 
@@ -207,9 +207,9 @@ If you adopt a package and hit a rough edge, open an issue. Contributions welcom
 
 ### 🏁 Origin ###
 
-Bumba Components was extracted from **Bumba 1.0** — a private multi-agent orchestration platform built for production AI development workflows. These packages represent the infrastructure layer: the modules that had to work before anything else could. They've been in use under real load across parallel agent workforces, multiple AI providers, and continuous autonomous execution.
+Bumba Components was extracted from **Bumba 1.0** — a private multi-agent orchestration project built to explore AI-assisted product and software development workflows. These packages represent the infrastructure layer: the modules that handled coordination, configuration, routing, memory, costs, and setup.
 
-The extraction was deliberate. This infrastructure is useful on its own — and it's better in the open than locked in a private repo.
+The extraction was deliberate. The code is imperfect, but the patterns are useful enough to share, document, and improve in the open.
 
 ---
 
