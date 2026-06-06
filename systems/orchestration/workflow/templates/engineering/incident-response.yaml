@@ -110,7 +110,7 @@ steps:
               - databases
               - cache-systems
               - message-queues
-      
+
       - name: recent-changes
         agent: debug-analyst
         analysis:
@@ -120,7 +120,7 @@ steps:
           - infrastructure-changes
           - dependency-updates
         timeframe: -24h
-      
+
       - name: user-impact
         agent: communication-manager
         assessment:
@@ -181,7 +181,7 @@ steps:
                 - error-rate-decreasing
                 - performance-improving
                 - users-recovering
-        
+
         - name: permanent-fix
           agent: fix-developer
           process:
@@ -239,7 +239,7 @@ steps:
           - email-summary
           - ticket-closure
           - dashboard-update
-      
+
       - name: external-updates
         agent: communication-manager
         condition: customer-facing == true
@@ -267,7 +267,7 @@ steps:
           - post-mortem-document
           - improvement-tickets
           - process-updates
-      
+
       - name: monitoring-improvements
         agent: incident-detector
         improvements:
@@ -275,7 +275,7 @@ steps:
           - adjust-thresholds
           - improve-dashboards
           - enhance-logging
-      
+
       - name: automation-opportunities
         agent: fix-developer
         identify:

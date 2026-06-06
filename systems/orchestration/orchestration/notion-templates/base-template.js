@@ -88,7 +88,7 @@ class BaseNotionTemplate {
    * @param {string} color - Background color
    * @returns {object} Notion callout block
    */
-  createCallout(text, icon = '💡', color = 'gray_background') {
+  createCallout(text, icon = '', color = 'gray_background') {
     return {
       object: 'block',
       type: 'callout',

@@ -287,10 +287,10 @@ class TemplateValidator {
    */
   hasCircularDependencies(workflow) {
     const graph = new Map();
-    
+
     workflow.steps?.forEach(step => {
       const stepId = step.name || step.id;
-      const deps = step.dependsOn ? 
+      const deps = step.dependsOn ?
         (Array.isArray(step.dependsOn) ? step.dependsOn : [step.dependsOn]) : [];
       graph.set(stepId, deps);
     });

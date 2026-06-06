@@ -60,7 +60,7 @@ async function useWithAnthropic() {
 const axios = require('axios');
 
 async function useUnifiedAPI() {
-  const tool-bridgeAPI = axios.create({
+  const toolBridgeAPI = axios.create({
     baseURL: 'http://localhost:3456',
     headers: {
       'Content-Type': 'application/json',
@@ -73,7 +73,7 @@ async function useUnifiedAPI() {
 
   for (const provider of providers) {
     try {
-      const response = await tool-bridgeAPI.post('/api/chat', {
+      const response = await toolBridgeAPI.post('/api/chat', {
         provider,
         model: provider === 'openai' ? 'gpt-3.5-turbo' :
                provider === 'anthropic' ? 'claude-3-sonnet-20240229' :

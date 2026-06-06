@@ -3,7 +3,7 @@
   "title": "BUMBA Design Token Schema",
   "version": "1.0.0",
   "description": "Comprehensive schema for design tokens with semantic preservation",
-  
+
   "definitions": {
     "metadata": {
       "type": "object",
@@ -16,7 +16,7 @@
         "fileName": { "type": "string" }
       }
     },
-    
+
     "colorToken": {
       "type": "object",
       "required": ["value", "type"],
@@ -62,7 +62,7 @@
         "figmaKey": { "type": "string" }
       }
     },
-    
+
     "typographyToken": {
       "type": "object",
       "required": ["value", "type"],
@@ -112,7 +112,7 @@
         "figmaKey": { "type": "string" }
       }
     },
-    
+
     "spacingToken": {
       "type": "object",
       "required": ["value", "type"],
@@ -127,7 +127,7 @@
         "usage": { "type": "array", "items": { "type": "string" } }
       }
     },
-    
+
     "effectToken": {
       "type": "object",
       "required": ["value", "type"],
@@ -152,7 +152,7 @@
         "figmaKey": { "type": "string" }
       }
     },
-    
+
     "radiusToken": {
       "type": "object",
       "required": ["value", "type"],
@@ -165,7 +165,7 @@
         "category": { "enum": ["small", "medium", "large", "full", "none"] }
       }
     },
-    
+
     "componentToken": {
       "type": "object",
       "required": ["name", "type"],
@@ -215,7 +215,7 @@
         "figmaComponentSetId": { "type": "string" }
       }
     },
-    
+
     "breakpointToken": {
       "type": "object",
       "required": ["value", "type"],
@@ -228,7 +228,7 @@
         "description": { "type": "string" }
       }
     },
-    
+
     "animationToken": {
       "type": "object",
       "required": ["value", "type"],
@@ -245,7 +245,7 @@
       }
     }
   },
-  
+
   "type": "object",
   "required": ["metadata", "tokens"],
   "properties": {

@@ -11,7 +11,7 @@ const notionClientModule = require('./notion-client');
 class TaskOrchestrator extends EventEmitter {
   constructor(config = {}) {
     super();
-    
+
     this.config = {
       maxParallelAgents: config.maxParallelAgents || 10,
       sprintDuration: config.sprintDuration || 10,
@@ -19,16 +19,16 @@ class TaskOrchestrator extends EventEmitter {
       priorityMode: config.priorityMode || 'critical-path',
       ...config
     };
-    
+
     // Core components
     this.dependencyManager = new DependencyManager();
     this.notionClient = notionClientModule.getInstance(config.notion);
     this.sprintSystem = new SprintDecompositionSystem();
-    
+
     // SPRINT 3.1: Connect intelligence systems
     this.promptIntelligence = new PromptIntelligence();
     this.predictiveOrchestration = new PredictiveOrchestrationEngine();
-    
+
     // State management
     this.activeProject = null;
     this.sprints = new Map(); // sprintId -> sprint data
@@ -36,7 +36,7 @@ class TaskOrchestrator extends EventEmitter {
     this.allocations = new Map(); // agentId -> current task
     this.executionQueue = [];
     this.completedSprints = new Set();
-    
+
     // Metrics
     this.metrics = {
       totalSprints: 0,
@@ -45,40 +45,40 @@ class TaskOrchestrator extends EventEmitter {
       averageDuration: 0,
       parallelizationEfficiency: 0
     };
-    
+
     // Initialization runs silently in background
   }
-  
+
   /**
    * Initialize orchestrator and connect to Notion
    */
   async initialize() {
     await this.notionClient.connect();
-    
+
     // Set up event listeners
     this.setupEventListeners();
-    
-    logger.info('🏁 Task Orchestrator ready');
-    
+
+    logger.info(' Task Orchestrator ready');
+
     return true;
   }
-  
+
   /**
    * Process a new project request
    */
   async processProjectRequest(request) {
-    logger.info(`🟢 Processing project request: ${request.title || request.description}`);
-    
+    logger.info(` Processing project request: ${request.title || request.description}`);
+
     try {
       // Step 1: Deep understanding
       const understanding = await this.analyzeRequest(request);
-      
+
       // Step 2: Solution architecture
       const solution = await this.designSolution(understanding);
-      
+
       // Step 3: Sprint decomposition
       const sprintPlan = await this.decomposeIntoSprints(solution);
-      
+
       // Step 4: Create project in Notion
       const project = await this.createNotionProject({
         title: request.title || 'New Project',
@@ -86,13 +86,13 @@ class TaskOrchestrator extends EventEmitter {
         solution,
         sprintPlan
       });
-      
+
       // Step 5: Setup dependencies
       await this.setupDependencies(sprintPlan);
-      
+
       // Step 6: Identify parallel groups
       const parallelGroups = this.dependencyManager.getParallelGroups();
-      
+
       // Step 7: Store project state
       this.activeProject = {
         id: project.id,
@@ -103,19 +103,19 @@ class TaskOrchestrator extends EventEmitter {
         parallelGroups,
         status: 'ready'
       };
-      
-      logger.info(`🏁 Project initialized with ${sprintPlan.sprints.length} sprints`);
-      
+
+      logger.info(` Project initialized with ${sprintPlan.sprints.length} sprints`);
+
       this.emit('project:ready', this.activeProject);
-      
+
       return this.activeProject;
-      
+
     } catch (error) {
       logger.error('Failed to process project request:', error);
       throw error;
     }
   }
-  
+
   /**
    * Analyze and understand the request
    */
@@ -125,9 +125,9 @@ class TaskOrchestrator extends EventEmitter {
     if (this.promptIntelligence) {
       const requestText = request.description || request.title || JSON.stringify(request);
       intelligenceAnalysis = this.promptIntelligence.analyzePrompt(requestText);
-      logger.info(`🧠 Intelligence analysis: complexity=${intelligenceAnalysis.complexity.level}, domains=${intelligenceAnalysis.domains.all.join(', ')}`);
+      logger.info(` Intelligence analysis: complexity=${intelligenceAnalysis.complexity.level}, domains=${intelligenceAnalysis.domains.all.join(', ')}`);
     }
-    
+
     // Use predictive orchestration for deeper analysis
     let predictions = null;
     if (this.predictiveOrchestration) {
@@ -136,9 +136,9 @@ class TaskOrchestrator extends EventEmitter {
         [request.description || request.title],
         { request }
       );
-      logger.info(`🔮 Predicted timeline: ${predictions.timeline}, confidence: ${predictions.confidence}`);
+      logger.info(` Predicted timeline: ${predictions.timeline}, confidence: ${predictions.confidence}`);
     }
-    
+
     return {
       problemSpace: this.identifyProblemSpace(request),
       requirements: this.extractRequirements(request),
@@ -149,7 +149,7 @@ class TaskOrchestrator extends EventEmitter {
       predictions: predictions
     };
   }
-  
+
   /**
    * Design complete solution
    */
@@ -162,7 +162,7 @@ class TaskOrchestrator extends EventEmitter {
       resources: this.identifyResources(understanding)
     };
   }
-  
+
   /**
    * Decompose solution into sprints
    */
@@ -173,9 +173,9 @@ class TaskOrchestrator extends EventEmitter {
       requirements: solution.components,
       deliverables: solution.deliverables
     };
-    
+
     const sprintPlan = await this.sprintSystem.decomposeIntoSprints(task);
-    
+
     // Enhance sprints with allocation info
     const enhancedSprints = sprintPlan.sprintPlan.sprints.map(sprint => {
       const requiredSkills = this.identifyRequiredSkills(sprint);
@@ -189,20 +189,20 @@ class TaskOrchestrator extends EventEmitter {
       enhancedSprint.candidateAgents = this.identifyCandidateAgents(enhancedSprint);
       return enhancedSprint;
     });
-    
+
     return {
       ...sprintPlan.sprintPlan,
       sprints: enhancedSprints
     };
   }
-  
+
   /**
    * Create project in Notion
    */
   async createNotionProject(projectData) {
     // Create project dashboard
     const project = await this.notionClient.createProjectDashboard(projectData);
-    
+
     // Create all sprint tasks
     for (const sprint of projectData.sprintPlan.sprints) {
       const task = await this.notionClient.createTask({
@@ -214,15 +214,15 @@ class TaskOrchestrator extends EventEmitter {
         requiredSkills: sprint.requiredSkills,
         dependencies: sprint.dependencies
       });
-      
+
       // Store task ID
       sprint.notionTaskId = task.id;
       this.sprints.set(sprint.id, sprint);
     }
-    
+
     return project;
   }
-  
+
   /**
    * Setup dependency graph
    */
@@ -234,16 +234,16 @@ class TaskOrchestrator extends EventEmitter {
         type: sprint.type
       });
     }
-    
+
     // Validate dependency graph
     const validation = this.dependencyManager.validate();
     if (!validation.valid) {
       throw new Error(`Invalid dependencies: ${validation.errors.join(', ')}`);
     }
-    
-    logger.info(`🏁 Dependency graph created with ${sprintPlan.sprints.length} tasks`);
+
+    logger.info(` Dependency graph created with ${sprintPlan.sprints.length} tasks`);
   }
-  
+
   /**
    * Start project execution
    */
@@ -251,82 +251,82 @@ class TaskOrchestrator extends EventEmitter {
     if (!this.activeProject) {
       throw new Error('No active project to execute');
     }
-    
-    logger.info('🟢 Starting project execution');
-    
+
+    logger.info(' Starting project execution');
+
     this.activeProject.status = 'executing';
     this.activeProject.startTime = Date.now();
-    
+
     // Start allocation loop
     await this.allocateReadyTasks();
-    
+
     // Monitor progress
     this.startProgressMonitoring();
-    
+
     this.emit('execution:started', this.activeProject);
-    
+
     return true;
   }
-  
+
   /**
    * Allocate ready tasks to available agents
    */
   async allocateReadyTasks() {
     const readyTasks = this.dependencyManager.getReadyTasks();
     const availableAgents = this.getAvailableAgents();
-    
-    logger.info(`🟢 Ready tasks: ${readyTasks.length}, Available agents: ${availableAgents.length}`);
-    
+
+    logger.info(` Ready tasks: ${readyTasks.length}, Available agents: ${availableAgents.length}`);
+
     for (const taskId of readyTasks) {
       if (availableAgents.length === 0) {break;}
-      
+
       const sprint = this.sprints.get(taskId);
       if (!sprint) {continue;}
-      
+
       // Find best agent for task
       const agent = this.findBestAgent(sprint, availableAgents);
       if (!agent) {continue;}
-      
+
       // Allocate task to agent
       await this.allocateTask(sprint, agent);
-      
+
       // Remove agent from available list
       const index = availableAgents.indexOf(agent);
       availableAgents.splice(index, 1);
     }
-    
+
     // Update Notion with allocations
     await this.syncAllocationsToNotion();
   }
-  
+
   /**
    * Allocate a task to an agent
    */
   async allocateTask(sprint, agent) {
-    logger.info(`🟢 Allocating ${sprint.id} to ${agent.id}`);
-    
+    logger.info(` Allocating ${sprint.id} to ${agent.id}`);
+
     // Update local state
     this.allocations.set(agent.id, sprint.id);
     sprint.assignedAgent = agent.id;
     sprint.status = 'allocated';
     sprint.estimatedStart = Date.now();
-    
+
     // Update Notion
     await this.notionClient.claimTask(sprint.notionTaskId, agent.id);
     await this.notionClient.updateTaskStatus(sprint.notionTaskId, 'claimed');
     await this.notionClient.updateAgentStatus(agent.id, 'busy', sprint.notionTaskId);
-    
+
     // Notify agent
     this.emit('task:allocated', {
       taskId: sprint.id,
       agentId: agent.id,
       sprint
     });
-    
+
     // Start execution
     this.executeSprintWithAgent(sprint, agent);
   }
-  
+
   /**
    * Execute sprint with assigned agent
    */
@@ -335,44 +335,44 @@ class TaskOrchestrator extends EventEmitter {
       // Update status
       sprint.status = 'in_progress';
       sprint.actualStart = Date.now();
-      
+
       await this.notionClient.updateTaskStatus(sprint.notionTaskId, 'in_progress');
-      
+
       // Simulate sprint execution (in real system, agent would execute)
-      logger.info(`🟢 ${agent.id} executing ${sprint.id}`);
-      
+      logger.info(` ${agent.id} executing ${sprint.id}`);
+
       // Wait for sprint duration (simulated)
-      await new Promise(resolve => 
+      await new Promise(resolve =>
         setTimeout(resolve, Math.min(sprint.duration * 1000, 10000))
       );
-      
+
       // Sprint completed
       await this.onSprintCompleted(sprint, agent);
-      
+
     } catch (error) {
       logger.error(`Sprint ${sprint.id} failed:`, error);
       await this.onSprintFailed(sprint, agent, error);
     }
   }
-  
+
   /**
    * Handle sprint completion
    */
   async onSprintCompleted(sprint, agent) {
-    logger.info(`🏁 Sprint ${sprint.id} completed by ${agent.id}`);
-    
+    logger.info(` Sprint ${sprint.id} completed by ${agent.id}`);
+
     // Update sprint status
     sprint.status = 'completed';
     sprint.actualEnd = Date.now();
     sprint.actualDuration = (sprint.actualEnd - sprint.actualStart) / 60000;
-    
+
     // Mark completed in dependency manager
     const unblockedTasks = this.dependencyManager.markCompleted(sprint.id);
-    
+
     // Update Notion
     await this.notionClient.updateTaskStatus(sprint.notionTaskId, 'completed');
     await this.notionClient.updateAgentStatus(agent.id, 'available');
-    
+
     // Add to knowledge base
     await this.notionClient.addKnowledge({
       title: `${sprint.title} - Results`,
@@ -382,14 +382,14 @@ class TaskOrchestrator extends EventEmitter {
       taskId: sprint.notionTaskId,
       tags: sprint.deliverables
     });
-    
+
     // Update metrics
     this.updateMetrics(sprint);
-    
+
     // Free agent
     this.allocations.delete(agent.id);
     this.completedSprints.add(sprint.id);
-    
+
     // Emit completion event
     this.emit('sprint:completed', {
       sprintId: sprint.id,
@@ -397,7 +397,7 @@ class TaskOrchestrator extends EventEmitter {
       duration: sprint.actualDuration,
       unblockedTasks
     });
-    
+
     // Check if project complete
     if (this.isProjectComplete()) {
       await this.onProjectComplete();
@@ -406,78 +406,78 @@ class TaskOrchestrator extends EventEmitter {
       await this.allocateReadyTasks();
     }
   }
-  
+
   /**
    * Handle sprint failure
    */
   async onSprintFailed(sprint, agent, error) {
-    logger.error(`🔴 Sprint ${sprint.id} failed:`, error.message);
-    
+    logger.error(` Sprint ${sprint.id} failed:`, error.message);
+
     sprint.status = 'failed';
     sprint.error = error.message;
-    
+
     // Update Notion
     await this.notionClient.updateTaskStatus(sprint.notionTaskId, 'blocked');
     await this.notionClient.updateAgentStatus(agent.id, 'available');
-    
+
     // Free agent
     this.allocations.delete(agent.id);
-    
+
     // Update metrics
     this.metrics.failedSprints++;
-    
+
     // Emit failure event
     this.emit('sprint:failed', {
       sprintId: sprint.id,
       agentId: agent.id,
       error: error.message
     });
-    
+
     // Attempt retry or reallocation
     await this.handleSprintRetry(sprint);
   }
-  
+
   /**
    * Check if project is complete
    */
   isProjectComplete() {
     if (!this.activeProject) {return false;}
-    
+
     const totalSprints = this.activeProject.sprintPlan.sprints.length;
     const completed = this.completedSprints.size;
-    
+
     return completed === totalSprints;
   }
-  
+
   /**
    * Handle project completion
    */
   async onProjectComplete() {
-    logger.info('🏁 Project completed successfully!');
-    
+    logger.info(' Project completed successfully!');
+
     this.activeProject.status = 'completed';
     this.activeProject.endTime = Date.now();
     this.activeProject.duration = (this.activeProject.endTime - this.activeProject.startTime) / 60000;
-    
+
     // Update Notion project status
     await this.notionClient.updateProjectStatus(this.activeProject.id, 'completed');
-    
+
     // Calculate final metrics
     const finalMetrics = this.calculateFinalMetrics();
-    
+
     // Emit completion event
     this.emit('project:completed', {
       project: this.activeProject,
       metrics: finalMetrics
     });
-    
-    logger.info(`🟢 Project Metrics:
+
+    logger.info(` Project Metrics:
       Total Duration: ${this.activeProject.duration.toFixed(2)} minutes
       Sprints Completed: ${this.completedSprints.size}
       Parallelization Efficiency: ${finalMetrics.parallelizationEfficiency.toFixed(2)}%
     `);
   }
-  
+
   /**
    * Register an agent
    */
@@ -494,27 +494,27 @@ class TaskOrchestrator extends EventEmitter {
         successRate: 100
       }
     });
-    
-    logger.info(`🟢 Registered agent: ${agent.id}`);
-    
+
+    logger.info(` Registered agent: ${agent.id}`);
+
     return true;
   }
-  
+
   /**
    * Get available agents
    */
   getAvailableAgents() {
     const available = [];
-    
+
     for (const [agentId, agent] of this.agents) {
       if (!this.allocations.has(agentId)) {
         available.push(agent);
       }
     }
-    
+
     return available;
   }
-  
+
   /**
    * Find best agent for a sprint
    */
@@ -522,66 +522,66 @@ class TaskOrchestrator extends EventEmitter {
     // Score agents based on skill match
     const scores = availableAgents.map(agent => {
       let score = 0;
-      
+
       // Skill match
-      const skillMatch = sprint.requiredSkills.filter(skill => 
+      const skillMatch = sprint.requiredSkills.filter(skill =>
         agent.skills.includes(skill)
       ).length;
       score += skillMatch * 10;
-      
+
       // Performance score
       score += agent.performance.successRate / 10;
-      
+
       // Type match
       if (sprint.type === 'planning' && agent.type === 'manager') {
         score += 20;
       }
-      
+
       return { agent, score };
     });
-    
+
     // Sort by score and return best
     scores.sort((a, b) => b.score - a.score);
-    
+
     return scores[0]?.agent || null;
   }
-  
+
   /**
    * Identify required skills for sprint
    */
   identifyRequiredSkills(sprint) {
     const skills = [];
     const type = sprint.type.toLowerCase();
-    
+
     if (type.includes('analysis')) {skills.push('research', 'analysis');}
     if (type.includes('planning')) {skills.push('planning', 'architecture');}
     if (type.includes('implementation')) {skills.push('coding', 'development');}
     if (type.includes('testing')) {skills.push('testing', 'qa');}
     if (type.includes('documentation')) {skills.push('documentation', 'writing');}
     if (type.includes('review')) {skills.push('review', 'quality');}
-    
+
     return skills;
   }
-  
+
   /**
    * Identify candidate agents for sprint
    */
   identifyCandidateAgents(sprint) {
     const candidates = [];
-    
+
     for (const [agentId, agent] of this.agents) {
-      const skillMatch = sprint.requiredSkills.some(skill => 
+      const skillMatch = sprint.requiredSkills.some(skill =>
         agent.skills.includes(skill)
       );
-      
+
       if (skillMatch) {
         candidates.push(agentId);
       }
     }
-    
+
     return candidates;
   }
-  
+
   /**
    * Get orchestrator status
    */
@@ -595,27 +595,27 @@ class TaskOrchestrator extends EventEmitter {
       metrics: this.metrics
     };
   }
-  
+
   /**
    * Update metrics
    */
   updateMetrics(sprint) {
     this.metrics.completedSprints++;
-    
+
     // Update average duration
     const totalDuration = this.metrics.averageDuration * (this.metrics.completedSprints - 1);
     this.metrics.averageDuration = (totalDuration + sprint.actualDuration) / this.metrics.completedSprints;
   }
-  
+
   /**
    * Calculate final project metrics
    */
   calculateFinalMetrics() {
     const totalPossibleTime = this.activeProject.sprintPlan.totalDuration;
     const actualTime = this.activeProject.duration;
-    
+
     const parallelizationEfficiency = (totalPossibleTime / actualTime) * 100;
-    
+
     return {
       totalSprints: this.activeProject.sprintPlan.sprints.length,
       completedSprints: this.completedSprints.size,
@@ -625,14 +625,14 @@ class TaskOrchestrator extends EventEmitter {
       totalDuration: actualTime
     };
   }
-  
+
   /**
    * Sync allocations to Notion
    */
   async syncAllocationsToNotion() {
     // Batch update all allocations
     const updates = [];
-    
+
     for (const [agentId, taskId] of this.allocations) {
       const sprint = this.sprints.get(taskId);
       if (sprint) {
@@ -643,27 +643,27 @@ class TaskOrchestrator extends EventEmitter {
         });
       }
     }
-    
+
     // Process updates
     for (const update of updates) {
       await this.notionClient.updateTaskAllocation(update);
     }
   }
-  
+
   /**
    * Start progress monitoring
    */
   startProgressMonitoring() {
     this.progressInterval = setInterval(async () => {
       const progress = await this.notionClient.getProjectProgress(this.activeProject.id);
-      
+
       this.emit('progress:update', progress);
-      
-      logger.info(`🟢 Progress: ${progress.completedTasks}/${progress.totalTasks} (${progress.progress.toFixed(1)}%)`);
-      
+
+      logger.info(` Progress: ${progress.completedTasks}/${progress.totalTasks} (${progress.progress.toFixed(1)}%)`);
+
     }, 30000); // Every 30 seconds
   }
-  
+
   /**
    * Handle sprint retry
    */
@@ -671,10 +671,10 @@ class TaskOrchestrator extends EventEmitter {
     // Reset sprint status
     sprint.status = 'ready';
     sprint.retryCount = (sprint.retryCount || 0) + 1;
-    
+
     if (sprint.retryCount < 3) {
-      logger.info(`🟢 Retrying sprint ${sprint.id} (attempt ${sprint.retryCount})`);
-      
+      logger.info(` Retrying sprint ${sprint.id} (attempt ${sprint.retryCount})`);
+
       // Re-add to ready queue
       await this.allocateReadyTasks();
     } else {
@@ -682,7 +682,7 @@ class TaskOrchestrator extends EventEmitter {
       this.emit('sprint:abandoned', { sprintId: sprint.id });
     }
   }
-  
+
   /**
    * Helper methods for request analysis
    */
@@ -693,23 +693,23 @@ class TaskOrchestrator extends EventEmitter {
       complexity: 'high'
     };
   }
-  
+
   extractRequirements(request) {
     return ['functionality', 'performance', 'security', 'usability'];
   }
-  
+
   identifyConstraints(request) {
     return ['time', 'resources', 'technology'];
   }
-  
+
   defineSuccessCriteria(request) {
     return ['deliverables_complete', 'tests_passing', 'documentation_ready'];
   }
-  
+
   assessComplexity(request) {
     return { score: 0.7, level: 'high' };
   }
-  
+
   designArchitecture(understanding) {
     return {
       title: 'Solution Architecture',
@@ -717,33 +717,33 @@ class TaskOrchestrator extends EventEmitter {
       patterns: ['mvc', 'repository', 'observer']
     };
   }
-  
+
   identifyComponents(understanding) {
     return ['ui', 'api', 'database', 'auth', 'cache'];
   }
-  
+
   defineDeliverables(understanding) {
     return ['code', 'tests', 'documentation', 'deployment'];
   }
-  
+
   estimateTimeline(understanding) {
     return { duration: 180, unit: 'minutes' };
   }
-  
+
   identifyResources(understanding) {
     return ['developers', 'designers', 'testers'];
   }
-  
+
   /**
    * Setup event listeners
    */
   setupEventListeners() {
     // Listen to dependency manager events
     this.dependencyManager.on('tasks:unblocked', ({ tasks }) => {
-      logger.info(`🟡 Tasks unblocked: ${tasks.join(', ')}`);
+      logger.info(` Tasks unblocked: ${tasks.join(', ')}`);
       this.allocateReadyTasks();
     });
-    
+
     // Listen to Notion client events
     this.notionClient.on('task:completed', ({ taskId }) => {
       this.emit('notion:task:completed', { taskId });

@@ -44,7 +44,7 @@ class AgentAssignment extends EventEmitter {
     // Setup default role capabilities
     this.setupDefaultCapabilities();
 
-    console.log(chalk.blue('🎯 Agent Assignment system initialized'));
+    console.log(chalk.blue(' Agent Assignment system initialized'));
   }
 
   /**
@@ -171,12 +171,12 @@ class AgentAssignment extends EventEmitter {
       // Emit assignment event
       this.emit('agent:assigned', assignment);
 
-      console.log(chalk.green(`✅ Assigned ${agent.role} to task ${assignment.taskId}`));
+      console.log(chalk.green(` Assigned ${agent.role} to task ${assignment.taskId}`));
 
       return agent;
 
     } catch (error) {
-      console.error(chalk.red('❌ Agent assignment failed:'), error.message);
+      console.error(chalk.red(' Agent assignment failed:'), error.message);
       throw error;
     }
   }
@@ -193,7 +193,7 @@ class AgentAssignment extends EventEmitter {
       const poolAgent = this.findInPool(requiredCapabilities, preferredRole);
       if (poolAgent) {
         this.stats.poolReuses++;
-        console.log(chalk.gray(`♻️ Reusing ${poolAgent.role} from pool`));
+        console.log(chalk.gray(` Reusing ${poolAgent.role} from pool`));
         return poolAgent;
       }
     }
@@ -465,7 +465,7 @@ class AgentAssignment extends EventEmitter {
 
     this.stats.newSpawns++;
 
-    console.log(chalk.cyan(`🤖 Spawned new ${role} agent: ${agent.id}`));
+    console.log(chalk.cyan(` Spawned new ${role} agent: ${agent.id}`));
 
     this.emit('agent:spawned', agent);
 
@@ -485,7 +485,7 @@ class AgentAssignment extends EventEmitter {
     // Remove assignment
     this.assignments.delete(taskId);
 
-    console.log(chalk.gray(`🔓 Released agent ${agentId} from task ${taskId}`));
+    console.log(chalk.gray(` Released agent ${agentId} from task ${taskId}`));
 
     this.emit('agent:released', { agentId, taskId });
   }
@@ -496,7 +496,7 @@ class AgentAssignment extends EventEmitter {
   updateRoleCapabilities(role, capabilities) {
     this.roleCapabilities.set(role, capabilities);
 
-    console.log(chalk.blue(`📋 Updated capabilities for role: ${role}`));
+    console.log(chalk.blue(` Updated capabilities for role: ${role}`));
 
     this.emit('capabilities:updated', { role, capabilities });
   }
@@ -506,12 +506,12 @@ class AgentAssignment extends EventEmitter {
    */
   addCustomRole(role, capabilities) {
     if (this.roleCapabilities.has(role)) {
-      console.warn(chalk.yellow(`⚠️ Role ${role} already exists, updating...`));
+      console.warn(chalk.yellow(` Role ${role} already exists, updating...`));
     }
 
     this.roleCapabilities.set(role, capabilities);
 
-    console.log(chalk.green(`✅ Added custom role: ${role}`));
+    console.log(chalk.green(` Added custom role: ${role}`));
 
     this.emit('role:added', { role, capabilities });
   }
@@ -582,7 +582,7 @@ class AgentAssignment extends EventEmitter {
 
     this.roundRobinIndex = 0;
 
-    console.log(chalk.yellow('🧹 Agent assignment state cleared'));
+    console.log(chalk.yellow(' Agent assignment state cleared'));
   }
 }
 

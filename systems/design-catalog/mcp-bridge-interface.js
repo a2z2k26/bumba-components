@@ -286,15 +286,15 @@ class MCPBridgeInterface extends EventEmitter {
       tokenExtraction: async (tokens) => {
         // 1. Store in memory
         await this.integrationPoints.memory.usage.storeTokens(tokens);
-        
+
         // 2. Save to filesystem
         await this.integrationPoints.filesystem.usage.saveTokenFile(tokens);
-        
+
         // 3. Index for search
         if (this.mcpManager.isServerEnabled('pinecone')) {
           await this.integrationPoints.pinecone.usage.indexComponents(tokens);
         }
-        
+
         return { stored: true, indexed: true };
       },
 
@@ -303,13 +303,13 @@ class MCPBridgeInterface extends EventEmitter {
         // 1. Analyze impact
         const impact = await this.integrationPoints.sequentialThinking
           .usage.analyzeChangeImpact(changes.before, changes.after);
-        
+
         // 2. Track in memory
         await this.integrationPoints.memory.usage.trackChanges({
           ...changes,
           impact
         });
-        
+
         // 3. Create git branch and commit
         if (impact.requiresUpdate) {
           await this.integrationPoints.github.usage.createBranch(
@@ -320,7 +320,7 @@ class MCPBridgeInterface extends EventEmitter {
             `Design system update: ${changes.summary}`
           );
         }
-        
+
         return { impact, propagated: impact.requiresUpdate };
       },
 
@@ -329,13 +329,13 @@ class MCPBridgeInterface extends EventEmitter {
         // 1. Search for similar patterns
         const similar = await this.integrationPoints.context7
           .usage.findSimilarPatterns(designData);
-        
+
         // 2. Generate catalog files
         const catalog = await this.generateCatalog(designData, similar);
-        
+
         // 3. Save to filesystem
         await this.integrationPoints.filesystem.usage.saveCatalog(catalog);
-        
+
         return { catalog, similar };
       }
     };
@@ -343,7 +343,7 @@ class MCPBridgeInterface extends EventEmitter {
     if (flows[flowType]) {
       return await flows[flowType](data);
     }
-    
+
     throw new Error(`Unknown flow type: ${flowType}`);
   }
 
@@ -353,9 +353,9 @@ class MCPBridgeInterface extends EventEmitter {
   async initialize() {
     const requiredServers = ['memory', 'filesystem', 'sequential-thinking'];
     const optionalServers = ['github', 'figma', 'context7', 'pinecone'];
-    
+
     console.log('Initializing MCP Bridge...');
-    
+
     // Start required servers
     for (const server of requiredServers) {
       if (!this.mcpManager.isServerRunning(server)) {
@@ -363,14 +363,14 @@ class MCPBridgeInterface extends EventEmitter {
         await this.mcpManager.startServer(server);
       }
     }
-    
+
     // Check optional servers
     for (const server of optionalServers) {
       if (this.mcpManager.isServerEnabled(server)) {
         console.log(`Optional server available: ${server}`);
       }
     }
-    
+
     this.emit('initialized');
     return true;
   }
@@ -393,7 +393,7 @@ class MCPBridgeInterface extends EventEmitter {
    */
   async healthCheck() {
     const health = {};
-    
+
     for (const [name, integration] of Object.entries(this.integrationPoints)) {
       health[name] = {
         server: integration.server,
@@ -401,7 +401,7 @@ class MCPBridgeInterface extends EventEmitter {
         running: this.mcpManager.isServerRunning(integration.server)
       };
     }
-    
+
     return health;
   }
 }

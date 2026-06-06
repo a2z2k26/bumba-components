@@ -8,7 +8,7 @@ const EventEmitter = require('events');
 class NotionConnector extends EventEmitter {
   constructor(options = {}) {
     super();
-    
+
     this.options = {
       apiKey: options.apiKey || process.env.NOTION_API_KEY,
       baseURL: options.baseURL || 'https://api.notion.com/v1',
@@ -17,23 +17,23 @@ class NotionConnector extends EventEmitter {
       maxRetries: options.maxRetries || 3,
       ...options
     };
-    
+
     // Validate API key
     if (!this.options.apiKey) {
       throw new Error('Notion API key is required');
     }
-    
+
     // Rate limiting (Notion has 3 requests per second limit)
     this.rateLimits = {
       requestsPerSecond: 3,
       lastRequestTime: 0,
       minInterval: 334 // milliseconds between requests
     };
-    
+
     // Cache for frequently accessed data
     this.cache = new Map();
     this.cacheTimeout = 60000; // 1 minute
-    
+
     // Current workspace info
     this.currentUser = null;
     this.workspaces = [];
@@ -44,7 +44,7 @@ class NotionConnector extends EventEmitter {
    */
   async makeRequest(endpoint, options = {}) {
     const url = `${this.options.baseURL}${endpoint}`;
-    
+
     // Rate limiting
     const now = Date.now();
     const timeSinceLastRequest = now - this.rateLimits.lastRequestTime;
@@ -52,14 +52,14 @@ class NotionConnector extends EventEmitter {
       await this.delay(this.rateLimits.minInterval - timeSinceLastRequest);
     }
     this.rateLimits.lastRequestTime = Date.now();
-    
+
     const headers = {
       'Authorization': `Bearer ${this.options.apiKey}`,
       'Notion-Version': this.options.version,
       'Content-Type': 'application/json',
       ...options.headers
     };
-    
+
     // Check cache for GET requests
     const cacheKey = `${options.method || 'GET'}:${url}:${JSON.stringify(options.body)}`;
     if ((options.method || 'GET') === 'GET' && this.cache.has(cacheKey)) {
@@ -68,7 +68,7 @@ class NotionConnector extends EventEmitter {
         return cached.data;
       }
     }
-    
+
     let lastError;
     for (let attempt = 0; attempt < this.options.maxRetries; attempt++) {
       try {
@@ -78,37 +78,37 @@ class NotionConnector extends EventEmitter {
           body: options.body ? JSON.stringify(options.body) : undefined,
           signal: AbortSignal.timeout(this.options.timeout)
         });
-        
+
         if (response.status === 429) {
           // Rate limited
           const retryAfter = response.headers.get('retry-after') || 10;
           await this.delay(retryAfter * 1000);
           continue;
         }
-        
+
         if (!response.ok) {
           const error = await response.json().catch(() => ({}));
           throw new Error(error.message || `API error: ${response.status}`);
         }
-        
+
         const data = await response.json();
-        
+
         // Cache successful GET requests
         if ((options.method || 'GET') === 'GET') {
           this.cache.set(cacheKey, { data, timestamp: Date.now() });
         }
-        
+
         return data;
-        
+
       } catch (error) {
         lastError = error;
-        
+
         if (attempt < this.options.maxRetries - 1) {
           await this.delay(Math.pow(2, attempt) * 1000);
         }
       }
     }
-    
+
     throw lastError;
   }
 
@@ -119,7 +119,7 @@ class NotionConnector extends EventEmitter {
     if (this.currentUser) {
       return this.currentUser;
     }
-    
+
     this.currentUser = await this.makeRequest('/users/me');
     this.emit('user', this.currentUser);
     return this.currentUser;
@@ -132,7 +132,7 @@ class NotionConnector extends EventEmitter {
     const params = new URLSearchParams();
     if (options.startCursor) params.append('start_cursor', options.startCursor);
     if (options.pageSize) params.append('page_size', Math.min(options.pageSize, 100));
-    
+
     const endpoint = `/users${params.toString() ? '?' + params : ''}`;
     return this.makeRequest(endpoint);
   }
@@ -148,7 +148,7 @@ class NotionConnector extends EventEmitter {
       icon: options.icon,
       cover: options.cover
     };
-    
+
     return this.makeRequest('/databases', {
       method: 'POST',
       body
@@ -173,7 +173,7 @@ class NotionConnector extends EventEmitter {
       start_cursor: options.startCursor,
       page_size: Math.min(options.pageSize || 100, 100)
     };
-    
+
     return this.makeRequest(`/databases/${databaseId}/query`, {
       method: 'POST',
       body
@@ -191,7 +191,7 @@ class NotionConnector extends EventEmitter {
       icon: properties.icon,
       cover: properties.cover
     };
-    
+
     return this.makeRequest('/pages', {
       method: 'POST',
       body
@@ -227,7 +227,7 @@ class NotionConnector extends EventEmitter {
     const params = new URLSearchParams();
     if (options.startCursor) params.append('start_cursor', options.startCursor);
     if (options.pageSize) params.append('page_size', Math.min(options.pageSize || 100, 100));
-    
+
     const endpoint = `/blocks/${blockId}/children${params.toString() ? '?' + params : ''}`;
     return this.makeRequest(endpoint);
   }
@@ -263,7 +263,7 @@ class NotionConnector extends EventEmitter {
       start_cursor: options.startCursor,
       page_size: Math.min(options.pageSize || 100, 100)
     };
-    
+
     return this.makeRequest('/search', {
       method: 'POST',
       body
@@ -278,7 +278,7 @@ class NotionConnector extends EventEmitter {
       parent: { page_id: parentId },
       rich_text: richText
     };
-    
+
     return this.makeRequest('/comments', {
       method: 'POST',
       body
@@ -289,10 +289,10 @@ class NotionConnector extends EventEmitter {
     const params = new URLSearchParams({
       block_id: blockId
     });
-    
+
     if (options.startCursor) params.append('start_cursor', options.startCursor);
     if (options.pageSize) params.append('page_size', Math.min(options.pageSize || 100, 100));
-    
+
     return this.makeRequest(`/comments?${params}`);
   }
 
@@ -376,7 +376,7 @@ class NotionConnector extends EventEmitter {
     };
   }
 
-  createCalloutBlock(text, emoji = '💡') {
+  createCalloutBlock(text, emoji = '') {
     return {
       type: 'callout',
       callout: {
@@ -492,11 +492,11 @@ class NotionConnector extends EventEmitter {
         }
       }];
     }
-    
+
     if (Array.isArray(text)) {
       return text;
     }
-    
+
     return [text];
   }
 
@@ -646,16 +646,16 @@ class NotionConnector extends EventEmitter {
   async *paginate(method, ...args) {
     let hasMore = true;
     let startCursor = undefined;
-    
+
     while (hasMore) {
       const lastArg = args[args.length - 1] || {};
       const options = { ...lastArg, startCursor };
       args[args.length - 1] = options;
-      
+
       const response = await method.call(this, ...args);
-      
+
       yield response;
-      
+
       hasMore = response.has_more;
       startCursor = response.next_cursor;
     }
@@ -666,20 +666,20 @@ class NotionConnector extends EventEmitter {
    */
   async batchOperation(items, operation, batchSize = 10) {
     const results = [];
-    
+
     for (let i = 0; i < items.length; i += batchSize) {
       const batch = items.slice(i, i + batchSize);
       const batchResults = await Promise.all(
         batch.map(item => operation(item).catch(error => ({ error, item })))
       );
       results.push(...batchResults);
-      
+
       // Rate limiting between batches
       if (i + batchSize < items.length) {
         await this.delay(1000);
       }
     }
-    
+
     return results;
   }
 
@@ -689,10 +689,10 @@ class NotionConnector extends EventEmitter {
   async exportDatabaseToCSV(databaseId) {
     const database = await this.getDatabase(databaseId);
     const properties = Object.keys(database.properties);
-    
+
     const rows = [];
     const pages = this.paginate(this.queryDatabase, databaseId);
-    
+
     for await (const response of pages) {
       for (const page of response.results) {
         const row = {};
@@ -702,13 +702,13 @@ class NotionConnector extends EventEmitter {
         rows.push(row);
       }
     }
-    
+
     // Convert to CSV
     const headers = properties.join(',');
-    const csvRows = rows.map(row => 
+    const csvRows = rows.map(row =>
       properties.map(prop => `"${(row[prop] || '').toString().replace(/"/g, '""')}"`).join(',')
     );
-    
+
     return [headers, ...csvRows].join('\n');
   }
 
@@ -717,7 +717,7 @@ class NotionConnector extends EventEmitter {
    */
   extractPropertyValue(property) {
     if (!property) return null;
-    
+
     switch (property.type) {
       case 'title':
         return property.title.map(t => t.plain_text).join('');

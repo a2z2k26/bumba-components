@@ -33,21 +33,21 @@ class SprintTemplate extends BaseNotionTemplate {
     const blocks = [];
 
     // Sprint Header
-    blocks.push(this.createHeading(`🏃 Sprint ${data.sprintNumber}: ${data.title}`, 1));
+    blocks.push(this.createHeading(` Sprint ${data.sprintNumber}: ${data.title}`, 1));
     blocks.push(this.createParagraph(`Status: ${data.status || 'Pending'}`));
     blocks.push(this.createDivider());
 
     // Sprint Goal
-    blocks.push(this.createHeading('🎯 Sprint Goal', 2));
+    blocks.push(this.createHeading(' Sprint Goal', 2));
     blocks.push(this.createCallout(
       data.goal || 'Sprint goal not defined',
-      '🎯',
+      '',
       'blue_background'
     ));
     blocks.push(this.createParagraph(''));
 
     // Sprint Details
-    blocks.push(this.createHeading('📅 Sprint Details', 2));
+    blocks.push(this.createHeading(' Sprint Details', 2));
     blocks.push(this.createBulletPoint(`Duration: ${data.duration || 'Not specified'}`));
     blocks.push(this.createBulletPoint(`Sprint Number: ${data.sprintNumber}`));
 
@@ -61,7 +61,7 @@ class SprintTemplate extends BaseNotionTemplate {
     blocks.push(this.createDivider());
 
     // Tasks Section
-    blocks.push(this.createHeading('✅ Tasks', 2));
+    blocks.push(this.createHeading(' Tasks', 2));
 
     if (data.tasks && data.tasks.length > 0) {
       const tasksByStatus = this.groupTasksByStatus(data.tasks);
@@ -83,8 +83,8 @@ class SprintTemplate extends BaseNotionTemplate {
         blocks.push(this.createHeading('In Progress', 3));
         tasksByStatus.inProgress.forEach(task => {
           blocks.push(this.createCallout(
-            `🔄 ${task.title}\n${task.description || 'No description'}`,
-            '🔄',
+            ` ${task.title}\n${task.description || 'No description'}`,
+            '',
             'yellow_background'
           ));
         });
@@ -104,11 +104,11 @@ class SprintTemplate extends BaseNotionTemplate {
 
       // Task Summary
       blocks.push(this.createDivider());
-      blocks.push(this.createHeading('📊 Task Summary', 2));
+      blocks.push(this.createHeading(' Task Summary', 2));
       blocks.push(this.createBulletPoint(`Total Tasks: ${data.tasks.length}`));
-      blocks.push(this.createBulletPoint(`✅ Completed: ${tasksByStatus.completed.length}`));
-      blocks.push(this.createBulletPoint(`🔄 In Progress: ${tasksByStatus.inProgress.length}`));
-      blocks.push(this.createBulletPoint(`⏸️ Pending: ${tasksByStatus.pending.length}`));
+      blocks.push(this.createBulletPoint(` Completed: ${tasksByStatus.completed.length}`));
+      blocks.push(this.createBulletPoint(` In Progress: ${tasksByStatus.inProgress.length}`));
+      blocks.push(this.createBulletPoint(`⏸ Pending: ${tasksByStatus.pending.length}`));
 
       const completion = data.tasks.length > 0
         ? Math.round((tasksByStatus.completed.length / data.tasks.length) * 100)
@@ -117,7 +117,7 @@ class SprintTemplate extends BaseNotionTemplate {
       blocks.push(this.createParagraph(''));
       blocks.push(this.createCallout(
         `Sprint Completion: ${completion}%`,
-        completion === 100 ? '✅' : '📊',
+        completion === 100 ? '' : '',
         completion === 100 ? 'green_background' : 'blue_background'
       ));
     } else {
@@ -130,7 +130,7 @@ class SprintTemplate extends BaseNotionTemplate {
     if (data.tasks) {
       const tasksWithDeps = data.tasks.filter(t => t.dependencies && t.dependencies.length > 0);
       if (tasksWithDeps.length > 0) {
-        blocks.push(this.createHeading('🔗 Task Dependencies', 2));
+        blocks.push(this.createHeading(' Task Dependencies', 2));
         tasksWithDeps.forEach(task => {
           blocks.push(this.createBulletPoint(
             `${task.title} depends on: ${task.dependencies.join(', ')}`
@@ -141,7 +141,7 @@ class SprintTemplate extends BaseNotionTemplate {
     }
 
     // Sprint Notes
-    blocks.push(this.createHeading('📝 Sprint Notes', 2));
+    blocks.push(this.createHeading(' Sprint Notes', 2));
     if (data.notes) {
       blocks.push(this.createParagraph(data.notes));
     } else {

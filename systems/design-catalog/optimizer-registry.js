@@ -27,7 +27,7 @@ class OptimizerRegistry {
     this.registerFrameworkOptimizers();
 
     this.initialized = true;
-    console.log(`✓ Optimizer Registry initialized with ${this.optimizers.size} optimizers`);
+    console.log(` Optimizer Registry initialized with ${this.optimizers.size} optimizers`);
 
     return this.optimizers;
   }
@@ -118,7 +118,7 @@ class OptimizerRegistry {
     }
 
     this.optimizers.set(normalizedFramework, optimizer);
-    console.log(`✓ Custom optimizer registered: ${framework}`);
+    console.log(` Custom optimizer registered: ${framework}`);
 
     return true;
   }

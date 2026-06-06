@@ -54,7 +54,7 @@ class IntelligentTaskAutomation extends EventEmitter {
   }
 
   async initialize() {
-    logger.info('🤖 Initializing Intelligent Task Automation...');
+    logger.info(' Initializing Intelligent Task Automation...');
 
     await this.initializeAIPlanner();
     await this.initializeAdaptiveExecutor();
@@ -69,11 +69,11 @@ class IntelligentTaskAutomation extends EventEmitter {
       strategies: Array.from(this.adaptiveStrategies.keys())
     });
 
-    logger.info('🤖 Intelligent Task Automation initialized successfully');
+    logger.info(' Intelligent Task Automation initialized successfully');
   }
 
   async initializeAIPlanner() {
-    logger.info('🤖 Initializing AI task planner...');
+    logger.info(' Initializing AI task planner...');
 
     this.aiPlanner = {
       // Workflow analysis and planning
@@ -521,7 +521,7 @@ class IntelligentTaskAutomation extends EventEmitter {
   }
 
   async initializeAdaptiveExecutor() {
-    logger.info('🤖 Initializing adaptive executor...');
+    logger.info(' Initializing adaptive executor...');
 
     this.adaptiveExecutor = {
       // Adaptive execution strategies
@@ -1035,7 +1035,7 @@ class IntelligentTaskAutomation extends EventEmitter {
   }
 
   async initializeOptimizationEngine() {
-    logger.info('🤖 Initializing optimization engine...');
+    logger.info(' Initializing optimization engine...');
 
     this.optimizationEngine = {
       // Performance optimization rules
@@ -1409,7 +1409,7 @@ class IntelligentTaskAutomation extends EventEmitter {
   }
 
   async initializeLearningSystem() {
-    logger.info('🤖 Initializing learning system...');
+    logger.info(' Initializing learning system...');
 
     this.learningSystem = {
       // Pattern learning and adaptation
@@ -1726,7 +1726,7 @@ class IntelligentTaskAutomation extends EventEmitter {
   }
 
   async initializeAutomationPatterns() {
-    logger.info('🤖 Initializing automation patterns...');
+    logger.info(' Initializing automation patterns...');
 
     // Register common automation patterns
     this.registerPattern('data-pipeline', {
@@ -1782,7 +1782,7 @@ class IntelligentTaskAutomation extends EventEmitter {
   }
 
   async startTaskProcessor() {
-    logger.info('🤖 Starting task processor...');
+    logger.info(' Starting task processor...');
 
     this.taskProcessor = setInterval(async () => {
       if (this.taskQueue.length > 0 && this.activeTasks.size < this.options.maxConcurrentTasks) {
@@ -1927,7 +1927,7 @@ class IntelligentTaskAutomation extends EventEmitter {
   }
 
   async shutdown() {
-    logger.info('🤖 Shutting down Intelligent Task Automation...');
+    logger.info(' Shutting down Intelligent Task Automation...');
 
     if (this.taskProcessor) {
       clearInterval(this.taskProcessor);
@@ -1938,7 +1938,7 @@ class IntelligentTaskAutomation extends EventEmitter {
     this.taskQueue = [];
 
     this.emit('shutdown');
-    logger.info('🤖 Intelligent Task Automation shutdown complete');
+    logger.info(' Intelligent Task Automation shutdown complete');
   }
 }
 

@@ -1,6 +1,6 @@
 /**
  * Tool Bridge Branding
- * Part of the BUMBA Platform Suite
+ * Part of the Agent Primitives Suite
  * ASCII art, colors, and branding utilities
  */
 
@@ -28,7 +28,7 @@ const TOOL_BRIDGE_LOGOS = {
     '║ |____/_/   \\_\\____/ |_| |_____\\___/|_| \\_|   ║',
     '║                                               ║',
     '║        Universal AI Development Gateway       ║',
-    '║           Part of BUMBA Platform Suite        ║',
+    '║           Part of Agent Primitives Suite        ║',
     '╚═══════════════════════════════════════════════╝'
   ],
 
@@ -46,7 +46,7 @@ const TOOL_BRIDGE_LOGOS = {
   ]
 };
 
-// BUMBA Platform Color Palette (from brand guidelines)
+// Agent Primitives Color Palette (from brand guidelines)
 const TOOL_BRIDGE_COLORS = {
   // Primary gradient (matching BUMBA)
   gradient: {
@@ -85,13 +85,13 @@ const TOOL_BRIDGE_COLORS = {
   }
 };
 
-// Official BUMBA Platform Emoji Set
+// Official Agent Primitives Emoji Set
 const TOOL_BRIDGE_EMOJIS = {
-  strategy: '🟡',
-  backend: '🟢',
-  frontend: '🔴',
-  testing: '🟠',
-  completion: '🏁'
+  strategy: '',
+  backend: '',
+  frontend: '',
+  testing: '',
+  completion: ''
 };
 
 class ToolBridgeBranding {
@@ -213,9 +213,9 @@ class ToolBridgeBranding {
 
   formatStatus(status, message) {
     const icons = {
-      success: this.chalk.gradient.green('✓'),
-      error: this.chalk.semantic.error('✗'),
-      warning: this.chalk.semantic.warning('⚠'),
+      success: this.chalk.gradient.green(''),
+      error: this.chalk.semantic.error(''),
+      warning: this.chalk.semantic.warning(''),
       info: this.chalk.semantic.info('ℹ'),
       processing: this.chalk.gradient.yellowGreen('⟳')
     };

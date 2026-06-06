@@ -34,7 +34,7 @@ class SQLiteStorageAdapter {
       this.createSchema();
 
       this.initialized = true;
-      logger.info(`📦 SQLite storage initialized: ${this.dbPath}`);
+      logger.info(` SQLite storage initialized: ${this.dbPath}`);
 
       return true;
     } catch (error) {
@@ -145,7 +145,7 @@ class SQLiteStorageAdapter {
         ON tasks(updated_at DESC)
       `);
 
-      logger.info('📋 SQLite schema created successfully');
+      logger.info(' SQLite schema created successfully');
     });
 
     transaction();
@@ -225,7 +225,7 @@ class SQLiteStorageAdapter {
 
       const result = stmt.run(cutoff);
 
-      logger.info(`🧹 Cleaned up ${result.changes} expired contexts`);
+      logger.info(` Cleaned up ${result.changes} expired contexts`);
       return result.changes;
     } catch (error) {
       logger.error('Failed to cleanup contexts:', error);
@@ -548,7 +548,7 @@ class SQLiteStorageAdapter {
 
   vacuum() {
     this.db.exec('VACUUM');
-    logger.info('🧹 Database vacuumed');
+    logger.info(' Database vacuumed');
   }
 
   getStats() {
@@ -572,7 +572,7 @@ class SQLiteStorageAdapter {
     if (this.db) {
       this.db.close();
       this.initialized = false;
-      logger.info('📦 SQLite storage closed');
+      logger.info(' SQLite storage closed');
     }
   }
 }

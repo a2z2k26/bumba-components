@@ -8,7 +8,7 @@ const EventEmitter = require('events');
 class DiscordConnector extends EventEmitter {
   constructor(options = {}) {
     super();
-    
+
     this.options = {
       token: options.token || process.env.DISCORD_TOKEN,
       baseURL: options.baseURL || 'https://discord.com/api/v10',
@@ -25,19 +25,19 @@ class DiscordConnector extends EventEmitter {
       'Content-Type': 'application/json',
       ...options.headers
     };
-    
+
     const response = await fetch(url, {
       method: options.method || 'GET',
       headers,
       body: options.body ? JSON.stringify(options.body) : undefined,
       signal: AbortSignal.timeout(this.options.timeout)
     });
-    
+
     if (!response.ok) {
       const error = await response.json().catch(() => ({}));
       throw new Error(error.message || `Discord API error: ${response.status}`);
     }
-    
+
     return response.json();
   }
 
@@ -55,7 +55,7 @@ class DiscordConnector extends EventEmitter {
     if (!this.options.webhookURL) {
       throw new Error('Webhook URL not configured');
     }
-    
+
     const response = await fetch(this.options.webhookURL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -64,11 +64,11 @@ class DiscordConnector extends EventEmitter {
         ...options
       })
     });
-    
+
     if (!response.ok) {
       throw new Error('Webhook request failed');
     }
-    
+
     return response.status === 204 ? { success: true } : response.json();
   }
 

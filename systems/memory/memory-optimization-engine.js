@@ -1,5 +1,5 @@
 /**
- * BUMBA Memory Optimization Engine
+ * Semantic Memory Optimization Engine
  * Advanced memory management, caching strategies, and performance optimization
  */
 
@@ -70,12 +70,12 @@ class MemoryOptimizationEngine {
   }
 
   async initialize() {
-    this.logger.info('🚀 Memory optimization engine initializing...');
+    this.logger.info(' Memory optimization engine initializing...');
 
     // Start optimization timer
     this.startOptimizationScheduler();
 
-    this.logger.info('🚀 Memory optimization engine initialized');
+    this.logger.info(' Memory optimization engine initialized');
     return true;
   }
 
@@ -104,7 +104,7 @@ class MemoryOptimizationEngine {
       // Update performance metrics
       this.updatePerformanceMetrics(Date.now() - startTime, optimizationsApplied);
 
-      this.logger.info(`🚀 Memory optimization completed: ${optimizationsApplied} optimizations applied`);
+      this.logger.info(` Memory optimization completed: ${optimizationsApplied} optimizations applied`);
 
       return {
         optimizationsApplied,
@@ -574,7 +574,7 @@ class MemoryOptimizationEngine {
     // Perform final optimization
     await this.optimizeMemoryLayout();
 
-    this.logger.info('🚀 Memory optimization engine shut down');
+    this.logger.info(' Memory optimization engine shut down');
   }
 }
 

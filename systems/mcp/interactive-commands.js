@@ -221,7 +221,7 @@ class MCPInteractiveCommands extends EventEmitter {
    * Handle help command
    */
   async handleHelp(targets, context) {
-    console.log(chalk.cyan('\n📚 MCP Command Help\n'));
+    console.log(chalk.cyan('\n MCP Command Help\n'));
 
     const commands = [
       { cmd: 'start [server|all|core]', desc: 'Start MCP servers' },
@@ -259,7 +259,7 @@ class MCPInteractiveCommands extends EventEmitter {
    * Handle quick start
    */
   async handleQuickStart(targets, context) {
-    console.log(chalk.cyan('\n🚀 Quick Start - Enabling Core Servers\n'));
+    console.log(chalk.cyan('\n Quick Start - Enabling Core Servers\n'));
 
     const spinner = ora('Starting core servers...').start();
 
@@ -271,9 +271,9 @@ class MCPInteractiveCommands extends EventEmitter {
       // Display results
       for (const result of results) {
         if (result.success) {
-          console.log(chalk.green(`  ✓ ${result.serverName}`));
+          console.log(chalk.green(`   ${result.serverName}`));
         } else {
-          console.log(chalk.red(`  ✗ ${result.serverName}: ${result.error}`));
+          console.log(chalk.red(`   ${result.serverName}: ${result.error}`));
         }
       }
 
@@ -294,7 +294,7 @@ class MCPInteractiveCommands extends EventEmitter {
   async handleCategory(targets, context) {
     if (targets.length === 0) {
       // List all categories
-      console.log(chalk.cyan('\n📁 Server Categories\n'));
+      console.log(chalk.cyan('\n Server Categories\n'));
 
       const categories = this.registry.getCategories();
       for (const cat of categories) {
@@ -328,7 +328,7 @@ class MCPInteractiveCommands extends EventEmitter {
    * Handle config command
    */
   async handleConfig(targets, context) {
-    console.log(chalk.cyan('\n⚙️  Configuration\n'));
+    console.log(chalk.cyan('\n  Configuration\n'));
 
     const config = this.sessionState.currentSession.preferences;
 
@@ -367,8 +367,8 @@ class MCPInteractiveCommands extends EventEmitter {
 
       const status = isRunning ? chalk.green('● Running') : chalk.gray('○ Stopped');
       const enabled = config?.enabled ? chalk.green('Enabled') : chalk.gray('Disabled');
-      const health = metrics.health ? 
-        this.getHealthColor(metrics.health.status)(metrics.health.status) : 
+      const health = metrics.health ?
+        this.getHealthColor(metrics.health.status)(metrics.health.status) :
         chalk.gray('Unknown');
 
       console.log(`  ${server.displayName.padEnd(20)} ${status.padEnd(20)} ${enabled.padEnd(15)} ${health}`);
@@ -399,14 +399,14 @@ class MCPInteractiveCommands extends EventEmitter {
     if (successful.length > 0) {
       console.log(chalk.green('\nSuccessful:'));
       successful.forEach(r => {
-        console.log(chalk.green(`  ✓ ${r.serverName}`));
+        console.log(chalk.green(`   ${r.serverName}`));
       });
     }
 
     if (failed.length > 0) {
       console.log(chalk.red('\nFailed:'));
       failed.forEach(r => {
-        console.log(chalk.red(`  ✗ ${r.serverName}: ${r.error}`));
+        console.log(chalk.red(`   ${r.serverName}: ${r.error}`));
       });
     }
   }

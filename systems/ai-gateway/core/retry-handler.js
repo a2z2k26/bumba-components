@@ -45,7 +45,7 @@ class RetryHandler {
         const delay = this.calculateDelay(attempt, error);
 
         console.log(
-          `⚠️  Attempt ${attempt + 1} failed: ${error.message}. Retrying in ${delay}ms...`
+          `  Attempt ${attempt + 1} failed: ${error.message}. Retrying in ${delay}ms...`
         );
 
         // Wait before retry

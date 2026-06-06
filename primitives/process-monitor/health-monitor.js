@@ -235,13 +235,13 @@ class MCPHealthMonitor extends EventEmitter {
       const result = await this.loader.restartServer(serverName);
 
       if (result.success) {
-        console.log(`✓ ${serverName} recovered successfully`);
+        console.log(` ${serverName} recovered successfully`);
         breaker.successCount++;
         if (breaker.successCount > 3) {
           breaker.state = 'closed';
         }
       } else {
-        console.error(`✗ Failed to recover ${serverName}`);
+        console.error(` Failed to recover ${serverName}`);
         breaker.failureCount++;
         if (breaker.failureCount > 3) {
           breaker.state = 'open';

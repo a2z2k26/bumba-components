@@ -37,21 +37,21 @@ async function simulateWorkload(orchestrator) {
 }
 
 async function monitorHealth(orchestrator) {
-  console.log('\n🏥 Health Monitoring Dashboard\n');
+  console.log('\n Health Monitoring Dashboard\n');
   console.log('═'.repeat(60));
 
   const healthInterval = setInterval(() => {
     const health = orchestrator.getHealth();
 
-    console.log('\n📊 Health Check at', health.timestamp);
+    console.log('\n Health Check at', health.timestamp);
     console.log('─'.repeat(40));
 
     // Status indicator
     const statusEmoji = {
-      healthy: '✅',
-      degraded: '⚠️',
-      warning: '🟡',
-      unhealthy: '🔴'
+      healthy: '',
+      degraded: '',
+      warning: '',
+      unhealthy: ''
     };
 
     console.log(`Status: ${statusEmoji[health.status]} ${health.status.toUpperCase()}`);
@@ -69,7 +69,7 @@ async function monitorHealth(orchestrator) {
     });
 
     if (health.issues.stuck.length > 0) {
-      console.log('\n🔴 Stuck Agents:');
+      console.log('\n Stuck Agents:');
       health.issues.stuck.forEach(agent => {
         const stuckMinutes = Math.floor(agent.stuckDuration / 60000);
         console.log(`  - ${agent.id}: stuck in ${agent.state} for ${stuckMinutes} minutes`);
@@ -78,7 +78,7 @@ async function monitorHealth(orchestrator) {
     }
 
     if (health.issues.warnings.length > 0) {
-      console.log('\n⚠️  Warning Agents:');
+      console.log('\n  Warning Agents:');
       health.issues.warnings.forEach(agent => {
         const minutes = Math.floor(agent.duration / 60000);
         console.log(`  - ${agent.id}: in ${agent.state} for ${minutes} minutes`);
@@ -86,7 +86,7 @@ async function monitorHealth(orchestrator) {
     }
 
     if (health.recommendations.length > 0) {
-      console.log('\n💡 Recommendations:');
+      console.log('\n Recommendations:');
       health.recommendations.forEach(rec => {
         console.log(`  • ${rec}`);
       });
@@ -118,7 +118,7 @@ async function createHealthEndpoint(orchestrator) {
   };
 
   // Simulate health check requests
-  console.log('\n🌐 Health Endpoint Example:');
+  console.log('\n Health Endpoint Example:');
   console.log('GET /health');
 
   const response = getHealthEndpoint();
@@ -129,7 +129,7 @@ async function createHealthEndpoint(orchestrator) {
 }
 
 async function demo() {
-  console.log('🚀 Agent Health Monitoring Demo');
+  console.log(' Agent Health Monitoring Demo');
   console.log('Debug logging is enabled (DEBUG=agent-lifecycle)\n');
 
   const orchestrator = new AgentOrchestrator({
@@ -151,7 +151,7 @@ async function demo() {
 
   // Simulate recovery after 15 seconds
   setTimeout(async () => {
-    console.log('\n🔧 Attempting recovery of stuck agents...\n');
+    console.log('\n Attempting recovery of stuck agents...\n');
 
     const health = orchestrator.getHealth();
 
@@ -169,7 +169,7 @@ async function demo() {
   setTimeout(async () => {
     clearInterval(healthInterval);
 
-    console.log('\n🏁 Final Health Report:');
+    console.log('\n Final Health Report:');
     const finalHealth = orchestrator.getHealth();
     console.log(JSON.stringify(finalHealth, null, 2));
 

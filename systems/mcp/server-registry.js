@@ -355,61 +355,61 @@ class MCPServerRegistry extends EventEmitter {
       core: {
         name: 'Core Services',
         description: 'Essential always-on servers',
-        icon: '🔧',
+        icon: '',
         priority: 1
       },
       development: {
         name: 'Development Tools',
         description: 'Version control and development',
-        icon: '💻',
+        icon: '',
         priority: 2
       },
       search: {
         name: 'Search & Documentation',
         description: 'Search engines and docs',
-        icon: '🔍',
+        icon: '',
         priority: 3
       },
       design: {
         name: 'UI & Design',
         description: 'Design and UI tools',
-        icon: '🎨',
+        icon: '',
         priority: 4
       },
       databases: {
         name: 'Databases',
         description: 'Data storage solutions',
-        icon: '💾',
+        icon: '',
         priority: 5
       },
       automation: {
         name: 'Automation',
         description: 'Workflow and analysis',
-        icon: '⚡',
+        icon: '',
         priority: 6
       },
       testing: {
         name: 'Testing & QA',
         description: 'Testing tools',
-        icon: '🧪',
+        icon: '',
         priority: 7
       },
       cloud: {
         name: 'Cloud Services',
         description: 'Cloud platforms',
-        icon: '☁️',
+        icon: '',
         priority: 8
       },
       utility: {
         name: 'Utilities',
         description: 'Helper tools',
-        icon: '🛠',
+        icon: '',
         priority: 9
       },
       custom: {
         name: 'Custom Servers',
         description: 'User-defined servers',
-        icon: '⚙️',
+        icon: '',
         priority: 10
       }
     };

@@ -1,7 +1,7 @@
 /**
  * Tool Bridge Server
  * Core server for multi-model AI access
- * Part of the BUMBA Platform Suite
+ * Part of the Agent Primitives Suite
  */
 
 const express = require('express');

@@ -191,7 +191,7 @@ class PerformanceTracker {
       return;
     }
 
-    logger.info('📊 Initializing performance tracker...');
+    logger.info(' Initializing performance tracker...');
 
     try {
       // Ensure storage directory exists
@@ -207,7 +207,7 @@ class PerformanceTracker {
       );
 
       this.initialized = true;
-      logger.info('✅ Performance tracker initialized');
+      logger.info(' Performance tracker initialized');
     } catch (error) {
       logger.error('Failed to initialize performance tracker:', error.message);
       throw error;
@@ -245,13 +245,13 @@ class PerformanceTracker {
     // Check if we should report problematic model
     const metrics = this.metrics[modelName];
     if (metrics.isProblematic(this.config.successThreshold)) {
-      logger.warn(`⚠️  Model ${modelName} is problematic: ${metrics.getSuccessRate().toFixed(1)}% success rate`);
+      logger.warn(`  Model ${modelName} is problematic: ${metrics.getSuccessRate().toFixed(1)}% success rate`);
     }
 
     // Report if error count exceeds threshold
     const errorCount = metrics.errors[errorType]?.count || 0;
     if (errorCount === this.config.errorReportingThreshold) {
-      logger.error(`🔴 Model ${modelName} has ${errorCount} ${errorType} errors`);
+      logger.error(` Model ${modelName} has ${errorCount} ${errorType} errors`);
     }
   }
 
@@ -441,7 +441,7 @@ class PerformanceTracker {
    */
   resetAll() {
     this.metrics = {};
-    logger.warn('⚠️  Reset all performance metrics');
+    logger.warn('  Reset all performance metrics');
   }
 
   /**

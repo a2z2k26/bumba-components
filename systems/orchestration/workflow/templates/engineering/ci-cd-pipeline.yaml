@@ -79,7 +79,7 @@ steps:
           - name: commit-lint
             command: npm run commitlint
             continueOnError: true
-      
+
       - name: type-checking
         agent: build-agent
         tasks:
@@ -89,7 +89,7 @@ steps:
           - name: api-contracts
             command: npm run validate:api
             continueOnError: false
-      
+
       - name: security-scanning
         agent: security-scanner
         tasks:
@@ -209,7 +209,7 @@ steps:
           conditions:
             - error-rate > 5%
             - response-time > 1000ms
-      
+
       - name: production-deploy
         agent: deploy-agent
         environment: production
@@ -249,7 +249,7 @@ steps:
           - real-user-monitoring
           - log-analysis
           - alert-validation
-      
+
       - name: documentation-update
         agent: build-agent
         tasks:
@@ -257,7 +257,7 @@ steps:
           - generate-release-notes
           - update-api-docs
           - notify-stakeholders
-      
+
       - name: cleanup
         agent: build-agent
         tasks:

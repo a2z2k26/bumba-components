@@ -8,14 +8,14 @@ const EventEmitter = require('events');
 class SlackConnector extends EventEmitter {
   constructor(options = {}) {
     super();
-    
+
     this.options = {
       token: options.token || process.env.SLACK_TOKEN,
       baseURL: options.baseURL || 'https://slack.com/api',
       timeout: options.timeout || 30000,
       ...options
     };
-    
+
     if (!this.options.token) {
       throw new Error('Slack token is required');
     }
@@ -27,20 +27,20 @@ class SlackConnector extends EventEmitter {
       'Authorization': `Bearer ${this.options.token}`,
       'Content-Type': 'application/json'
     };
-    
+
     const response = await fetch(url, {
       method: 'POST',
       headers,
       body: JSON.stringify(params),
       signal: AbortSignal.timeout(this.options.timeout)
     });
-    
+
     const data = await response.json();
-    
+
     if (!data.ok) {
       throw new Error(data.error || 'Slack API error');
     }
-    
+
     return data;
   }
 

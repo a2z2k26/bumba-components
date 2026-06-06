@@ -35,7 +35,7 @@ class CatalogGenerator {
     const catalogDataPath = path.join(catalogDir, 'catalog-data.json');
     await fs.writeFile(catalogDataPath, JSON.stringify(catalogData, null, 2));
 
-    console.log('✓ Catalog data updated:', catalogDataPath);
+    console.log(' Catalog data updated:', catalogDataPath);
 
     // Route components to pages (NEW!)
     if (routeComponents && data.components && data.components.length > 0) {
@@ -66,7 +66,7 @@ class CatalogGenerator {
       details: []
     };
 
-    console.log(`\n📍 Routing ${components.length} component(s) to catalog pages...\n`);
+    console.log(`\n Routing ${components.length} component(s) to catalog pages...\n`);
 
     for (const component of components) {
       try {
@@ -83,31 +83,31 @@ class CatalogGenerator {
           switch (result.action) {
             case 'routed':
               results.routed++;
-              console.log(`  ✓ ${component.name} → ${result.page}`);
+              console.log(`   ${component.name} → ${result.page}`);
               break;
             case 'created':
               results.created++;
-              console.log(`  ✨ Created ${result.page} → Added ${component.name}`);
+              console.log(`   Created ${result.page} → Added ${component.name}`);
               break;
             case 'added-variant':
               results.variants++;
-              console.log(`  🔄 ${component.name} v${result.existingVersion + 1} → ${result.page}`);
+              console.log(`   ${component.name} v${result.existingVersion + 1} → ${result.page}`);
               break;
           }
         } else {
           results.failed++;
-          console.log(`  ✗ Failed to route ${component.name}: ${result.error}`);
+          console.log(`   Failed to route ${component.name}: ${result.error}`);
         }
 
         results.details.push(result);
       } catch (error) {
         results.failed++;
-        console.log(`  ✗ Error routing ${component.name}: ${error.message}`);
+        console.log(`   Error routing ${component.name}: ${error.message}`);
       }
     }
 
     // Summary
-    console.log(`\n📊 Routing Summary:`);
+    console.log(`\n Routing Summary:`);
     console.log(`   Routed to existing pages: ${results.routed}`);
     console.log(`   Created new pages: ${results.created}`);
     console.log(`   Added as variants: ${results.variants}`);

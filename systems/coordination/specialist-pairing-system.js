@@ -13,7 +13,7 @@ class SpecialistPairingSystem {
     this.pairingEffectiveness = new Map();
     this.apiConnected = false;
     this.developmentMode = process.env.NODE_ENV !== 'production';
-    
+
     this.initializePairingPatterns();
     this.initializeBuddySystem();
     this.initializeApiFallbacks();
@@ -28,32 +28,32 @@ class SpecialistPairingSystem {
         complexity: this.estimateComplexity(task),
         departments_involved: this.identifyDepartments(task)
       }),
-      
+
       selectSpecialist: (type, availableSpecialists) => {
-        return availableSpecialists.find(s => s.type === type) || 
+        return availableSpecialists.find(s => s.type === type) ||
                availableSpecialists.find(s => s.skills && s.skills.includes(type)) ||
                availableSpecialists[0];
       },
-      
+
       scorePatternMatch: (pattern, taskAnalysis) => {
         // Intelligent scoring based on pattern keywords and task content
         const taskText = (taskAnalysis.description || '').toLowerCase();
         const patternKeywords = pattern.typical_tasks.join(' ').toLowerCase();
-        
+
         let score = 0.5; // Base score
-        
+
         // Check for keyword matches
         const keywords = patternKeywords.split(' ');
         const matches = keywords.filter(keyword => taskText.includes(keyword));
         score += (matches.length / keywords.length) * 0.3;
-        
+
         // Department alignment bonus
-        if (taskAnalysis.departments_involved && 
-            taskAnalysis.departments_involved.some(dept => 
+        if (taskAnalysis.departments_involved &&
+            taskAnalysis.departments_involved.some(dept =>
               pattern.department_bridge.includes(dept))) {
           score += 0.2;
         }
-        
+
         return Math.min(1.0, score);
       }
     };
@@ -62,30 +62,30 @@ class SpecialistPairingSystem {
   async safeApiCall(operation, fallbackFn, ...args) {
     // Priority 1: Use fallback if explicitly in development mode with no API
     if (this.developmentMode && !this.apiConnected) {
-      logger.debug(`🔄 Using fallback for ${operation} (API disconnected)`);
+      logger.debug(` Using fallback for ${operation} (API disconnected)`);
       return fallbackFn(...args);
     }
-    
+
     // Priority 2: Attempt real API call when connected
     if (this.apiConnected && this.realApiMethods && this.realApiMethods[operation]) {
       try {
-        logger.debug(`🟢 Using real API for ${operation}`);
+        logger.debug(` Using real API for ${operation}`);
         const result = await this.realApiMethods[operation](...args);
-        logger.debug(`🏁 Real API call successful for ${operation}`);
+        logger.debug(` Real API call successful for ${operation}`);
         return result;
       } catch (error) {
-        logger.warn(`🟠️ Real API failed for ${operation}, falling back: ${error.message}`);
+        logger.warn(` Real API failed for ${operation}, falling back: ${error.message}`);
         // Fall through to fallback
       }
     }
-    
+
     // Priority 3: Use intelligent fallback
     try {
       return fallbackFn(...args);
     } catch (error) {
-      if (error.message.includes('invalid_request_error') || 
+      if (error.message.includes('invalid_request_error') ||
           error.message.includes('JSON')) {
-        logger.warn(`🟠️ API error in ${operation}, using basic fallback: ${error.message}`);
+        logger.warn(` API error in ${operation}, using basic fallback: ${error.message}`);
         return fallbackFn(...args);
       }
       throw error;
@@ -96,14 +96,14 @@ class SpecialistPairingSystem {
   registerRealApiMethods(apiMethods) {
     this.realApiMethods = apiMethods;
     this.apiConnected = true;
-    logger.info(`🔗 Real API methods registered: ${Object.keys(apiMethods).join(', ')}`);
+    logger.info(` Real API methods registered: ${Object.keys(apiMethods).join(', ')}`);
   }
 
   // Method to unregister APIs (for testing or fallback scenarios)
   unregisterRealApiMethods() {
     this.realApiMethods = null;
     this.apiConnected = false;
-    logger.info('📴 Real API methods unregistered');
+    logger.info(' Real API methods unregistered');
   }
 
   extractSkillsFromTask(task) {
@@ -116,14 +116,14 @@ class SpecialistPairingSystem {
       'database': ['database', 'query', 'data', 'sql'],
       'devops': ['deploy', 'infrastructure', 'ci/cd', 'docker']
     };
-    
+
     const detectedSkills = [];
     for (const [skill, keywords] of Object.entries(skillMappings)) {
       if (keywords.some(keyword => description.includes(keyword))) {
         detectedSkills.push(skill);
       }
     }
-    
+
     return detectedSkills.length > 0 ? detectedSkills : ['technical'];
   }
 
@@ -140,21 +140,21 @@ class SpecialistPairingSystem {
       medium: ['integrate', 'optimize', 'enhance', 'improve'],
       low: ['simple', 'basic', 'quick', 'fix']
     };
-    
+
     const text = description.toLowerCase();
     for (const [level, indicators] of Object.entries(complexityIndicators)) {
       if (indicators.some(indicator => text.includes(indicator))) {
         return level;
       }
     }
-    
+
     return 'medium';
   }
 
   identifyDepartments(task) {
     const description = (task.description || '').toLowerCase();
     const departments = [];
-    
+
     if (description.match(/ui|design|user|experience|interface/)) {
       departments.push('experience');
     }
@@ -164,7 +164,7 @@ class SpecialistPairingSystem {
     if (description.match(/business|strategy|market|product|cost/)) {
       departments.push('strategic');
     }
-    
+
     return departments.length > 0 ? departments : ['technical'];
   }
 
@@ -274,11 +274,11 @@ class SpecialistPairingSystem {
   }
 
   async pairSpecialists(task, availableSpecialists) {
-    logger.info(`🏁 Finding optimal specialist pairing for task: ${task.description}`);
+    logger.info(` Finding optimal specialist pairing for task: ${task.description}`);
 
     // Analyze task to determine best pairing pattern
     const optimalPattern = await this.findOptimalPairingPattern(task);
-    
+
     if (!optimalPattern) {
       return this.createAdHocPairing(task, availableSpecialists);
     }
@@ -303,7 +303,7 @@ class SpecialistPairingSystem {
       this.mockResponses.analyzeTaskRequirements.bind(this),
       task
     );
-    
+
     let bestPattern = null;
     let bestScore = 0;
 
@@ -330,7 +330,7 @@ class SpecialistPairingSystem {
       this.mockResponses.analyzeTaskRequirements.bind(this),
       task
     );
-    
+
     return {
       pattern: 'ad_hoc',
       primary: await this.selectBestSpecialist(taskAnalysis.primary_skills, availableSpecialists),
@@ -341,7 +341,7 @@ class SpecialistPairingSystem {
   }
 
   async establishBuddyConnection(specialist1, specialist2) {
-    logger.info(`🏁 Establishing buddy connection: ${specialist1.type} ↔ ${specialist2.type}`);
+    logger.info(` Establishing buddy connection: ${specialist1.type} ↔ ${specialist2.type}`);
 
     const connection = {
       specialists: [specialist1.id, specialist2.id],
@@ -392,16 +392,16 @@ class SpecialistPairingSystem {
   }
 
   async facilitateBuddyConversation(from, to, question) {
-    logger.info(`🏁 Buddy conversation: ${from.type} → ${to.type}`);
-    
+    logger.info(` Buddy conversation: ${from.type} → ${to.type}`);
+
     try {
       // Simulate intelligent response based on specialist expertise
       const response = await to.processQuestion(question, from.context);
-      
+
       // Update shared context
-      const sharedContext = this.buddyRelationships.get(`${from.type}_${to.type}`) || 
+      const sharedContext = this.buddyRelationships.get(`${from.type}_${to.type}`) ||
                            this.buddyRelationships.get(`${to.type}_${from.type}`);
-      
+
       if (sharedContext) {
         if (!sharedContext.shared_context) {
           sharedContext.shared_context = new Map();
@@ -417,7 +417,7 @@ class SpecialistPairingSystem {
     } catch (error) {
       // Fallback response for development mode
       if (this.developmentMode) {
-        logger.debug(`🔄 Using fallback response for buddy conversation`);
+        logger.debug(` Using fallback response for buddy conversation`);
         return this.generateFallbackResponse(from, to, question);
       }
       throw error;
@@ -446,11 +446,11 @@ class SpecialistPairingSystem {
 
     const fromType = from.type || 'default';
     const toType = to.type || 'default';
-    
-    const template = responseTemplates[toType]?.[fromType] || 
-                    responseTemplates[toType]?.default || 
+
+    const template = responseTemplates[toType]?.[fromType] ||
+                    responseTemplates[toType]?.default ||
                     `As a ${toType} specialist, I recommend consulting domain-specific best practices for your question: "${question}"`;
-    
+
     return template;
   }
 
@@ -458,7 +458,7 @@ class SpecialistPairingSystem {
     // Calculate effectiveness of pairing based on historical data
     const historicalEffectiveness = this.pairingEffectiveness.get(pattern.name) || 0.8;
     const departmentAlignment = pattern.department_bridge[0] === pattern.department_bridge[1] ? 0.1 : 0;
-    
+
     return Math.min(1.0, historicalEffectiveness + departmentAlignment);
   }
 
@@ -484,28 +484,28 @@ class SpecialistPairingSystem {
     if (!this.collaborationHistory.has(historyKey)) {
       this.collaborationHistory.set(historyKey, []);
     }
-    
+
     this.collaborationHistory.get(historyKey).push(record);
   }
 
   async updatePairingEffectiveness(pairing, effectiveness) {
     const patternName = pairing.pattern.name || pairing.pattern;
     const current = this.pairingEffectiveness.get(patternName) || 0.8;
-    
+
     // Weighted average with more weight on recent performance
     const updated = (current * 0.7) + (effectiveness * 0.3);
     this.pairingEffectiveness.set(patternName, updated);
-    
-    logger.info(`🏁 Updated pairing effectiveness for ${patternName}: ${updated.toFixed(2)}`);
+
+    logger.info(` Updated pairing effectiveness for ${patternName}: ${updated.toFixed(2)}`);
   }
 
   getBuddyRecommendations(specialist) {
     const recommendations = [];
-    
+
     for (const [relationshipName, relationship] of this.buddyRelationships) {
       if (relationship[specialist.department] === specialist.type) {
         recommendations.push({
-          buddy_type: Object.entries(relationship).find(([dept, type]) => 
+          buddy_type: Object.entries(relationship).find(([dept, type]) =>
             dept !== specialist.department && dept !== 'communication_protocol' && dept !== 'typical_interactions'
           )?.[1],
           relationship: relationshipName,
@@ -520,7 +520,7 @@ class SpecialistPairingSystem {
   getPairingHistory(specialist1Type, specialist2Type) {
     const key1 = `${specialist1Type}_${specialist2Type}`;
     const key2 = `${specialist2Type}_${specialist1Type}`;
-    
+
     return [
       ...(this.collaborationHistory.get(key1) || []),
       ...(this.collaborationHistory.get(key2) || [])
@@ -551,27 +551,27 @@ class SpecialistPairingSystem {
     if (!availableSpecialists || availableSpecialists.length === 0) {
       return null;
     }
-    
+
     // Find specialist with most matching skills
     let bestSpecialist = availableSpecialists[0];
     let bestScore = 0;
-    
+
     for (const specialist of availableSpecialists) {
       let score = 0;
       const specialistSkills = specialist.skills || [specialist.type];
-      
+
       for (const skill of skills) {
         if (specialistSkills.includes(skill) || specialist.type === skill) {
           score++;
         }
       }
-      
+
       if (score > bestScore) {
         bestScore = score;
         bestSpecialist = specialist;
       }
     }
-    
+
     return bestSpecialist;
   }
 
@@ -580,19 +580,19 @@ class SpecialistPairingSystem {
     if (!availableSpecialists || availableSpecialists.length === 0) {
       return null;
     }
-    
+
     // Prefer specialists from different departments
     for (const specialist of availableSpecialists) {
       const specialistSkills = specialist.skills || [specialist.type];
-      const hasComplementarySkills = skills.some(skill => 
+      const hasComplementarySkills = skills.some(skill =>
         !specialistSkills.includes(skill) && specialist.type !== skill
       );
-      
+
       if (hasComplementarySkills) {
         return specialist;
       }
     }
-    
+
     return availableSpecialists[1] || availableSpecialists[0];
   }
 
@@ -617,12 +617,12 @@ class SpecialistPairingSystem {
   // Development and testing methods
   enableApiConnection() {
     this.apiConnected = true;
-    logger.info('🔗 API connection enabled');
+    logger.info(' API connection enabled');
   }
 
   disableApiConnection() {
     this.apiConnected = false;
-    logger.info('📴 API connection disabled - using fallbacks');
+    logger.info(' API connection disabled - using fallbacks');
   }
 
   async testPairingSystem(testTask = null) {
@@ -634,8 +634,8 @@ class SpecialistPairingSystem {
       };
     }
 
-    logger.info('🧪 Testing Specialist Pairing System...');
-    
+    logger.info(' Testing Specialist Pairing System...');
+
     const mockSpecialists = [
       { id: 'sec-1', type: 'security', department: 'technical', skills: ['security', 'auth'] },
       { id: 'perf-1', type: 'performance', department: 'technical', skills: ['performance', 'optimization'] },
@@ -645,8 +645,8 @@ class SpecialistPairingSystem {
 
     try {
       const pairing = await this.pairSpecialists(testTask, mockSpecialists);
-      
-      logger.info('🏁 Pairing test successful:', {
+
+      logger.info(' Pairing test successful:', {
         pattern: pairing.pattern.name || pairing.pattern,
         primary: pairing.primary?.type,
         secondary: pairing.secondary?.type,
@@ -656,18 +656,18 @@ class SpecialistPairingSystem {
       // Test buddy connection
       if (pairing.primary && pairing.secondary) {
         const buddyConnection = await this.establishBuddyConnection(
-          pairing.primary, 
+          pairing.primary,
           pairing.secondary
         );
-        
-        logger.info('🏁 Buddy connection test successful');
-        
+
+        logger.info(' Buddy connection test successful');
+
         // Test buddy conversation
         if (pairing.primary.askBuddy) {
           const response = await pairing.primary.askBuddy(
             'How should we approach the security vs performance trade-offs?'
           );
-          logger.info('🏁 Buddy conversation test successful:', response);
+          logger.info(' Buddy conversation test successful:', response);
         }
       }
 
@@ -678,7 +678,7 @@ class SpecialistPairingSystem {
         developmentMode: this.developmentMode
       };
     } catch (error) {
-      logger.error('🔴 Pairing test failed:', error.message);
+      logger.error(' Pairing test failed:', error.message);
       return {
         success: false,
         error: error.message,

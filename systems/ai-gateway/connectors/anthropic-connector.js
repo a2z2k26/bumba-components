@@ -8,7 +8,7 @@ const EventEmitter = require('events');
 class AnthropicConnector extends EventEmitter {
   constructor(options = {}) {
     super();
-    
+
     this.options = {
       apiKey: options.apiKey || process.env.ANTHROPIC_API_KEY,
       baseURL: options.baseURL || 'https://api.anthropic.com',
@@ -18,18 +18,18 @@ class AnthropicConnector extends EventEmitter {
       beta: options.beta || [],
       ...options
     };
-    
+
     // Validate API key
     if (!this.options.apiKey) {
       throw new Error('Anthropic API key is required');
     }
-    
+
     // Rate limiting
     this.rateLimits = {
       requests: { limit: 50, window: 60000, current: 0, lastReset: Date.now() },
       tokens: { limit: 100000, window: 60000, current: 0, lastReset: Date.now() }
     };
-    
+
     // Usage tracking
     this.usage = {
       totalInputTokens: 0,
@@ -39,7 +39,7 @@ class AnthropicConnector extends EventEmitter {
       cacheCreationInputTokens: 0,
       cacheReadInputTokens: 0
     };
-    
+
     // Model configurations with pricing
     this.models = {
       'claude-3-opus-20240229': {
@@ -87,22 +87,22 @@ class AnthropicConnector extends EventEmitter {
    */
   async makeRequest(endpoint, options = {}) {
     const url = `${this.options.baseURL}${endpoint}`;
-    
+
     const headers = {
       'x-api-key': this.options.apiKey,
       'anthropic-version': this.options.apiVersion,
       'content-type': 'application/json',
       ...options.headers
     };
-    
+
     // Add beta headers if specified
     if (this.options.beta.length > 0) {
       headers['anthropic-beta'] = this.options.beta.join(',');
     }
-    
+
     // Check rate limits
     await this.checkRateLimits();
-    
+
     let lastError;
     for (let attempt = 0; attempt < this.options.maxRetries; attempt++) {
       try {
@@ -112,47 +112,47 @@ class AnthropicConnector extends EventEmitter {
           body: options.body ? JSON.stringify(options.body) : undefined,
           signal: AbortSignal.timeout(this.options.timeout)
         });
-        
+
         // Update rate limit info
         this.updateRateLimits(response.headers);
-        
+
         if (!response.ok) {
           const error = await response.json().catch(() => ({}));
-          
+
           if (response.status === 429) {
             // Rate limited
             const retryAfter = parseInt(response.headers.get('retry-after') || '5');
             await this.delay(retryAfter * 1000);
             continue;
           }
-          
+
           if (response.status === 529) {
             // Overloaded
             await this.delay(Math.pow(2, attempt) * 1000);
             continue;
           }
-          
+
           throw new Error(error.error?.message || `API error: ${response.status}`);
         }
-        
+
         const data = await response.json();
-        
+
         // Track usage
         if (data.usage) {
           this.trackUsage(data.usage, options.body?.model);
         }
-        
+
         return data;
-        
+
       } catch (error) {
         lastError = error;
-        
+
         if (attempt < this.options.maxRetries - 1) {
           await this.delay(Math.pow(2, attempt) * 1000);
         }
       }
     }
-    
+
     throw lastError;
   }
 
@@ -162,7 +162,7 @@ class AnthropicConnector extends EventEmitter {
   async createMessage(messages, options = {}) {
     // Convert messages to Anthropic format if needed
     const anthropicMessages = this.convertMessages(messages);
-    
+
     const body = {
       model: options.model || 'claude-3-sonnet-20240229',
       messages: anthropicMessages,
@@ -174,33 +174,33 @@ class AnthropicConnector extends EventEmitter {
       stream: options.stream || false,
       metadata: options.metadata
     };
-    
+
     // Add system prompt if provided
     if (options.system) {
       body.system = options.system;
     }
-    
+
     // Add tools if provided
     if (options.tools) {
       body.tools = options.tools;
       body.tool_choice = options.toolChoice;
     }
-    
+
     if (body.stream) {
       return this.streamMessage(body);
     }
-    
+
     const response = await this.makeRequest('/v1/messages', {
       method: 'POST',
       body
     });
-    
+
     this.emit('message', {
       model: body.model,
       messages: messages.length,
       response: response.content
     });
-    
+
     return response;
   }
 
@@ -209,52 +209,52 @@ class AnthropicConnector extends EventEmitter {
    */
   async streamMessage(body) {
     const url = `${this.options.baseURL}/v1/messages`;
-    
+
     const headers = {
       'x-api-key': this.options.apiKey,
       'anthropic-version': this.options.apiVersion,
       'content-type': 'application/json'
     };
-    
+
     if (this.options.beta.length > 0) {
       headers['anthropic-beta'] = this.options.beta.join(',');
     }
-    
+
     const response = await fetch(url, {
       method: 'POST',
       headers,
       body: JSON.stringify(body)
     });
-    
+
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.error?.message || 'Stream request failed');
     }
-    
+
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
-    
+
     return {
       async *[Symbol.asyncIterator]() {
         let buffer = '';
-        
+
         while (true) {
           const { done, value } = await reader.read();
-          
+
           if (done) break;
-          
+
           buffer += decoder.decode(value, { stream: true });
           const lines = buffer.split('\n');
           buffer = lines.pop() || '';
-          
+
           for (const line of lines) {
             if (line.startsWith('data: ')) {
               const data = line.slice(6);
-              
+
               if (data === '[DONE]') {
                 return;
               }
-              
+
               try {
                 const parsed = JSON.parse(data);
                 yield parsed;
@@ -275,13 +275,13 @@ class AnthropicConnector extends EventEmitter {
     // Enable prompt caching beta
     const originalBeta = this.options.beta;
     this.options.beta = [...new Set([...this.options.beta, 'prompt-caching-2024-07-31'])];
-    
+
     try {
       // Mark cacheable content
       const cachedMessages = this.markCacheableContent(messages, options.cacheBreakpoints);
-      
+
       const response = await this.createMessage(cachedMessages, options);
-      
+
       return response;
     } finally {
       this.options.beta = originalBeta;
@@ -303,14 +303,14 @@ class AnthropicConnector extends EventEmitter {
         tools: req.tools || options.tools
       }
     }));
-    
+
     const response = await this.makeRequest('/v1/messages/batch', {
       method: 'POST',
       body: {
         requests: batchRequests
       }
     });
-    
+
     return response;
   }
 
@@ -327,12 +327,12 @@ class AnthropicConnector extends EventEmitter {
         }
       ]
     };
-    
+
     const response = await this.makeRequest('/v1/messages/count_tokens', {
       method: 'POST',
       body
     });
-    
+
     return response;
   }
 
@@ -344,23 +344,23 @@ class AnthropicConnector extends EventEmitter {
     if (typeof messages === 'string') {
       return [{ role: 'user', content: messages }];
     }
-    
+
     if (!Array.isArray(messages)) {
       return [messages];
     }
-    
+
     return messages.map(msg => {
       // Already in Anthropic format
       if (msg.role && msg.content) {
         return msg;
       }
-      
+
       // OpenAI format conversion
       if (msg.role === 'system') {
         // System messages are handled separately in Anthropic
         return null;
       }
-      
+
       if (msg.role === 'assistant' && msg.function_call) {
         // Convert function calls to tool use
         return {
@@ -375,7 +375,7 @@ class AnthropicConnector extends EventEmitter {
           ]
         };
       }
-      
+
       if (msg.role === 'function') {
         // Convert function results to tool results
         return {
@@ -389,7 +389,7 @@ class AnthropicConnector extends EventEmitter {
           ]
         };
       }
-      
+
       // Standard message
       return {
         role: msg.role === 'user' ? 'user' : 'assistant',
@@ -426,7 +426,7 @@ class AnthropicConnector extends EventEmitter {
     // Enable computer use beta
     const originalBeta = this.options.beta;
     this.options.beta = [...new Set([...this.options.beta, 'computer-use-2024-10-22'])];
-    
+
     try {
       const tools = [
         {
@@ -437,7 +437,7 @@ class AnthropicConnector extends EventEmitter {
           display_number: options.displayNumber || 0
         }
       ];
-      
+
       const response = await this.createMessage(
         [{ role: 'user', content: instructions }],
         {
@@ -446,7 +446,7 @@ class AnthropicConnector extends EventEmitter {
           tool_choice: { type: 'any' }
         }
       );
-      
+
       return response;
     } finally {
       this.options.beta = originalBeta;
@@ -460,7 +460,7 @@ class AnthropicConnector extends EventEmitter {
     // Enable PDF support beta
     const originalBeta = this.options.beta;
     this.options.beta = [...new Set([...this.options.beta, 'pdfs-2024-09-25'])];
-    
+
     try {
       const messages = [
         {
@@ -481,9 +481,9 @@ class AnthropicConnector extends EventEmitter {
           ]
         }
       ];
-      
+
       const response = await this.createMessage(messages, options);
-      
+
       return response;
     } finally {
       this.options.beta = originalBeta;
@@ -513,9 +513,9 @@ class AnthropicConnector extends EventEmitter {
         ]
       }
     ];
-    
+
     const response = await this.createMessage(messages, options);
-    
+
     return response;
   }
 
@@ -532,7 +532,7 @@ class AnthropicConnector extends EventEmitter {
       })),
       tool_choice: options.toolChoice || { type: 'auto' }
     });
-    
+
     // Extract tool calls from response
     const toolCalls = [];
     if (response.content) {
@@ -546,7 +546,7 @@ class AnthropicConnector extends EventEmitter {
         }
       }
     }
-    
+
     return {
       ...response,
       toolCalls
@@ -567,12 +567,12 @@ class AnthropicConnector extends EventEmitter {
       stop_sequences: options.stopSequences || ['\n\nHuman:'],
       stream: options.stream || false
     };
-    
+
     const response = await this.makeRequest('/v1/complete', {
       method: 'POST',
       body
     });
-    
+
     return response;
   }
 
@@ -581,18 +581,18 @@ class AnthropicConnector extends EventEmitter {
    */
   async checkRateLimits() {
     const now = Date.now();
-    
+
     // Reset counters if window has passed
     if (now - this.rateLimits.requests.lastReset > this.rateLimits.requests.window) {
       this.rateLimits.requests.current = 0;
       this.rateLimits.requests.lastReset = now;
     }
-    
+
     if (now - this.rateLimits.tokens.lastReset > this.rateLimits.tokens.window) {
       this.rateLimits.tokens.current = 0;
       this.rateLimits.tokens.lastReset = now;
     }
-    
+
     // Check if at limit
     if (this.rateLimits.requests.current >= this.rateLimits.requests.limit) {
       const waitTime = this.rateLimits.requests.window - (now - this.rateLimits.requests.lastReset);
@@ -600,7 +600,7 @@ class AnthropicConnector extends EventEmitter {
       this.rateLimits.requests.current = 0;
       this.rateLimits.requests.lastReset = Date.now();
     }
-    
+
     this.rateLimits.requests.current++;
   }
 
@@ -614,27 +614,27 @@ class AnthropicConnector extends EventEmitter {
     const tokensLimit = headers.get('anthropic-ratelimit-tokens-limit');
     const tokensRemaining = headers.get('anthropic-ratelimit-tokens-remaining');
     const tokensReset = headers.get('anthropic-ratelimit-tokens-reset');
-    
+
     if (requestsLimit) {
       this.rateLimits.requests.limit = parseInt(requestsLimit);
     }
-    
+
     if (requestsRemaining) {
       this.rateLimits.requests.current = this.rateLimits.requests.limit - parseInt(requestsRemaining);
     }
-    
+
     if (requestsReset) {
       this.rateLimits.requests.resetAt = new Date(requestsReset).getTime();
     }
-    
+
     if (tokensLimit) {
       this.rateLimits.tokens.limit = parseInt(tokensLimit);
     }
-    
+
     if (tokensRemaining) {
       this.rateLimits.tokens.current = this.rateLimits.tokens.limit - parseInt(tokensRemaining);
     }
-    
+
     if (tokensReset) {
       this.rateLimits.tokens.resetAt = new Date(tokensReset).getTime();
     }
@@ -647,35 +647,35 @@ class AnthropicConnector extends EventEmitter {
     this.usage.totalInputTokens += usage.input_tokens || 0;
     this.usage.totalOutputTokens += usage.output_tokens || 0;
     this.usage.requests++;
-    
+
     // Track cache usage if present
     if (usage.cache_creation_input_tokens) {
       this.usage.cacheCreationInputTokens += usage.cache_creation_input_tokens;
     }
-    
+
     if (usage.cache_read_input_tokens) {
       this.usage.cacheReadInputTokens += usage.cache_read_input_tokens;
     }
-    
+
     // Calculate costs
     if (model && this.models[model]) {
       const costs = this.models[model].costPer1M;
       const inputCost = (usage.input_tokens || 0) * costs.input / 1000000;
       const outputCost = (usage.output_tokens || 0) * costs.output / 1000000;
-      
+
       // Add cache costs if applicable
       let cacheCost = 0;
       if (this.models[model].cacheCostPer1M) {
-        const cacheWrite = (usage.cache_creation_input_tokens || 0) * 
+        const cacheWrite = (usage.cache_creation_input_tokens || 0) *
                           this.models[model].cacheCostPer1M.write / 1000000;
-        const cacheRead = (usage.cache_read_input_tokens || 0) * 
+        const cacheRead = (usage.cache_read_input_tokens || 0) *
                          this.models[model].cacheCostPer1M.read / 1000000;
         cacheCost = cacheWrite + cacheRead;
       }
-      
+
       this.usage.totalCost += inputCost + outputCost + cacheCost;
     }
-    
+
     this.emit('usage', {
       inputTokens: usage.input_tokens,
       outputTokens: usage.output_tokens,
@@ -724,7 +724,7 @@ class AnthropicConnector extends EventEmitter {
         [{ role: 'user', content: 'Hi' }],
         { maxTokens: 1 }
       );
-      
+
       return {
         valid: true,
         model: response.model

@@ -82,7 +82,7 @@ class SmartCodeGenerator extends EventEmitter {
       this.optimizers.set(framework, optimizer);
     });
 
-    console.log(`✓ SmartCodeGenerator initialized with ${this.optimizers.size} optimizers`);
+    console.log(` SmartCodeGenerator initialized with ${this.optimizers.size} optimizers`);
   }
 
   /**

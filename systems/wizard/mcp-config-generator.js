@@ -14,13 +14,13 @@ class MCPConfigGenerator {
       mergeExisting: options.mergeExisting !== false,
       ...options
     };
-    
+
     // Platform-specific config path
     this.configPath = this.getConfigPath();
-    
+
     // MCP server definitions
     this.serverDefinitions = this.getServerDefinitions();
-    
+
     // Existing configuration
     this.existingConfig = null;
     this.backupPath = null;
@@ -32,7 +32,7 @@ class MCPConfigGenerator {
   getConfigPath() {
     const platform = process.platform;
     const homeDir = os.homedir();
-    
+
     switch (platform) {
       case 'darwin': // macOS
         return path.join(
@@ -168,33 +168,33 @@ class MCPConfigGenerator {
     if (this.options.mergeExisting) {
       await this.loadExistingConfig();
     }
-    
+
     // Create base configuration
     const config = {
       version: '1.0',
       mcpServers: {},
       ...this.existingConfig
     };
-    
+
     // Add selected servers
     for (const serverName of selectedServers) {
       const definition = this.serverDefinitions[serverName];
       if (!definition) continue;
-      
+
       // Build server configuration
       const serverConfig = {
         command: definition.command,
         args: [...definition.args]
       };
-      
+
       // Add environment variables if needed
       if (definition.env && Object.keys(definition.env).length > 0) {
         serverConfig.env = {};
-        
+
         for (const [envKey, envValue] of Object.entries(definition.env)) {
           // Replace placeholders with actual values
           const actualKey = envValue.replace('${', '').replace('}', '');
-          
+
           if (apiKeys[actualKey.toLowerCase().replace('_', '')]) {
             serverConfig.env[envKey] = apiKeys[actualKey.toLowerCase().replace('_', '')];
           } else if (process.env[actualKey]) {
@@ -205,11 +205,11 @@ class MCPConfigGenerator {
           }
         }
       }
-      
+
       // Add to configuration
       config.mcpServers[serverName] = serverConfig;
     }
-    
+
     return config;
   }
 
@@ -237,26 +237,26 @@ class MCPConfigGenerator {
       if (this.options.createBackup && this.existingConfig) {
         await this.createBackup();
       }
-      
+
       // Ensure directory exists
       const configDir = path.dirname(this.configPath);
       await fs.mkdir(configDir, { recursive: true });
-      
+
       // Write configuration
       const content = JSON.stringify(config, null, 2);
       await fs.writeFile(this.configPath, content, 'utf8');
-      
+
       // Set appropriate permissions (Unix-like systems)
       if (process.platform !== 'win32') {
         await fs.chmod(this.configPath, 0o644);
       }
-      
+
       return {
         success: true,
         path: this.configPath,
         backup: this.backupPath
       };
-      
+
     } catch (error) {
       return {
         success: false,
@@ -270,20 +270,20 @@ class MCPConfigGenerator {
    */
   async createBackup() {
     if (!this.existingConfig) return null;
-    
+
     const backupDir = path.join(path.dirname(this.configPath), 'backups');
     await fs.mkdir(backupDir, { recursive: true });
-    
+
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const backupFilename = `claude_config_backup_${timestamp}.json`;
     this.backupPath = path.join(backupDir, backupFilename);
-    
+
     await fs.writeFile(
       this.backupPath,
       JSON.stringify(this.existingConfig, null, 2),
       'utf8'
     );
-    
+
     return this.backupPath;
   }
 
@@ -293,19 +293,19 @@ class MCPConfigGenerator {
   validateConfig(config) {
     const errors = [];
     const warnings = [];
-    
+
     // Check required fields
     if (!config.mcpServers) {
       errors.push('Missing mcpServers field');
     }
-    
+
     // Validate each server
     for (const [serverName, serverConfig] of Object.entries(config.mcpServers || {})) {
       // Check command
       if (!serverConfig.command) {
         errors.push(`Server ${serverName}: missing command`);
       }
-      
+
       // Check for placeholder environment variables
       if (serverConfig.env) {
         for (const [key, value] of Object.entries(serverConfig.env)) {
@@ -314,26 +314,26 @@ class MCPConfigGenerator {
           }
         }
       }
-      
+
       // Check if required servers are present
       const definition = this.serverDefinitions[serverName];
       if (definition?.requiresAuth && !serverConfig.env) {
         warnings.push(`Server ${serverName}: requires authentication but no env vars set`);
       }
     }
-    
+
     // Check for essential servers
     const hasFilesystem = config.mcpServers?.filesystem;
     const hasMemory = config.mcpServers?.memory;
-    
+
     if (!hasFilesystem) {
       warnings.push('Filesystem server not configured (recommended)');
     }
-    
+
     if (!hasMemory) {
       warnings.push('Memory server not configured (recommended)');
     }
-    
+
     return {
       valid: errors.length === 0,
       errors,
@@ -346,40 +346,40 @@ class MCPConfigGenerator {
    */
   generateInstallScript(selectedServers = []) {
     const lines = ['#!/bin/bash', '', '# MCP Server Installation Script', ''];
-    
+
     // Add installation commands
     for (const serverName of selectedServers) {
       const definition = this.serverDefinitions[serverName];
       if (!definition) continue;
-      
+
       lines.push(`# Install ${definition.name}`);
       lines.push(`echo "Installing ${definition.name}..."`);
-      
+
       // Build npm install command
       const packageName = definition.args.find(arg => arg.startsWith('@'));
       if (packageName) {
         lines.push(`npm install -g ${packageName}`);
       }
-      
+
       lines.push('');
     }
-    
+
     // Add verification
     lines.push('# Verify installations');
     lines.push('echo "Verifying MCP server installations..."');
-    
+
     for (const serverName of selectedServers) {
       const definition = this.serverDefinitions[serverName];
       const packageName = definition.args.find(arg => arg.startsWith('@'));
       if (packageName) {
-        lines.push(`npm list -g ${packageName} || echo "⚠️  ${definition.name} not installed"`);
+        lines.push(`npm list -g ${packageName} || echo "  ${definition.name} not installed"`);
       }
     }
-    
+
     lines.push('');
-    lines.push('echo "✅ MCP server installation complete!"');
+    lines.push('echo " MCP server installation complete!"');
     lines.push('echo "Please restart Claude to activate the servers."');
-    
+
     return lines.join('\n');
   }
 
@@ -388,21 +388,21 @@ class MCPConfigGenerator {
    */
   getRecommendedServers(apiKeys = {}) {
     const recommended = ['filesystem', 'memory']; // Always recommend these
-    
+
     if (apiKeys.github) {
       recommended.push('github');
     }
-    
+
     if (apiKeys.notion) {
       recommended.push('notion');
     }
-    
+
     // Add fetch for general web access
     recommended.push('fetch');
-    
+
     // Add sequential thinking for better reasoning
     recommended.push('sequential-thinking');
-    
+
     return recommended;
   }
 
@@ -411,7 +411,7 @@ class MCPConfigGenerator {
    */
   async isClaudeInstalled() {
     const platform = process.platform;
-    
+
     try {
       if (platform === 'darwin') {
         // Check macOS Applications folder
@@ -422,7 +422,7 @@ class MCPConfigGenerator {
         const { exec } = require('child_process');
         const { promisify } = require('util');
         const execAsync = promisify(exec);
-        
+
         const { stdout } = await execAsync('where claude');
         return stdout.trim().length > 0;
       } else {
@@ -430,7 +430,7 @@ class MCPConfigGenerator {
         const { exec } = require('child_process');
         const { promisify } = require('util');
         const execAsync = promisify(exec);
-        
+
         const { stdout } = await execAsync('which claude');
         return stdout.trim().length > 0;
       }
@@ -444,10 +444,10 @@ class MCPConfigGenerator {
    */
   getSummary(config) {
     const servers = Object.keys(config.mcpServers || {});
-    const authRequired = servers.filter(s => 
+    const authRequired = servers.filter(s =>
       this.serverDefinitions[s]?.requiresAuth
     );
-    
+
     return {
       totalServers: servers.length,
       servers,

@@ -433,7 +433,7 @@ class CatalogAutoOrganizer extends EventEmitter {
    * Test organization
    */
   testOrganization() {
-    console.log('🧪 Testing catalog auto-organization...\n');
+    console.log(' Testing catalog auto-organization...\n');
 
     const testComponents = [
       { id: '1', name: 'PrimaryButton', type: 'button' },
@@ -464,7 +464,7 @@ class CatalogAutoOrganizer extends EventEmitter {
     console.log(`\nNavigation Items: ${navigation.main.length}`);
     console.log(`Pages Created: ${pages.length}\n`);
 
-    console.log('✅ Organization test complete!\n');
+    console.log(' Organization test complete!\n');
   }
 }
 

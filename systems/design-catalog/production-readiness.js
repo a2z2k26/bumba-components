@@ -108,7 +108,7 @@ class ProductionReadinessSystem extends EventEmitter {
   }
 
   async initialize() {
-    console.log('🚀 Initializing Production Readiness System...');
+    console.log(' Initializing Production Readiness System...');
 
     await this.validateEnvironment();
     await this.setupSecurity();
@@ -118,12 +118,12 @@ class ProductionReadinessSystem extends EventEmitter {
     await this.runReadinessChecks();
 
     this.isProductionReady = true;
-    console.log('✅ Production Readiness System initialized');
+    console.log(' Production Readiness System initialized');
     this.emit('production-ready');
   }
 
   async validateEnvironment() {
-    console.log('🔍 Validating production environment...');
+    console.log(' Validating production environment...');
 
     const checks = {
       nodeVersion: this.checkNodeVersion(),
@@ -138,14 +138,14 @@ class ProductionReadinessSystem extends EventEmitter {
     for (const [check, result] of Object.entries(checks)) {
       if (result.passed) {
         passedChecks++;
-        console.log(`  ✅ ${check}: ${result.message}`);
+        console.log(`   ${check}: ${result.message}`);
       } else {
-        console.warn(`  ⚠️ ${check}: ${result.message}`);
+        console.warn(`   ${check}: ${result.message}`);
       }
       this.readinessChecks.set(check, result);
     }
 
-    console.log(`📊 Environment validation: ${passedChecks}/${Object.keys(checks).length} checks passed`);
+    console.log(` Environment validation: ${passedChecks}/${Object.keys(checks).length} checks passed`);
     this.auditLog('environment-validation', { passedChecks, totalChecks: Object.keys(checks).length });
   }
 
@@ -244,7 +244,7 @@ class ProductionReadinessSystem extends EventEmitter {
   }
 
   async setupSecurity() {
-    console.log('🔒 Configuring security hardening...');
+    console.log(' Configuring security hardening...');
 
     // Setup encryption keys
     this.encryptionKey = crypto.randomBytes(32);
@@ -271,16 +271,16 @@ class ProductionReadinessSystem extends EventEmitter {
     this.securityPolicies.set('rate-limiting', this.securityConfig.rateLimit);
     this.securityPolicies.set('authentication', this.securityConfig.authentication);
 
-    console.log('  ✅ Encryption keys generated');
-    console.log('  ✅ Security policies configured');
-    console.log('  ✅ Rate limiting enabled');
-    console.log('  ✅ Authentication hardening applied');
+    console.log('   Encryption keys generated');
+    console.log('   Security policies configured');
+    console.log('   Rate limiting enabled');
+    console.log('   Authentication hardening applied');
 
     this.auditLog('security-setup', { policies: this.securityPolicies.size });
   }
 
   async optimizePerformance() {
-    console.log('⚡ Optimizing performance settings...');
+    console.log(' Optimizing performance settings...');
 
     // Configure caching
     this.performanceMetrics.set('caching', {
@@ -305,16 +305,16 @@ class ProductionReadinessSystem extends EventEmitter {
       preloaded: this.performanceConfig.optimization.preloadCritical
     });
 
-    console.log('  ✅ Caching layer configured');
-    console.log('  ✅ Compression enabled');
-    console.log('  ✅ Resource optimization applied');
-    console.log('  ✅ Performance monitoring active');
+    console.log('   Caching layer configured');
+    console.log('   Compression enabled');
+    console.log('   Resource optimization applied');
+    console.log('   Performance monitoring active');
 
     this.auditLog('performance-optimization', { metrics: this.performanceMetrics.size });
   }
 
   async configureMonitoring() {
-    console.log('📊 Setting up monitoring and health checks...');
+    console.log(' Setting up monitoring and health checks...');
 
     // Health checks
     this.healthChecks.set('system', {
@@ -350,16 +350,16 @@ class ProductionReadinessSystem extends EventEmitter {
       this.startHealthChecks();
     }
 
-    console.log('  ✅ Health checks configured');
-    console.log('  ✅ Monitoring intervals started');
-    console.log('  ✅ Alerting system enabled');
-    console.log('  ✅ Metrics collection active');
+    console.log('   Health checks configured');
+    console.log('   Monitoring intervals started');
+    console.log('   Alerting system enabled');
+    console.log('   Metrics collection active');
 
     this.auditLog('monitoring-setup', { healthChecks: this.healthChecks.size });
   }
 
   async setupDeployment() {
-    console.log('🚛 Configuring deployment settings...');
+    console.log(' Configuring deployment settings...');
 
     this.deploymentConfig = {
       environment: this.config.environment,
@@ -392,16 +392,16 @@ class ProductionReadinessSystem extends EventEmitter {
       }
     };
 
-    console.log('  ✅ Environment configuration set');
-    console.log('  ✅ Resource requirements defined');
-    console.log('  ✅ Network configuration applied');
-    console.log('  ✅ Security settings configured');
+    console.log('   Environment configuration set');
+    console.log('   Resource requirements defined');
+    console.log('   Network configuration applied');
+    console.log('   Security settings configured');
 
     this.auditLog('deployment-setup', this.deploymentConfig);
   }
 
   async runReadinessChecks() {
-    console.log('🔍 Running final production readiness checks...');
+    console.log(' Running final production readiness checks...');
 
     const checks = [
       { name: 'Security', check: () => this.validateSecurity() },
@@ -417,19 +417,19 @@ class ProductionReadinessSystem extends EventEmitter {
         const result = await check();
         if (result.passed) {
           passedChecks++;
-          console.log(`  ✅ ${name}: ${result.message}`);
+          console.log(`   ${name}: ${result.message}`);
         } else {
-          console.warn(`  ⚠️ ${name}: ${result.message}`);
+          console.warn(`   ${name}: ${result.message}`);
         }
         this.readinessChecks.set(name.toLowerCase(), result);
       } catch (error) {
-        console.error(`  ❌ ${name}: ${error.message}`);
+        console.error(`   ${name}: ${error.message}`);
         this.readinessChecks.set(name.toLowerCase(), { passed: false, error: error.message });
       }
     }
 
     const readinessScore = (passedChecks / checks.length) * 100;
-    console.log(`📊 Production readiness score: ${readinessScore.toFixed(1)}%`);
+    console.log(` Production readiness score: ${readinessScore.toFixed(1)}%`);
 
     this.auditLog('readiness-check', { score: readinessScore, passedChecks, totalChecks: checks.length });
   }
@@ -518,11 +518,11 @@ class ProductionReadinessSystem extends EventEmitter {
             this.emit('health-check', { name, result });
 
             if (!result.healthy) {
-              console.warn(`⚠️ Health check failed: ${name} - ${result.message}`);
+              console.warn(` Health check failed: ${name} - ${result.message}`);
               this.emit('health-alert', { name, result });
             }
           } catch (error) {
-            console.error(`❌ Health check error: ${name} - ${error.message}`);
+            console.error(` Health check error: ${name} - ${error.message}`);
             this.emit('health-error', { name, error });
           }
         }, healthCheck.interval);
@@ -709,7 +709,7 @@ class ProductionReadinessSystem extends EventEmitter {
     try {
       const configPath = path.join(process.cwd(), 'production-config.json');
       await fs.writeFile(configPath, JSON.stringify(config, null, 2));
-      console.log(`📄 Production configuration exported to: ${configPath}`);
+      console.log(` Production configuration exported to: ${configPath}`);
       return configPath;
     } catch (error) {
       console.error('Failed to export configuration:', error);
@@ -718,7 +718,7 @@ class ProductionReadinessSystem extends EventEmitter {
   }
 
   shutdown() {
-    console.log('🛑 Shutting down Production Readiness System...');
+    console.log(' Shutting down Production Readiness System...');
 
     // Clear all intervals (health checks)
     // In a real implementation, you'd track and clear actual intervals
@@ -727,7 +727,7 @@ class ProductionReadinessSystem extends EventEmitter {
     this.auditLog('system-shutdown');
     this.emit('production-shutdown');
 
-    console.log('✅ Production Readiness System shutdown complete');
+    console.log(' Production Readiness System shutdown complete');
   }
 }
 

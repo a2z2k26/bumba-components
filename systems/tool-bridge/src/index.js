@@ -1,7 +1,7 @@
 /**
  * Tool Bridge - Main Entry Point
  * The Universal AI Development Gateway
- * Part of the BUMBA Platform Suite
+ * Part of the Agent Primitives Suite
  */
 
 const ToolBridgeServer = require('./bridge/server');

@@ -13,15 +13,15 @@ const { getInstance: getAgentIdentity } = require('./agent-identity');
 class DashboardDataSource extends EventEmitter {
   constructor() {
     super();
-    
+
     this.fileLocking = getFileLocking();
     this.territoryManager = getTerritoryManager();
     this.safeFileOps = getSafeFileOps();
     this.agentIdentity = getAgentIdentity();
-    
+
     this.lastSnapshot = null;
   }
-  
+
   /**
    * Get current coordination status
    */
@@ -34,18 +34,18 @@ class DashboardDataSource extends EventEmitter {
       conflicts: this.getConflictStatus(),
       performance: this.getPerformanceMetrics()
     };
-    
+
     this.lastSnapshot = status;
     return status;
   }
-  
+
   /**
    * Get agent status
    */
   getAgentStatus() {
     const agents = this.agentIdentity.getActiveAgents();
     const stats = this.agentIdentity.getStats();
-    
+
     return {
       total: stats.totalAgents,
       active: stats.activeAgents,
@@ -55,14 +55,14 @@ class DashboardDataSource extends EventEmitter {
       activeList: agents
     };
   }
-  
+
   /**
    * Get lock status
    */
   getLockStatus() {
     const locks = this.fileLocking.getLocks();
     const waitQueue = this.fileLocking.getWaitQueue();
-    
+
     return {
       activeLocks: locks.size,
       waitingAgents: waitQueue.size,
@@ -78,14 +78,14 @@ class DashboardDataSource extends EventEmitter {
       }))
     };
   }
-  
+
   /**
    * Get territory status
    */
   getTerritoryStatus() {
     const territories = this.territoryManager.getAllTerritories();
     const conflicts = this.territoryManager.getConflicts();
-    
+
     return {
       totalTerritories: territories.length,
       activeConflicts: conflicts.length,
@@ -98,24 +98,24 @@ class DashboardDataSource extends EventEmitter {
       conflicts: conflicts
     };
   }
-  
+
   /**
    * Get conflict status
    */
   getConflictStatus() {
     const operations = this.safeFileOps.getOperationHistory();
     const conflicts = operations.filter(op => op.conflictDetected);
-    
+
     return {
       totalOperations: operations.length,
       totalConflicts: conflicts.length,
       recentConflicts: conflicts.slice(-10),
-      resolutionRate: operations.length > 0 
+      resolutionRate: operations.length > 0
         ? ((operations.length - conflicts.length) / operations.length) * 100
         : 100
     };
   }
-  
+
   /**
    * Get performance metrics
    */
@@ -124,7 +124,7 @@ class DashboardDataSource extends EventEmitter {
     const avgTime = operations.length > 0
       ? operations.reduce((sum, op) => sum + (op.duration || 0), 0) / operations.length
       : 0;
-    
+
     return {
       avgOperationTime: avgTime,
       successRate: this.calculateSuccessRate(operations),
@@ -132,7 +132,7 @@ class DashboardDataSource extends EventEmitter {
       lockContention: this.calculateLockContention()
     };
   }
-  
+
   /**
    * Calculate success rate
    */
@@ -141,7 +141,7 @@ class DashboardDataSource extends EventEmitter {
     const successful = operations.filter(op => op.success).length;
     return (successful / operations.length) * 100;
   }
-  
+
   /**
    * Calculate throughput
    */
@@ -152,30 +152,30 @@ class DashboardDataSource extends EventEmitter {
     });
     return recentOps.length;
   }
-  
+
   /**
    * Calculate lock contention
    */
   calculateLockContention() {
     const locks = this.fileLocking.getLocks();
     const waitQueue = this.fileLocking.getWaitQueue();
-    
+
     if (locks.size === 0) return 0;
-    
+
     let totalWaiting = 0;
     waitQueue.forEach(agents => {
       totalWaiting += agents.length;
     });
-    
+
     return (totalWaiting / locks.size) * 100;
   }
-  
+
   /**
    * Get safety report
    */
   async getSafetyReport() {
     const status = await this.getStatus();
-    
+
     return {
       timestamp: status.timestamp,
       safe: status.conflicts.totalConflicts === 0,
@@ -188,7 +188,7 @@ class DashboardDataSource extends EventEmitter {
       }
     };
   }
-  
+
   /**
    * Refresh data
    */

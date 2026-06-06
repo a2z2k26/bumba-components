@@ -10,56 +10,56 @@ graph TB
         F[Figma Files]
         FP[Figma Plugin]
     end
-    
+
     subgraph "Extraction Layer"
         TE[Token Extractor]
         CE[Component Extractor]
         AE[Asset Extractor]
     end
-    
+
     subgraph "Processing Layer"
         TP[Token Processor]
         CP[Component Processor]
         SE[Sync Engine]
     end
-    
+
     subgraph "Storage Layer"
         TS[Token Storage]
         CS[Cache System]
         VCS[Version Control]
     end
-    
+
     subgraph "Integration Layer"
         MCP[MCP Servers]
         CLI[BUMBA CLI]
         AI[AI Context]
     end
-    
+
     subgraph "Output Layer"
         CG[Code Generator]
         CAT[Catalog]
         API[API Endpoints]
     end
-    
+
     F --> FP
     FP --> TE
     FP --> CE
     FP --> AE
-    
+
     TE --> TP
     CE --> CP
     AE --> TP
-    
+
     TP --> TS
     CP --> TS
     TS --> CS
     CS --> VCS
-    
+
     TS --> SE
     SE --> MCP
     MCP --> CLI
     CLI --> AI
-    
+
     AI --> CG
     TS --> CAT
     SE --> API

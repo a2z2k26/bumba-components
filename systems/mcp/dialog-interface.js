@@ -67,7 +67,7 @@ class MCPDialogInterface extends EventEmitter {
     const stats = this.registry.getStats();
     const status = this.loader.getServerStatus();
 
-    console.log(gray('\n🟡 Quick Stats:'));
+    console.log(gray('\n Quick Stats:'));
     console.log(white(`   Total Servers: ${stats.total}`));
     console.log(green(`   Active: ${status.active.length}`));
     console.log(yellow(`   Inactive: ${status.inactive.length}`));
@@ -79,14 +79,14 @@ class MCPDialogInterface extends EventEmitter {
    */
   async mainMenu() {
     const choices = [
-      { name: '🏁 Quick Start (Enable Core Servers)', value: 'quickstart' },
-      { name: '🟢 Manage Servers', value: 'servers' },
-      { name: '🟡 Browse by Category', value: 'categories' },
-      { name: '🟢 Health Dashboard', value: 'health' },
-      { name: '🟡 Settings', value: 'settings' },
+      { name: ' Quick Start (Enable Core Servers)', value: 'quickstart' },
+      { name: ' Manage Servers', value: 'servers' },
+      { name: ' Browse by Category', value: 'categories' },
+      { name: ' Health Dashboard', value: 'health' },
+      { name: ' Settings', value: 'settings' },
       new inquirer.Separator(),
-      { name: '🟡 Refresh Status', value: 'refresh' },
-      { name: '✗ Exit', value: 'exit' }
+      { name: ' Refresh Status', value: 'refresh' },
+      { name: ' Exit', value: 'exit' }
     ];
 
     const { action } = await inquirer.prompt({
@@ -127,19 +127,19 @@ class MCPDialogInterface extends EventEmitter {
    * Quick start - enable core servers
    */
   async quickStart() {
-    console.log(lime('\n🏁 Starting core MCP servers...\n'));
+    console.log(lime('\n Starting core MCP servers...\n'));
 
     const results = await this.loader.startCoreServers();
 
     for (const result of results) {
       if (result.success) {
-        console.log(green(`  ✓ ${result.serverName} started`));
+        console.log(green(`   ${result.serverName} started`));
       } else {
-        console.log(red(`  ✗ ${result.serverName} failed: ${result.error}`));
+        console.log(red(`   ${result.serverName} failed: ${result.error}`));
       }
     }
 
-    console.log(green('\n✓ Core servers initialized!\n'));
+    console.log(green('\n Core servers initialized!\n'));
     await this.pause();
     await this.mainMenu();
   }
@@ -245,10 +245,10 @@ class MCPDialogInterface extends EventEmitter {
       name: 'action',
       message: `What would you like to do with ${serverNames.length} selected server(s)?`,
       choices: [
-        { name: '▶️  Start', value: 'start' },
+        { name: '▶  Start', value: 'start' },
         { name: '⏹  Stop', value: 'stop' },
-        { name: '🔄 Restart', value: 'restart' },
-        { name: 'ℹ️  View Details', value: 'details' },
+        { name: ' Restart', value: 'restart' },
+        { name: 'ℹ  View Details', value: 'details' },
         new inquirer.Separator(),
         { name: '← Back', value: 'back' }
       ]
@@ -277,14 +277,14 @@ class MCPDialogInterface extends EventEmitter {
    * Start servers
    */
   async startServers(serverNames) {
-    console.log(lime('\n🟢 Starting servers...\n'));
+    console.log(lime('\n Starting servers...\n'));
 
     for (const name of serverNames) {
       const result = await this.loader.startServer(name);
       if (result.success) {
-        console.log(green(`  ✓ ${name} started`));
+        console.log(green(`   ${name} started`));
       } else {
-        console.log(red(`  ✗ ${name} failed: ${result.error}`));
+        console.log(red(`   ${name} failed: ${result.error}`));
       }
     }
 
@@ -296,14 +296,14 @@ class MCPDialogInterface extends EventEmitter {
    * Stop servers
    */
   async stopServers(serverNames) {
-    console.log(lime('\n🔴 Stopping servers...\n'));
+    console.log(lime('\n Stopping servers...\n'));
 
     for (const name of serverNames) {
       const result = await this.loader.stopServer(name);
       if (result.success) {
-        console.log(green(`  ✓ ${name} stopped`));
+        console.log(green(`   ${name} stopped`));
       } else {
-        console.log(red(`  ✗ ${name} failed: ${result.error}`));
+        console.log(red(`   ${name} failed: ${result.error}`));
       }
     }
 
@@ -315,14 +315,14 @@ class MCPDialogInterface extends EventEmitter {
    * Restart servers
    */
   async restartServers(serverNames) {
-    console.log(lime('\n🟡 Restarting servers...\n'));
+    console.log(lime('\n Restarting servers...\n'));
 
     for (const name of serverNames) {
       const result = await this.loader.restartServer(name);
       if (result.success) {
-        console.log(green(`  ✓ ${name} restarted`));
+        console.log(green(`   ${name} restarted`));
       } else {
-        console.log(red(`  ✗ ${name} failed: ${result.error}`));
+        console.log(red(`   ${name} failed: ${result.error}`));
       }
     }
 
@@ -366,7 +366,7 @@ class MCPDialogInterface extends EventEmitter {
   async healthMenu() {
     const summary = this.healthMonitor.getHealthSummary();
 
-    console.log(lime('\n🟢 Health Dashboard\n'));
+    console.log(lime('\n Health Dashboard\n'));
 
     // Create health table
     const table = new Table({
@@ -437,7 +437,7 @@ class MCPDialogInterface extends EventEmitter {
     // Save to session
     this.sessionState.updatePreference('dialogConfig', this.config);
 
-    console.log(green('\n✓ Settings saved!\n'));
+    console.log(green('\n Settings saved!\n'));
     await this.pause();
     await this.mainMenu();
   }
@@ -457,14 +457,14 @@ class MCPDialogInterface extends EventEmitter {
     if (!this.config.showEmojis) return '';
 
     const emojis = {
-      healthy: '🟢',
-      degraded: '🟡',
-      unhealthy: '🟠',
-      critical: '🔴',
-      error: '✗'
+      healthy: '',
+      degraded: '',
+      unhealthy: '',
+      critical: '',
+      error: ''
     };
 
-    return emojis[status] || '⚪';
+    return emojis[status] || '';
   }
 
   /**
@@ -507,8 +507,8 @@ class MCPDialogInterface extends EventEmitter {
     if (confirm) {
       console.log(lime('\nSaving session state...'));
       await this.sessionState.saveState();
-      console.log(green('✓ Session saved'));
-      console.log(lime('\nGoodbye! 🏁\n'));
+      console.log(green(' Session saved'));
+      console.log(lime('\nGoodbye! \n'));
       process.exit(0);
     } else {
       await this.mainMenu();

@@ -10,14 +10,14 @@ const EventEmitter = require('events');
 class ProgressTracker extends EventEmitter {
   constructor(options = {}) {
     super();
-    
+
     this.options = {
       saveInterval: options.saveInterval || 5000, // Auto-save every 5 seconds
       progressFile: options.progressFile || path.join(process.cwd(), '.bumba', 'setup-progress.json'),
       enableAutoSave: options.enableAutoSave !== false,
       ...options
     };
-    
+
     // Progress state
     this.state = {
       startTime: null,
@@ -37,13 +37,13 @@ class ProgressTracker extends EventEmitter {
         nodeVersion: process.version
       }
     };
-    
+
     // Auto-save timer
     this.autoSaveTimer = null;
-    
+
     // Step definitions
     this.steps = [];
-    
+
     // Metrics
     this.metrics = {
       stepDurations: {},
@@ -66,21 +66,21 @@ class ProgressTracker extends EventEmitter {
     this.steps = steps;
     this.state.totalSteps = steps.length;
     this.state.startTime = Date.now();
-    
+
     // Try to load existing progress
     const resumed = await this.loadProgress();
-    
+
     if (resumed) {
       this.emit('resumed', this.state);
     } else {
       this.emit('started', this.state);
     }
-    
+
     // Start auto-save if enabled
     if (this.options.enableAutoSave) {
       this.startAutoSave();
     }
-    
+
     return resumed;
   }
 
@@ -91,13 +91,13 @@ class ProgressTracker extends EventEmitter {
     try {
       const content = await fs.readFile(this.options.progressFile, 'utf8');
       const savedState = JSON.parse(content);
-      
+
       // Check if progress is recent (within 24 hours)
       const age = Date.now() - savedState.metadata.lastSaved;
       if (age > 24 * 60 * 60 * 1000) {
         return false; // Too old
       }
-      
+
       // Restore state
       this.state = {
         ...savedState,
@@ -109,7 +109,7 @@ class ProgressTracker extends EventEmitter {
           sessionId: this.generateSessionId()
         }
       };
-      
+
       return true;
     } catch (error) {
       // No existing progress or invalid
@@ -124,7 +124,7 @@ class ProgressTracker extends EventEmitter {
     try {
       const dir = path.dirname(this.options.progressFile);
       await fs.mkdir(dir, { recursive: true });
-      
+
       const stateToSave = {
         ...this.state,
         metadata: {
@@ -132,13 +132,13 @@ class ProgressTracker extends EventEmitter {
           lastSaved: Date.now()
         }
       };
-      
+
       await fs.writeFile(
         this.options.progressFile,
         JSON.stringify(stateToSave, null, 2),
         'utf8'
       );
-      
+
       this.emit('saved', stateToSave);
       return true;
     } catch (error) {
@@ -154,7 +154,7 @@ class ProgressTracker extends EventEmitter {
     if (this.autoSaveTimer) {
       clearInterval(this.autoSaveTimer);
     }
-    
+
     this.autoSaveTimer = setInterval(() => {
       this.saveProgress();
     }, this.options.saveInterval);
@@ -183,16 +183,16 @@ class ProgressTracker extends EventEmitter {
    */
   startStep(stepId, stepName) {
     const stepIndex = this.steps.findIndex(s => s.id === stepId);
-    
+
     if (stepIndex !== -1) {
       this.state.currentStep = stepIndex;
     }
-    
+
     this.metrics.stepDurations[stepId] = {
       start: Date.now(),
       name: stepName
     };
-    
+
     this.emit('step:start', {
       id: stepId,
       name: stepName,
@@ -208,26 +208,26 @@ class ProgressTracker extends EventEmitter {
     if (!this.state.completedSteps.includes(stepId)) {
       this.state.completedSteps.push(stepId);
     }
-    
+
     // Record duration
     if (this.metrics.stepDurations[stepId]) {
       this.metrics.stepDurations[stepId].end = Date.now();
-      this.metrics.stepDurations[stepId].duration = 
-        this.metrics.stepDurations[stepId].end - 
+      this.metrics.stepDurations[stepId].duration =
+        this.metrics.stepDurations[stepId].end -
         this.metrics.stepDurations[stepId].start;
     }
-    
+
     // Store step data
     if (data && Object.keys(data).length > 0) {
       this.state.configuration[stepId] = data;
     }
-    
+
     this.emit('step:complete', {
       id: stepId,
       data,
       progress: this.getProgress()
     });
-    
+
     // Auto-save on step completion
     if (this.options.enableAutoSave) {
       this.saveProgress();
@@ -241,7 +241,7 @@ class ProgressTracker extends EventEmitter {
     if (!this.state.skippedSteps.includes(stepId)) {
       this.state.skippedSteps.push(stepId);
     }
-    
+
     this.emit('step:skip', {
       id: stepId,
       reason,
@@ -256,16 +256,16 @@ class ProgressTracker extends EventEmitter {
     if (!this.state.failedSteps.includes(stepId)) {
       this.state.failedSteps.push(stepId);
     }
-    
+
     // Track retry count
     if (!this.metrics.retryCount[stepId]) {
       this.metrics.retryCount[stepId] = 0;
     }
     this.metrics.retryCount[stepId]++;
-    
+
     // Track errors
     this.metrics.errorCount++;
-    
+
     this.emit('step:fail', {
       id: stepId,
       error: error.message,
@@ -285,11 +285,11 @@ class ProgressTracker extends EventEmitter {
       state: JSON.parse(JSON.stringify(this.state)),
       data
     };
-    
+
     this.state.checkpoints.push(checkpoint);
-    
+
     this.emit('checkpoint:created', checkpoint);
-    
+
     return checkpoint.id;
   }
 
@@ -298,11 +298,11 @@ class ProgressTracker extends EventEmitter {
    */
   restoreCheckpoint(checkpointId) {
     const checkpoint = this.state.checkpoints.find(c => c.id === checkpointId);
-    
+
     if (!checkpoint) {
       throw new Error(`Checkpoint ${checkpointId} not found`);
     }
-    
+
     this.state = {
       ...checkpoint.state,
       metadata: {
@@ -311,9 +311,9 @@ class ProgressTracker extends EventEmitter {
         restoredAt: Date.now()
       }
     };
-    
+
     this.emit('checkpoint:restored', checkpoint);
-    
+
     return true;
   }
 
@@ -325,9 +325,9 @@ class ProgressTracker extends EventEmitter {
     const skipped = this.state.skippedSteps.length;
     const failed = this.state.failedSteps.length;
     const total = this.state.totalSteps;
-    
+
     const percentage = total > 0 ? Math.round(((completed + skipped) / total) * 100) : 0;
-    
+
     return {
       percentage,
       completed,
@@ -349,7 +349,7 @@ class ProgressTracker extends EventEmitter {
       ...this.state.skippedSteps,
       ...this.state.failedSteps
     ]);
-    
+
     return this.steps.filter(step => !processed.has(step.id));
   }
 
@@ -374,7 +374,7 @@ class ProgressTracker extends EventEmitter {
    */
   getElapsedTime() {
     if (!this.state.startTime) return 0;
-    
+
     const end = this.state.endTime || Date.now();
     return end - this.state.startTime;
   }
@@ -384,15 +384,15 @@ class ProgressTracker extends EventEmitter {
    */
   getEstimatedTimeRemaining() {
     const progress = this.getProgress();
-    
+
     if (progress.completed === 0) {
       return null; // Can't estimate yet
     }
-    
+
     const elapsed = this.getElapsedTime();
     const averagePerStep = elapsed / progress.completed;
     const remaining = progress.remaining;
-    
+
     return Math.round(averagePerStep * remaining);
   }
 
@@ -403,7 +403,7 @@ class ProgressTracker extends EventEmitter {
     const seconds = Math.floor(ms / 1000);
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
-    
+
     if (hours > 0) {
       return `${hours}h ${minutes % 60}m`;
     }
@@ -420,7 +420,7 @@ class ProgressTracker extends EventEmitter {
     const progress = this.getProgress();
     const elapsed = this.getElapsedTime();
     const estimated = this.getEstimatedTimeRemaining();
-    
+
     return {
       sessionId: this.state.metadata.sessionId,
       resumed: this.state.metadata.resumed || false,
@@ -444,9 +444,9 @@ class ProgressTracker extends EventEmitter {
     const durations = Object.values(this.metrics.stepDurations)
       .filter(d => d.duration)
       .map(d => d.duration);
-    
+
     if (durations.length === 0) return 0;
-    
+
     const total = durations.reduce((a, b) => a + b, 0);
     return Math.round(total / durations.length);
   }
@@ -457,14 +457,14 @@ class ProgressTracker extends EventEmitter {
   complete() {
     this.state.endTime = Date.now();
     this.stopAutoSave();
-    
+
     const summary = this.getSummary();
-    
+
     this.emit('complete', summary);
-    
+
     // Final save
     this.saveProgress();
-    
+
     return summary;
   }
 
@@ -490,20 +490,20 @@ class ProgressTracker extends EventEmitter {
         nodeVersion: process.version
       }
     };
-    
+
     this.metrics = {
       stepDurations: {},
       retryCount: {},
       errorCount: 0
     };
-    
+
     // Delete saved progress
     try {
       await fs.unlink(this.options.progressFile);
     } catch {
       // File might not exist
     }
-    
+
     this.emit('reset');
   }
 

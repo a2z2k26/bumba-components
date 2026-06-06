@@ -63,12 +63,12 @@ class PerformanceMonitor extends EventEmitter {
   }
 
   async initialize() {
-    console.log('📊 Initializing Performance Monitor...');
+    console.log(' Initializing Performance Monitor...');
 
     this.startMonitoring();
     this.setupEventListeners();
 
-    console.log('✅ Performance Monitor initialized');
+    console.log(' Performance Monitor initialized');
     this.emit('monitor-initialized');
   }
 
@@ -80,7 +80,7 @@ class PerformanceMonitor extends EventEmitter {
       this.collectMetrics();
     }, this.config.monitoringInterval);
 
-    console.log(`📈 Performance monitoring started (interval: ${this.config.monitoringInterval}ms)`);
+    console.log(` Performance monitoring started (interval: ${this.config.monitoringInterval}ms)`);
   }
 
   stopMonitoring() {
@@ -92,7 +92,7 @@ class PerformanceMonitor extends EventEmitter {
       this.monitoringTimer = null;
     }
 
-    console.log('📊 Performance monitoring stopped');
+    console.log(' Performance monitoring stopped');
   }
 
   setupEventListeners() {
@@ -332,7 +332,7 @@ class PerformanceMonitor extends EventEmitter {
     alerts.forEach(alert => {
       this.alerts.push(alert);
       this.emit('performance-alert', alert);
-      console.warn(`⚠️ Performance Alert: ${alert.message}`);
+      console.warn(` Performance Alert: ${alert.message}`);
     });
   }
 
@@ -551,10 +551,10 @@ class PerformanceMonitor extends EventEmitter {
   }
 
   shutdown() {
-    console.log('🛑 Shutting down Performance Monitor...');
+    console.log(' Shutting down Performance Monitor...');
     this.stopMonitoring();
     this.emit('monitor-shutdown');
-    console.log('✅ Performance Monitor shutdown complete');
+    console.log(' Performance Monitor shutdown complete');
   }
 }
 

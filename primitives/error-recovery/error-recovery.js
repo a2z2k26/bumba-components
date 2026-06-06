@@ -167,9 +167,9 @@ class MCPErrorRecovery extends EventEmitter {
       if (result.success) {
         // Reset attempts on success
         this.recoveryAttempts.delete(serverName);
-        console.log(`✓ Recovery successful for ${serverName}`);
+        console.log(` Recovery successful for ${serverName}`);
       } else {
-        console.log(`✗ Recovery failed for ${serverName}`);
+        console.log(` Recovery failed for ${serverName}`);
       }
 
       return result;

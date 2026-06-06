@@ -42,7 +42,7 @@ class TaskTemplate extends BaseNotionTemplate {
     blocks.push(this.createDivider());
 
     // Task Metadata
-    blocks.push(this.createHeading('📋 Task Information', 2));
+    blocks.push(this.createHeading(' Task Information', 2));
 
     const metadataItems = [];
     metadataItems.push(`**Status:** ${data.status || 'pending'}`);
@@ -63,7 +63,7 @@ class TaskTemplate extends BaseNotionTemplate {
     blocks.push(this.createDivider());
 
     // Task Description
-    blocks.push(this.createHeading('📝 Description', 2));
+    blocks.push(this.createHeading(' Description', 2));
     if (data.description) {
       blocks.push(this.createParagraph(data.description));
     } else {
@@ -73,7 +73,7 @@ class TaskTemplate extends BaseNotionTemplate {
     blocks.push(this.createDivider());
 
     // Acceptance Criteria
-    blocks.push(this.createHeading('✅ Acceptance Criteria', 2));
+    blocks.push(this.createHeading(' Acceptance Criteria', 2));
 
     if (data.acceptanceCriteria && data.acceptanceCriteria.length > 0) {
       data.acceptanceCriteria.forEach(criterion => {
@@ -91,7 +91,7 @@ class TaskTemplate extends BaseNotionTemplate {
     blocks.push(this.createDivider());
 
     // Implementation Steps
-    blocks.push(this.createHeading('🔨 Implementation Steps', 2));
+    blocks.push(this.createHeading(' Implementation Steps', 2));
 
     if (data.steps && data.steps.length > 0) {
       data.steps.forEach((step, index) => {
@@ -109,10 +109,10 @@ class TaskTemplate extends BaseNotionTemplate {
 
     // Dependencies
     if (data.dependencies && data.dependencies.length > 0) {
-      blocks.push(this.createHeading('🔗 Dependencies', 2));
+      blocks.push(this.createHeading(' Dependencies', 2));
       blocks.push(this.createCallout(
         `This task depends on: ${data.dependencies.join(', ')}`,
-        '⚠️',
+        '',
         'yellow_background'
       ));
       blocks.push(this.createParagraph(''));
@@ -126,7 +126,7 @@ class TaskTemplate extends BaseNotionTemplate {
     }
 
     // Technical Notes
-    blocks.push(this.createHeading('💡 Technical Notes', 2));
+    blocks.push(this.createHeading(' Technical Notes', 2));
 
     if (data.technicalNotes) {
       blocks.push(this.createParagraph(data.technicalNotes));
@@ -142,7 +142,7 @@ class TaskTemplate extends BaseNotionTemplate {
     blocks.push(this.createDivider());
 
     // Testing Notes
-    blocks.push(this.createHeading('🧪 Testing', 2));
+    blocks.push(this.createHeading(' Testing', 2));
 
     if (data.testingNotes) {
       blocks.push(this.createParagraph(data.testingNotes));
@@ -157,7 +157,7 @@ class TaskTemplate extends BaseNotionTemplate {
     blocks.push(this.createDivider());
 
     // Comments/Discussion
-    blocks.push(this.createHeading('💬 Discussion', 2));
+    blocks.push(this.createHeading(' Discussion', 2));
     blocks.push(this.createParagraph('Add comments, questions, or discussion points here.'));
 
     // Effort Estimate Callout
@@ -180,12 +180,12 @@ class TaskTemplate extends BaseNotionTemplate {
    */
   getStatusIcon(status) {
     const icons = {
-      'completed': '✅',
-      'in-progress': '🔄',
-      'pending': '⏸️',
-      'blocked': '🚫'
+      'completed': '',
+      'in-progress': '',
+      'pending': '⏸',
+      'blocked': ''
     };
-    return icons[status] || '📋';
+    return icons[status] || '';
   }
 
   /**
@@ -195,11 +195,11 @@ class TaskTemplate extends BaseNotionTemplate {
    */
   getEffortIcon(effort) {
     const icons = {
-      'low': '🟢',
-      'medium': '🟡',
-      'high': '🔴'
+      'low': '',
+      'medium': '',
+      'high': ''
     };
-    return icons[effort] || '⚪';
+    return icons[effort] || '';
   }
 
   /**

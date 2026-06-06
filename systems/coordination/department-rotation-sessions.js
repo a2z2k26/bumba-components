@@ -16,13 +16,13 @@ class DepartmentRotationSessions {
     this.rotationHistory = [];
     this.learningOutcomes = new Map();
     this.crossTrainingInsights = new Map();
-    
+
     // Enhanced components (90% operational)
     this.scheduler = new RotationScheduler();
     this.knowledgeTracker = new KnowledgeTransferTracker();
     this.optimizer = new RotationOptimizer();
     this.analytics = new RotationAnalytics();
-    
+
     // Enhanced state
     this.enhanced = {
       enabled: true,
@@ -30,7 +30,7 @@ class DepartmentRotationSessions {
       tracking: true,
       analytics: true
     };
-    
+
     this.initializeRotationProgram();
   }
 
@@ -89,20 +89,20 @@ class DepartmentRotationSessions {
   }
 
   async scheduleMonthlyRotations() {
-    logger.info('🏁 Scheduling monthly department rotation sessions');
+    logger.info(' Scheduling monthly department rotation sessions');
 
     if (this.enhanced.enabled && this.enhanced.optimization) {
       // Use enhanced scheduler
       const startDate = new Date();
       const endDate = new Date();
       endDate.setMonth(endDate.getMonth() + 1);
-      
+
       const optimalSchedule = await this.scheduler.createOptimalSchedule(
         startDate,
         endDate,
         this.rotationPairings
       );
-      
+
       // Optimize pairings
       const candidates = await this.gatherCandidates();
       const objectives = {
@@ -110,12 +110,12 @@ class DepartmentRotationSessions {
         requiredSkills: ['leadership', 'communication', 'technical'],
         learningGoals: this.rotationProgram.objectives
       };
-      
+
       const optimization = await this.optimizer.optimizePairings(
         candidates,
         objectives
       );
-      
+
       return optimalSchedule;
     }
 
@@ -134,7 +134,7 @@ class DepartmentRotationSessions {
     }
 
     this.rotationSchedule.set(schedule.month, schedule);
-    
+
     // Notify participants
     await this.notifyRotationParticipants(schedule);
 
@@ -168,7 +168,7 @@ class DepartmentRotationSessions {
 
     // Add specific objectives based on pairing focus
     const focusObjectives = this.getFocusObjectives(pairing.learning_focus);
-    
+
     return [...baseObjectives, ...focusObjectives];
   }
 
@@ -245,7 +245,7 @@ class DepartmentRotationSessions {
   }
 
   async executeRotation(rotationId) {
-    logger.info(`🏁 Executing rotation session ${rotationId}`);
+    logger.info(` Executing rotation session ${rotationId}`);
 
     const rotation = this.findRotation(rotationId);
     if (!rotation) {return null;}
@@ -266,7 +266,7 @@ class DepartmentRotationSessions {
       const activityOutcome = await this.executeActivity(activity, rotation);
       outcomes.insights_gathered.push(...activityOutcome.insights);
       outcomes.knowledge_transferred.push(...activityOutcome.knowledge);
-      
+
       // Track knowledge transfer with enhanced tracker
       if (this.enhanced.tracking) {
         for (const knowledge of activityOutcome.knowledge) {
@@ -296,19 +296,19 @@ class DepartmentRotationSessions {
 
     // Store in history
     this.rotationHistory.push(rotation);
-    
+
     // Update learning outcomes
     this.updateLearningOutcomes(rotation);
-    
+
     // Track with analytics
     if (this.enhanced.analytics) {
       await this.analytics.trackRotation(rotation);
     }
-    
+
     // Update optimizer with outcome
     if (this.enhanced.optimization) {
       this.optimizer.updatePairingHistory(
-        { shadow: rotation.participants[0]?.specialist_id, 
+        { shadow: rotation.participants[0]?.specialist_id,
           host: rotation.participants[1]?.specialist_id },
         { success: true, score: 0.8 }
       );
@@ -318,7 +318,7 @@ class DepartmentRotationSessions {
   }
 
   async executeActivity(activity, rotation) {
-    logger.info(`🏁 Executing rotation activity: ${activity.name}`);
+    logger.info(` Executing rotation activity: ${activity.name}`);
 
     const outcome = {
       activity: activity.name,
@@ -335,7 +335,7 @@ class DepartmentRotationSessions {
           `Key constraint: ${this.generateConstraint(rotation.pairing.host.department)}`
         ];
         break;
-        
+
       case 'observation_and_participation':
         outcome.insights = [
           `Workflow difference: ${this.generateWorkflowInsight(rotation.pairing)}`,
@@ -345,21 +345,21 @@ class DepartmentRotationSessions {
           `New skill: Basic ${rotation.pairing.host.department} methodology`
         ];
         break;
-        
+
       case 'guided_practice':
         outcome.knowledge = [
           `Hands-on experience with ${rotation.pairing.host.department} tools`,
           'Understanding of daily challenges'
         ];
         break;
-        
+
       case 'joint_workshop':
         outcome.insights = [
           `Collaboration opportunity: ${this.generateCollaborationOpportunity(rotation.pairing)}`,
           `Friction point identified: ${this.generateFrictionPoint()}`
         ];
         break;
-        
+
       case 'structured_discussion':
         outcome.insights = [
           `Key learning: ${this.generateKeyLearning(rotation.pairing)}`,
@@ -431,7 +431,7 @@ class DepartmentRotationSessions {
   updateLearningOutcomes(rotation) {
     for (const participant of rotation.participants) {
       const key = participant.specialist_id;
-      
+
       if (!this.learningOutcomes.has(key)) {
         this.learningOutcomes.set(key, {
           rotations_completed: 0,
@@ -469,7 +469,7 @@ class DepartmentRotationSessions {
   }
 
   async notifyRotationParticipants(schedule) {
-    logger.info(`🏁 Notifying ${schedule.total_participants} participants about rotation schedule`);
+    logger.info(` Notifying ${schedule.total_participants} participants about rotation schedule`);
     // In reality, would send notifications
   }
 
@@ -561,7 +561,7 @@ class DepartmentRotationSessions {
       insights_generated: this.calculateTotalInsights(),
       improvements_implemented: this.countImplementedImprovements()
     };
-    
+
     // Add enhanced metrics if available
     if (this.enhanced.enabled) {
       return {
@@ -572,22 +572,22 @@ class DepartmentRotationSessions {
         analytics: this.analytics?.getAnalyticsDashboard()
       };
     }
-    
+
     return baseMetrics;
   }
-  
+
   // Enhanced methods
-  
+
   /**
    * Gather candidates for rotation
    */
   async gatherCandidates() {
     const candidates = [];
     const departments = ['technical', 'experience', 'strategic'];
-    
+
     for (const dept of departments) {
       const specialists = this.getDepartmentSpecialists(dept);
-      
+
       for (const specialist of specialists) {
         candidates.push({
           id: `${dept}-${specialist}`,
@@ -600,10 +600,10 @@ class DepartmentRotationSessions {
         });
       }
     }
-    
+
     return candidates;
   }
-  
+
   /**
    * Get department specialists
    */
@@ -613,10 +613,10 @@ class DepartmentRotationSessions {
       experience: ['ux-research', 'ui-design', 'accessibility'],
       strategic: ['product', 'market-research', 'business-model']
     };
-    
+
     return specialists[department] || [];
   }
-  
+
   /**
    * Get specialist skills
    */
@@ -628,10 +628,10 @@ class DepartmentRotationSessions {
       'ui-design': ['figma', 'prototyping', 'visual-design'],
       product: ['roadmapping', 'prioritization', 'stakeholder-management']
     };
-    
+
     return skills[specialist] || ['general'];
   }
-  
+
   /**
    * Generate learning goals
    */
@@ -639,39 +639,39 @@ class DepartmentRotationSessions {
     const goals = ['leadership', 'communication', 'technical', 'design', 'strategy'];
     return goals.filter(() => Math.random() > 0.5);
   }
-  
+
   /**
    * Generate available dates
    */
   generateAvailableDates() {
     const dates = [];
     const today = new Date();
-    
+
     for (let i = 0; i < 30; i++) {
       const date = new Date(today);
       date.setDate(date.getDate() + i);
-      
+
       if (date.getDay() !== 0 && date.getDay() !== 6 && Math.random() > 0.3) {
         dates.push(date.toISOString().split('T')[0]);
       }
     }
-    
+
     return dates;
   }
-  
+
   /**
    * Parse duration string to minutes
    */
   parseDuration(durationStr) {
     const match = durationStr.match(/(\d+)\s*(hour|minute)/i);
     if (!match) return 60;
-    
+
     const value = parseInt(match[1]);
     const unit = match[2].toLowerCase();
-    
+
     return unit.includes('hour') ? value * 60 : value;
   }
-  
+
   /**
    * Get enhanced status
    */
@@ -679,7 +679,7 @@ class DepartmentRotationSessions {
     if (!this.enhanced.enabled) {
       return this.getRotationMetrics();
     }
-    
+
     return {
       operational: '90%',
       components: {
@@ -692,30 +692,30 @@ class DepartmentRotationSessions {
       recommendations: await this.getRecommendations()
     };
   }
-  
+
   /**
    * Get recommendations
    */
   async getRecommendations() {
     const recommendations = [];
-    
+
     if (this.optimizer) {
       const candidates = await this.gatherCandidates();
       const objectives = { minimumPairings: 6 };
       const optimizerRecs = this.optimizer.getRecommendations(candidates, objectives);
       recommendations.push(...optimizerRecs);
     }
-    
+
     if (this.analytics) {
       const analyticsData = this.analytics.getAnalyticsDashboard();
       if (analyticsData.recommendations) {
         recommendations.push(...analyticsData.recommendations);
       }
     }
-    
+
     return recommendations;
   }
-  
+
   /**
    * Measure effectiveness
    */
@@ -723,10 +723,10 @@ class DepartmentRotationSessions {
     if (!this.knowledgeTracker) {
       return { effectiveness: 0.5, message: 'Enhanced tracking not available' };
     }
-    
+
     return await this.knowledgeTracker.measureEffectiveness(rotationId);
   }
-  
+
   /**
    * Get long-term impact
    */
@@ -734,7 +734,7 @@ class DepartmentRotationSessions {
     if (!this.analytics) {
       return { status: 'not_available', message: 'Enhanced analytics not enabled' };
     }
-    
+
     return await this.analytics.calculateLongTermImpact(startDate, endDate);
   }
 
@@ -757,7 +757,7 @@ class DepartmentRotationSessions {
   }
 
   calculateTotalInsights() {
-    return this.rotationHistory.reduce((total, rotation) => 
+    return this.rotationHistory.reduce((total, rotation) =>
       total + (rotation.outcomes?.insights_gathered?.length || 0), 0
     );
   }

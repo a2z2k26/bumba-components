@@ -252,7 +252,7 @@ class ErrorRecoverySystem extends EventEmitter {
     try {
       // If original operation has partial data available
       if (context.partialData) {
-        console.log('⚠️  Attempting partial sync with available data');
+        console.log('  Attempting partial sync with available data');
 
         return {
           success: true,
@@ -284,7 +284,7 @@ class ErrorRecoverySystem extends EventEmitter {
       const cacheData = await fs.readFile(cachePath, 'utf8');
       const cachedResult = JSON.parse(cacheData);
 
-      console.log('✓ Restored from cache:', cacheKey);
+      console.log(' Restored from cache:', cacheKey);
 
       return {
         success: true,

@@ -1,6 +1,6 @@
 /**
  * Command Routing TypeScript Definitions
- * Command Router for the BUMBA Platform
+ * Command Router for the Agent Primitives
  * @module @bumba/command-routing
  */
 

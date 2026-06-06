@@ -57,7 +57,7 @@ class MCPControlUI {
 
     // Server list (left side)
     this.widgets.serverList = this.grid.set(0, 0, 8, 6, blessed.list, {
-      label: ' 📦 MCP Servers ',
+      label: '  MCP Servers ',
       border: { type: 'line' },
       style: {
         border: { fg: 'cyan' },
@@ -70,7 +70,7 @@ class MCPControlUI {
 
     // Status monitor (right top)
     this.widgets.statusMonitor = this.grid.set(0, 6, 4, 6, contrib.table, {
-      label: ' 📊 Server Status ',
+      label: '  Server Status ',
       columnWidth: [20, 10, 10, 10],
       border: { type: 'line' },
       style: { border: { fg: 'green' } }
@@ -78,7 +78,7 @@ class MCPControlUI {
 
     // Performance chart (right middle)
     this.widgets.perfChart = this.grid.set(4, 6, 4, 6, contrib.line, {
-      label: ' 📈 Performance ',
+      label: '  Performance ',
       showLegend: true,
       border: { type: 'line' },
       style: { border: { fg: 'yellow' } }
@@ -86,14 +86,14 @@ class MCPControlUI {
 
     // Control panel (bottom)
     this.widgets.controlPanel = this.grid.set(8, 0, 2, 12, blessed.box, {
-      label: ' ⚙️ Controls ',
+      label: '  Controls ',
       border: { type: 'line' },
       style: { border: { fg: 'magenta' } }
     });
 
     // Log viewer (very bottom)
     this.widgets.logViewer = this.grid.set(10, 0, 2, 12, contrib.log, {
-      label: ' 📜 Activity Log ',
+      label: '  Activity Log ',
       border: { type: 'line' },
       style: { border: { fg: 'gray' } }
     });
@@ -116,7 +116,7 @@ class MCPControlUI {
       const servers = this.registry.getServersByCategory(category.key);
       for (const server of servers) {
         const isActive = status.active.some(s => s.name === server.name);
-        const icon = isActive ? '🟢' : '⚪';
+        const icon = isActive ? '' : '';
         items.push(`  ${icon} ${server.displayName}`);
       }
     }
@@ -374,9 +374,9 @@ class MCPControlUI {
 
     for (const result of results) {
       if (result.success) {
-        this.logActivity(`✓ Started: ${result.serverName}`);
+        this.logActivity(` Started: ${result.serverName}`);
       } else {
-        this.logActivity(`✗ Failed: ${result.serverName}`);
+        this.logActivity(` Failed: ${result.serverName}`);
       }
     }
 
@@ -393,9 +393,9 @@ class MCPControlUI {
 
     for (const result of results) {
       if (result.success) {
-        this.logActivity(`✓ Stopped: ${result.serverName}`);
+        this.logActivity(` Stopped: ${result.serverName}`);
       } else {
-        this.logActivity(`✗ Failed: ${result.serverName}`);
+        this.logActivity(` Failed: ${result.serverName}`);
       }
     }
 
@@ -413,9 +413,9 @@ class MCPControlUI {
     const result = await this.loader.restartServer(this.selectedServer);
 
     if (result.success) {
-      this.logActivity(`✓ Restarted: ${this.selectedServer}`);
+      this.logActivity(` Restarted: ${this.selectedServer}`);
     } else {
-      this.logActivity(`✗ Failed: ${result.error}`);
+      this.logActivity(` Failed: ${result.error}`);
     }
 
     this.populateServerList();
@@ -441,7 +441,7 @@ class MCPControlUI {
    */
   getServerNameFromItem(text) {
     // Remove status icon and padding
-    const cleaned = text.replace(/^[\s🟢⚪]+/, '').trim();
+    const cleaned = text.replace(/^[\s]+/, '').trim();
 
     // Find matching server
     for (const [name, def] of this.registry.servers) {

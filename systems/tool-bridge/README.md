@@ -9,33 +9,33 @@
 
 <div align="center">
 
-# 🏁 Tool Bridge - Universal AI Gateway Primitive
+#  Tool Bridge - Universal AI Gateway Primitive
 
-**A Core Component of the BUMBA Platform**
+**A Core Component of the Agent Primitives**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-gold.svg)](https://opensource.org/licenses/MIT)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D16.0.0-00AA00)](https://nodejs.org)
-[![BUMBA Platform](https://img.shields.io/badge/BUMBA-Platform-FFDD00)](https://github.com/a2z2k26/bumba-features)
+[![Agent Primitives](https://img.shields.io/badge/BUMBA-Platform-FFDD00)](https://github.com/a2z2k26/agent-primitives)
 
 </div>
 
 ---
 
-## 🟡 Overview
+##  Overview
 
 **Tool Bridge is a foundational primitive for AI infrastructure - a universal gateway component that unifies multiple AI providers.**
 
 Switch between OpenAI, Anthropic, and Google AI instantly. No code changes needed. This building block handles all the protocol translation and routing complexity for you.
 
-## 🟢 Core Capabilities
+##  Core Capabilities
 
-- **🏁 Protocol Translation** - Use any SDK with any provider
-- **🏁 Unified Interface** - Single endpoint for all AI providers
-- **🏁 Built-in Security** - JWT, rate limiting, CORS protection
-- **🏁 Stream Support** - WebSocket real-time responses
-- **🏁 Docker Ready** - Deploy anywhere instantly
+- ** Protocol Translation** - Use any SDK with any provider
+- ** Unified Interface** - Single endpoint for all AI providers
+- ** Built-in Security** - JWT, rate limiting, CORS protection
+- ** Stream Support** - WebSocket real-time responses
+- ** Docker Ready** - Deploy anywhere instantly
 
-## 🔴 Installation
+##  Installation
 
 ```bash
 # npm (recommended)
@@ -45,11 +45,11 @@ npm install -g tool-bridge
 docker pull tool-bridge:latest
 
 # From source
-git clone https://github.com/a2z2k26/bumba-features.git
+git clone https://github.com/a2z2k26/agent-primitives.git
 cd tool-bridge && npm install && npm link
 ```
 
-## 🟠 Quick Start
+##  Quick Start
 
 ```bash
 # Setup & start
@@ -71,7 +71,7 @@ const response = await openai.chat.completions.create({
 });
 ```
 
-## 🟡 Commands
+##  Commands
 
 ```bash
 tool-bridge start            # Launch gateway
@@ -80,7 +80,7 @@ tool-bridge status           # Check status
 tool-bridge test             # Test connections
 ```
 
-## 🟢 API Endpoints
+##  API Endpoints
 
 | Endpoint | Description |
 |----------|-------------|
@@ -90,11 +90,11 @@ tool-bridge test             # Test connections
 | `GET /api/models` | List available models |
 | `GET /health` | Health check |
 
-## 🔴 Configuration
+##  Configuration
 
 Configuration lives in `~/.tool-bridge/config.json` - managed via CLI or direct editing.
 
-## 🟠 Docker
+##  Docker
 
 ```bash
 docker run -p 3456:3456 \
@@ -103,15 +103,15 @@ docker run -p 3456:3456 \
   tool-bridge:latest
 ```
 
-## 🟡 Security
+##  Security
 
 Built-in JWT authentication, rate limiting, CORS protection, and centralized API key management.
 
-## 🟢 Support
+##  Support
 
-- **Issues**: [GitHub Issues](https://github.com/a2z2k26/bumba-features/issues)
+- **Issues**: [GitHub Issues](https://github.com/a2z2k26/agent-primitives/issues)
 
-## 🔴 License
+##  License
 
 MIT License - see [LICENSE](LICENSE) file for details.
 
@@ -119,7 +119,7 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 <div align="center">
 
-**🏁 Tool Bridge** - A **BUMBA Platform** Primitive 🏁
+** Tool Bridge** - A **Agent Primitives** Primitive
 
 *Building Unified Multi-agent Business Applications*
 

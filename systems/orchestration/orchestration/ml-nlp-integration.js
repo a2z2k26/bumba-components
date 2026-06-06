@@ -15,7 +15,7 @@ class MLNLPIntegration {
 
   initializeNLPSystem() {
     const apis = this.detectNLPAPIs();
-    
+
     return {
       enabled: Object.values(apis).some(api => api.available),
       apis,
@@ -30,7 +30,7 @@ class MLNLPIntegration {
       confidence: this.calculateNLPConfidence(apis)
     };
   }
-  
+
   detectNLPAPIs() {
     const apis = {};
     const nlpPackages = [
@@ -41,7 +41,7 @@ class MLNLPIntegration {
       { name: 'spacy', package: 'spacy-js' },
       { name: 'stanford_nlp', package: 'node-nlp' }
     ];
-    
+
     nlpPackages.forEach(nlp => {
       try {
         require.resolve(nlp.package);
@@ -50,10 +50,10 @@ class MLNLPIntegration {
         apis[nlp.name] = { available: false, fallback: 'heuristic', confidence: 0.65 };
       }
     });
-    
+
     return apis;
   }
-  
+
   initializeTokenizer(apis) {
     if (apis.natural?.available) {
       return { type: 'natural', confidence: 0.9 };
@@ -62,7 +62,7 @@ class MLNLPIntegration {
     }
     return { type: 'regex', confidence: 0.7 };
   }
-  
+
   initializePOSTagger(apis) {
     if (apis.spacy?.available) {
       return { type: 'spacy', confidence: 0.95 };
@@ -71,7 +71,7 @@ class MLNLPIntegration {
     }
     return { type: 'rule-based', confidence: 0.7 };
   }
-  
+
   initializeNER(apis) {
     if (apis.spacy?.available) {
       return { type: 'spacy', confidence: 0.92 };
@@ -80,7 +80,7 @@ class MLNLPIntegration {
     }
     return { type: 'pattern-matching', confidence: 0.65 };
   }
-  
+
   initializeSentimentAnalyzer(apis) {
     if (apis.natural?.available) {
       return { type: 'natural', confidence: 0.88 };
@@ -89,27 +89,27 @@ class MLNLPIntegration {
     }
     return { type: 'lexicon-based', confidence: 0.75 };
   }
-  
+
   initializeSummarizer(apis) {
     if (apis.nlp_js?.available) {
       return { type: 'nlp_js', confidence: 0.85 };
     }
     return { type: 'extractive', confidence: 0.7 };
   }
-  
+
   calculateNLPConfidence(apis) {
     const availableAPIs = Object.values(apis).filter(api => api.available);
     if (availableAPIs.length === 0) return 0.6;
-    
+
     const avgConfidence = availableAPIs.reduce((sum, api) => sum + api.confidence, 0) / availableAPIs.length;
     return Math.min(0.95, avgConfidence);
   }
 
   // ========== MACHINE LEARNING INTEGRATION ==========
-  
+
   initializeMLIntegration() {
     const apis = this.detectMLAPIs();
-    
+
     return {
       enabled: Object.values(apis).some(api => api.available),
       apis,
@@ -129,7 +129,7 @@ class MLNLPIntegration {
       confidence: this.calculateMLConfidence(apis)
     };
   }
-  
+
   detectMLAPIs() {
     const apis = {};
     const mlPackages = [
@@ -140,7 +140,7 @@ class MLNLPIntegration {
       { name: 'synaptic', package: 'synaptic' },
       { name: 'pytorch', package: 'pytorchjs' }
     ];
-    
+
     mlPackages.forEach(ml => {
       try {
         require.resolve(ml.package);
@@ -149,10 +149,10 @@ class MLNLPIntegration {
         apis[ml.name] = { available: false, fallback: 'statistical', confidence: 0.7 };
       }
     });
-    
+
     return apis;
   }
-  
+
   initializeClassificationModel(apis) {
     if (apis.tensorflow?.available) {
       return { type: 'neural-network', framework: 'tensorflow', confidence: 0.92 };
@@ -163,7 +163,7 @@ class MLNLPIntegration {
     }
     return { type: 'naive-bayes', framework: 'custom', confidence: 0.7 };
   }
-  
+
   initializeClusteringModel(apis) {
     if (apis.ml_js?.available) {
       return { type: 'kmeans', framework: 'ml.js', confidence: 0.88 };
@@ -172,7 +172,7 @@ class MLNLPIntegration {
     }
     return { type: 'hierarchical', framework: 'custom', confidence: 0.72 };
   }
-  
+
   initializeRegressionModel(apis) {
     if (apis.tensorflow?.available) {
       return { type: 'deep-regression', framework: 'tensorflow', confidence: 0.9 };
@@ -181,14 +181,14 @@ class MLNLPIntegration {
     }
     return { type: 'linear', framework: 'custom', confidence: 0.75 };
   }
-  
+
   initializeDeepLearningModel(apis) {
     if (apis.tensorflow?.available) {
-      return { 
-        type: 'transformer', 
-        framework: 'tensorflow', 
+      return {
+        type: 'transformer',
+        framework: 'tensorflow',
         architecture: 'attention-based',
-        confidence: 0.93 
+        confidence: 0.93
       };
     } else if (apis.pytorch?.available) {
       return { type: 'cnn', framework: 'pytorch', confidence: 0.9 };
@@ -197,55 +197,55 @@ class MLNLPIntegration {
     }
     return { type: 'shallow-network', framework: 'custom', confidence: 0.65 };
   }
-  
+
   initializeReinforcementLearning(apis) {
     if (apis.tensorflow?.available) {
       return { type: 'dqn', framework: 'tensorflow', confidence: 0.88 };
     }
     return { type: 'q-learning', framework: 'custom', confidence: 0.7 };
   }
-  
+
   initializeHyperparameterTuning(apis) {
     if (apis.ml_js?.available) {
       return { type: 'grid-search', optimization: 'bayesian', confidence: 0.85 };
     }
     return { type: 'random-search', optimization: 'manual', confidence: 0.7 };
   }
-  
+
   initializeFeatureEngineering(apis) {
     if (apis.scikit_js?.available) {
       return { type: 'automatic', methods: ['pca', 'lda', 'autoencoder'], confidence: 0.87 };
     }
     return { type: 'manual', methods: ['correlation', 'variance'], confidence: 0.72 };
   }
-  
+
   initializeModelSelection(apis) {
     if (apis.ml_js?.available) {
       return { type: 'cross-validation', folds: 10, confidence: 0.88 };
     }
     return { type: 'train-test-split', ratio: 0.8, confidence: 0.75 };
   }
-  
+
   initializeMLConsensus(apis) {
     if (apis.tensorflow?.available) {
       return { type: 'ensemble', methods: ['voting', 'stacking', 'boosting'], confidence: 0.9 };
     }
     return { type: 'weighted-average', confidence: 0.75 };
   }
-  
+
   calculateMLConfidence(apis) {
     const availableAPIs = Object.values(apis).filter(api => api.available);
     if (availableAPIs.length === 0) return 0.65;
-    
+
     const avgConfidence = availableAPIs.reduce((sum, api) => sum + api.confidence, 0) / availableAPIs.length;
     return Math.min(0.95, avgConfidence);
   }
 
   // ========== SEMANTIC ANALYSIS ==========
-  
+
   initializeSemanticAnalyzer() {
     const hasEmbeddings = this.detectEmbeddingAPIs();
-    
+
     return {
       enabled: hasEmbeddings.available,
       embeddings: hasEmbeddings,
@@ -272,7 +272,7 @@ class MLNLPIntegration {
       }
     };
   }
-  
+
   detectEmbeddingAPIs() {
     const embeddingAPIs = [
       'sentence-transformers',
@@ -281,10 +281,10 @@ class MLNLPIntegration {
       'glove',
       'fasttext'
     ];
-    
+
     let available = false;
     let method = 'tfidf';
-    
+
     for (const api of embeddingAPIs) {
       try {
         require.resolve(api);
@@ -295,7 +295,7 @@ class MLNLPIntegration {
         // Continue to next
       }
     }
-    
+
     return {
       available,
       method,

@@ -13,7 +13,7 @@ class MCPDetector {
       this.checkClaudeDesktop.bind(this),
       this.checkEnvironmentConfig.bind(this)
     ];
-    
+
     this.cache = {
       lastCheck: null,
       result: null,
@@ -26,7 +26,7 @@ class MCPDetector {
    */
   async detect() {
     // Check cache
-    if (this.cache.lastCheck && 
+    if (this.cache.lastCheck &&
         Date.now() - this.cache.lastCheck < this.cache.ttl) {
       return this.cache.result;
     }
@@ -36,7 +36,7 @@ class MCPDetector {
       try {
         const result = await method();
         if (result.available) {
-          logger.info(`✅ MCP server detected via ${result.method}`);
+          logger.info(` MCP server detected via ${result.method}`);
           this.cache.lastCheck = Date.now();
           this.cache.result = result;
           return result;
@@ -47,12 +47,12 @@ class MCPDetector {
     }
 
     // No MCP server found
-    const result = { 
-      available: false, 
+    const result = {
+      available: false,
       method: 'none',
       message: 'No MCP server detected'
     };
-    
+
     this.cache.lastCheck = Date.now();
     this.cache.result = result;
     return result;
@@ -63,27 +63,27 @@ class MCPDetector {
    */
   async checkHTTPServer() {
     const url = process.env.NOTION_MCP_SERVER_URL || 'http://localhost:3000';
-    
+
     try {
       // Use native fetch if available, otherwise fall back
       const fetchImpl = typeof fetch !== 'undefined' ? fetch : require('node-fetch');
-      
+
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 2000);
-      
+
       const response = await fetchImpl(`${url}/health`, {
         method: 'GET',
         signal: controller.signal
       });
-      
+
       clearTimeout(timeout);
-      
+
       if (response.ok) {
         const data = await response.json();
-        
+
         // Validate it's a Notion MCP server
-        if (data.status === 'ready' && 
-            data.capabilities && 
+        if (data.status === 'ready' &&
+            data.capabilities &&
             data.capabilities.includes('notion')) {
           return {
             available: true,
@@ -98,7 +98,7 @@ class MCPDetector {
       // Server not available or timeout
       logger.debug(`HTTP MCP server not available at ${url}`);
     }
-    
+
     return { available: false };
   }
 
@@ -108,7 +108,7 @@ class MCPDetector {
   async checkIPCSocket() {
     const net = require('net');
     const os = require('os');
-    
+
     // Common IPC socket paths
     const socketPaths = [
       process.env.NOTION_MCP_SOCKET,
@@ -116,27 +116,27 @@ class MCPDetector {
       `${os.homedir()}/.notion-mcp/socket`,
       process.platform === 'win32' ? '\\\\.\\pipe\\notion-mcp' : null
     ].filter(Boolean);
-    
+
     for (const socketPath of socketPaths) {
       try {
         const connected = await new Promise((resolve) => {
           const client = net.createConnection(socketPath);
-          
+
           client.on('connect', () => {
             client.end();
             resolve(true);
           });
-          
+
           client.on('error', () => {
             resolve(false);
           });
-          
+
           setTimeout(() => {
             client.destroy();
             resolve(false);
           }, 1000);
         });
-        
+
         if (connected) {
           return {
             available: true,
@@ -149,7 +149,7 @@ class MCPDetector {
         continue;
       }
     }
-    
+
     return { available: false };
   }
 
@@ -160,7 +160,7 @@ class MCPDetector {
     // Check if running in Claude Desktop environment
     if (typeof window !== 'undefined' && window.__MCP_SERVERS__) {
       const notionServer = window.__MCP_SERVERS__.notion;
-      
+
       if (notionServer && notionServer.status === 'connected') {
         return {
           available: true,
@@ -169,26 +169,26 @@ class MCPDetector {
         };
       }
     }
-    
+
     // Check for Claude Desktop config file
     const fs = require('fs').promises;
     const path = require('path');
     const os = require('os');
-    
+
     const configPaths = [
       path.join(os.homedir(), 'Library', 'Application Support', 'Claude', 'mcp.json'),
       path.join(os.homedir(), '.config', 'claude', 'mcp.json'),
       path.join(os.homedir(), 'AppData', 'Roaming', 'Claude', 'mcp.json')
     ];
-    
+
     for (const configPath of configPaths) {
       try {
         const config = JSON.parse(await fs.readFile(configPath, 'utf8'));
-        
+
         if (config.mcpServers && config.mcpServers.notion) {
           // Verify the server is actually running
           const notionConfig = config.mcpServers.notion;
-          
+
           // Try to validate it's running
           if (notionConfig.command) {
             return {
@@ -203,7 +203,7 @@ class MCPDetector {
         continue;
       }
     }
-    
+
     return { available: false };
   }
 
@@ -226,7 +226,7 @@ class MCPDetector {
         };
       }
     }
-    
+
     return { available: false };
   }
 
@@ -237,27 +237,27 @@ class MCPDetector {
     if (!serverInfo.available) {
       return { success: false, message: 'No MCP server available' };
     }
-    
+
     try {
       // Test based on connection method
       switch (serverInfo.method) {
         case 'http':
           return await this.testHTTPCapabilities(serverInfo);
-        
+
         case 'ipc':
           return await this.testIPCCapabilities(serverInfo);
-        
+
         case 'claude-desktop':
         case 'claude-desktop-config':
           return await this.testClaudeDesktopCapabilities(serverInfo);
-        
+
         default:
           return { success: true, message: 'MCP server detected but not tested' };
       }
     } catch (error) {
-      return { 
-        success: false, 
-        message: `Failed to test capabilities: ${error.message}` 
+      return {
+        success: false,
+        message: `Failed to test capabilities: ${error.message}`
       };
     }
   }
@@ -267,7 +267,7 @@ class MCPDetector {
    */
   async testHTTPCapabilities(serverInfo) {
     const fetchImpl = typeof fetch !== 'undefined' ? fetch : require('node-fetch');
-    
+
     try {
       // Test create operation
       const response = await fetchImpl(`${serverInfo.url}/test`, {
@@ -278,21 +278,21 @@ class MCPDetector {
           data: { test: true }
         })
       });
-      
+
       if (response.ok) {
-        return { 
-          success: true, 
+        return {
+          success: true,
           message: 'MCP server operational',
-          capabilities: serverInfo.capabilities 
+          capabilities: serverInfo.capabilities
         };
       }
     } catch (error) {
       logger.debug('Capability test failed:', error);
     }
-    
-    return { 
-      success: false, 
-      message: 'MCP server detected but not operational' 
+
+    return {
+      success: false,
+      message: 'MCP server detected but not operational'
     };
   }
 
@@ -301,10 +301,10 @@ class MCPDetector {
    */
   async testIPCCapabilities(serverInfo) {
     // Implementation would depend on IPC protocol
-    return { 
-      success: true, 
+    return {
+      success: true,
       message: 'IPC socket detected',
-      socketPath: serverInfo.socketPath 
+      socketPath: serverInfo.socketPath
     };
   }
 
@@ -316,22 +316,22 @@ class MCPDetector {
     if (typeof window !== 'undefined' && window.__MCP_SERVERS__) {
       try {
         const result = await window.__MCP_SERVERS__.notion.test();
-        return { 
-          success: true, 
+        return {
+          success: true,
           message: 'Claude Desktop MCP operational',
-          result 
+          result
         };
       } catch (error) {
-        return { 
-          success: false, 
-          message: 'Claude Desktop MCP not responding' 
+        return {
+          success: false,
+          message: 'Claude Desktop MCP not responding'
         };
       }
     }
-    
-    return { 
-      success: true, 
-      message: 'Claude Desktop MCP configured' 
+
+    return {
+      success: true,
+      message: 'Claude Desktop MCP configured'
     };
   }
 

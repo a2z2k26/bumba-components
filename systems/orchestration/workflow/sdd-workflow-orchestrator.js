@@ -82,7 +82,7 @@ class SDDWorkflowOrchestrator extends EventEmitter {
       this.setState(WorkflowState.SPECIFYING);
       this.emit('workflow:start', this.currentWorkflow);
 
-      console.log(chalk.cyan.bold('\n🔄 BUMBA SDD Workflow Orchestrator'));
+      console.log(chalk.cyan.bold('\n BUMBA SDD Workflow Orchestrator'));
       console.log(chalk.gray('━'.repeat(60)));
       console.log(chalk.white(`  Description: ${description}`));
       console.log(chalk.white(`  Mode: ${options.mode || this.config.mode}`));
@@ -128,7 +128,7 @@ class SDDWorkflowOrchestrator extends EventEmitter {
       this.emit('workflow:failed', error);
       await this.saveWorkflowState();
 
-      console.error(chalk.red('\n❌ Workflow failed:'), error.message);
+      console.error(chalk.red('\n Workflow failed:'), error.message);
       throw error;
     }
   }
@@ -161,7 +161,7 @@ class SDDWorkflowOrchestrator extends EventEmitter {
    * Run Specify stage
    */
   async runSpecifyStage(description, options = {}) {
-    console.log(chalk.green.bold('\n📝 Stage 1: Specification'));
+    console.log(chalk.green.bold('\n Stage 1: Specification'));
     console.log(chalk.gray('─'.repeat(60)));
 
     this.setState(WorkflowState.SPECIFYING);
@@ -190,7 +190,7 @@ class SDDWorkflowOrchestrator extends EventEmitter {
       this.emit('stage:specify:complete', result.spec);
       await this.saveWorkflowState();
 
-      console.log(chalk.green('✅ Specification stage complete'));
+      console.log(chalk.green(' Specification stage complete'));
 
       return result;
 
@@ -206,7 +206,7 @@ class SDDWorkflowOrchestrator extends EventEmitter {
    * Run Plan stage
    */
   async runPlanStage(options = {}) {
-    console.log(chalk.green.bold('\n📋 Stage 2: Planning'));
+    console.log(chalk.green.bold('\n Stage 2: Planning'));
     console.log(chalk.gray('─'.repeat(60)));
 
     this.setState(WorkflowState.PLANNING);
@@ -235,7 +235,7 @@ class SDDWorkflowOrchestrator extends EventEmitter {
       this.emit('stage:plan:complete', result.plan);
       await this.saveWorkflowState();
 
-      console.log(chalk.green('✅ Planning stage complete'));
+      console.log(chalk.green(' Planning stage complete'));
 
       return result;
 
@@ -251,7 +251,7 @@ class SDDWorkflowOrchestrator extends EventEmitter {
    * Run Execute stage
    */
   async runExecuteStage(options = {}) {
-    console.log(chalk.green.bold('\n⚡ Stage 3: Execution'));
+    console.log(chalk.green.bold('\n Stage 3: Execution'));
     console.log(chalk.gray('─'.repeat(60)));
 
     this.setState(WorkflowState.EXECUTING);
@@ -280,7 +280,7 @@ class SDDWorkflowOrchestrator extends EventEmitter {
       this.emit('stage:execute:complete', result.results);
       await this.saveWorkflowState();
 
-      console.log(chalk.green('✅ Execution stage complete'));
+      console.log(chalk.green(' Execution stage complete'));
 
       return result;
 
@@ -296,7 +296,7 @@ class SDDWorkflowOrchestrator extends EventEmitter {
    * Run Complete stage
    */
   async runCompleteStage() {
-    console.log(chalk.green.bold('\n🎉 Stage 4: Completion'));
+    console.log(chalk.green.bold('\n Stage 4: Completion'));
     console.log(chalk.gray('─'.repeat(60)));
 
     this.emit('stage:complete:start');
@@ -322,10 +322,10 @@ class SDDWorkflowOrchestrator extends EventEmitter {
       this.emit('stage:complete:complete');
       await this.saveWorkflowState();
 
-      console.log(chalk.green('✅ Workflow completion processing done'));
+      console.log(chalk.green(' Workflow completion processing done'));
 
     } catch (error) {
-      console.warn(chalk.yellow('⚠️  Completion processing had issues:'), error.message);
+      console.warn(chalk.yellow('  Completion processing had issues:'), error.message);
       // Don't fail the workflow for completion issues
     }
   }
@@ -346,10 +346,10 @@ class SDDWorkflowOrchestrator extends EventEmitter {
         body: this.formatCompletionComment()
       });
 
-      console.log(chalk.gray('  ℹ️  GitHub issue updated'));
+      console.log(chalk.gray('  ℹ  GitHub issue updated'));
 
     } catch (error) {
-      console.warn(chalk.yellow('  ⚠️  Could not update GitHub issue:'), error.message);
+      console.warn(chalk.yellow('    Could not update GitHub issue:'), error.message);
     }
   }
 
@@ -360,15 +360,15 @@ class SDDWorkflowOrchestrator extends EventEmitter {
     const workflow = this.currentWorkflow;
     const duration = this.calculateDuration();
 
-    let comment = `## ✅ Workflow Completed\n\n`;
+    let comment = `##  Workflow Completed\n\n`;
     comment += `**Specification:** ${workflow.spec.title}\n`;
     comment += `**Workflow ID:** ${workflow.id}\n`;
     comment += `**Duration:** ${duration}\n\n`;
 
     comment += `### Stages\n`;
-    comment += `- ✅ Specification: ${workflow.stages.specify.status}\n`;
-    comment += `- ✅ Planning: ${workflow.stages.plan.status}\n`;
-    comment += `- ✅ Execution: ${workflow.stages.execute.status}\n\n`;
+    comment += `-  Specification: ${workflow.stages.specify.status}\n`;
+    comment += `-  Planning: ${workflow.stages.plan.status}\n`;
+    comment += `-  Execution: ${workflow.stages.execute.status}\n\n`;
 
     if (workflow.execution) {
       comment += `### Execution Summary\n`;
@@ -482,18 +482,18 @@ class SDDWorkflowOrchestrator extends EventEmitter {
    * Resume paused workflow
    */
   async resume(workflowId) {
-    console.log(chalk.cyan(`\n🔄 Resuming workflow ${workflowId}...`));
+    console.log(chalk.cyan(`\n Resuming workflow ${workflowId}...`));
 
     // Load workflow state
     await this.loadWorkflowState(workflowId);
 
     if (this.currentWorkflow.state === WorkflowState.COMPLETED) {
-      console.log(chalk.yellow('⚠️  Workflow already completed'));
+      console.log(chalk.yellow('  Workflow already completed'));
       return this.currentWorkflow;
     }
 
     if (this.currentWorkflow.state === WorkflowState.FAILED) {
-      console.log(chalk.red('❌ Cannot resume failed workflow'));
+      console.log(chalk.red(' Cannot resume failed workflow'));
       return this.currentWorkflow;
     }
 
@@ -640,7 +640,7 @@ class SDDWorkflowOrchestrator extends EventEmitter {
     console.log(chalk.cyan.bold('║            WORKFLOW COMPLETED SUCCESSFULLY                ║'));
     console.log(chalk.cyan.bold('╚═══════════════════════════════════════════════════════════╝\n'));
 
-    console.log(chalk.white.bold('📊 Summary:'));
+    console.log(chalk.white.bold(' Summary:'));
     console.log(chalk.gray('─'.repeat(60)));
     console.log(`  Workflow ID: ${chalk.cyan(this.currentWorkflow.id)}`);
     console.log(`  Spec ID: ${chalk.cyan(this.currentWorkflow.specId)}`);
@@ -648,15 +648,15 @@ class SDDWorkflowOrchestrator extends EventEmitter {
     console.log(`  Progress: ${chalk.green(this.calculateProgress() + '%')}`);
     console.log();
 
-    console.log(chalk.white.bold('✅ Stages:'));
+    console.log(chalk.white.bold(' Stages:'));
     console.log(chalk.gray('─'.repeat(60)));
-    console.log(`  ${chalk.green('✓')} Specification: ${this.formatDuration(this.currentWorkflow.stages.specify)}`);
-    console.log(`  ${chalk.green('✓')} Planning: ${this.formatDuration(this.currentWorkflow.stages.plan)}`);
-    console.log(`  ${chalk.green('✓')} Execution: ${this.formatDuration(this.currentWorkflow.stages.execute)}`);
+    console.log(`  ${chalk.green('')} Specification: ${this.formatDuration(this.currentWorkflow.stages.specify)}`);
+    console.log(`  ${chalk.green('')} Planning: ${this.formatDuration(this.currentWorkflow.stages.plan)}`);
+    console.log(`  ${chalk.green('')} Execution: ${this.formatDuration(this.currentWorkflow.stages.execute)}`);
     console.log();
 
     if (this.currentWorkflow.execution) {
-      console.log(chalk.white.bold('📋 Execution Results:'));
+      console.log(chalk.white.bold(' Execution Results:'));
       console.log(chalk.gray('─'.repeat(60)));
       console.log(`  Tasks Completed: ${chalk.green(this.currentWorkflow.execution.completedTasks)}/${this.currentWorkflow.execution.totalTasks}`);
       console.log(`  Success: ${this.currentWorkflow.execution.success ? chalk.green('Yes') : chalk.red('No')}`);
@@ -1042,7 +1042,7 @@ class SDDWorkflowOrchestrator extends EventEmitter {
 
     this.emit('snapshot:restored', snapshot);
 
-    console.log(chalk.green(`✅ Restored snapshot: ${snapshot.label}`));
+    console.log(chalk.green(` Restored snapshot: ${snapshot.label}`));
 
     return snapshot;
   }

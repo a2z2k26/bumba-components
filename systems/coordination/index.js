@@ -142,12 +142,12 @@ class BumbaCoordinationSystem {
     this.unifiedSystem = null;
     this.legacySystems = null;
 
-    logger.info('🔗 BUMBA Coordination System initializing...');
+    logger.info(' BUMBA Coordination System initializing...');
   }
 
   async initialize() {
     try {
-      logger.info('🔗 Initializing coordination systems...');
+      logger.info(' Initializing coordination systems...');
 
       // Initialize unified coordination system
       if (this.config.useUnified) {
@@ -164,7 +164,7 @@ class BumbaCoordinationSystem {
           if (system && typeof system.initialize === 'function') {
             try {
               await system.initialize();
-              logger.info(`🔗 Legacy ${name} system initialized`);
+              logger.info(` Legacy ${name} system initialized`);
             } catch (error) {
               logger.warn(`Failed to initialize legacy ${name} system:`, error.message);
             }
@@ -178,7 +178,7 @@ class BumbaCoordinationSystem {
       }
 
       this.initialized = true;
-      logger.info('🔗 Coordination systems initialized successfully');
+      logger.info(' Coordination systems initialized successfully');
 
       return true;
     } catch (error) {
@@ -188,12 +188,12 @@ class BumbaCoordinationSystem {
   }
 
   async migrateLegacyData() {
-    logger.info('🔗 Starting legacy coordination data migration...');
+    logger.info(' Starting legacy coordination data migration...');
 
     try {
       // Migration logic would go here
       // For now, just log the migration intention
-      logger.info('🔗 Legacy coordination data migration completed');
+      logger.info(' Legacy coordination data migration completed');
     } catch (error) {
       logger.error('Legacy coordination data migration failed:', error);
     }
@@ -272,7 +272,7 @@ class BumbaCoordinationSystem {
   }
 
   async shutdown() {
-    logger.info('🔗 Shutting down coordination systems...');
+    logger.info(' Shutting down coordination systems...');
 
     if (this.unifiedSystem) {
       await this.unifiedSystem.shutdown();
@@ -291,7 +291,7 @@ class BumbaCoordinationSystem {
       }
     }
 
-    logger.info('🔗 Coordination systems shut down');
+    logger.info(' Coordination systems shut down');
   }
 }
 

@@ -17,13 +17,13 @@ class EnhancedCatalogGenerator {
    */
   async generate(tokens, analysis, outputDir) {
     const catalogDir = path.join(outputDir, 'catalog');
-    
+
     // Create catalog directory
     await fs.mkdir(catalogDir, { recursive: true });
-    
+
     // Copy enhanced template files from backup
     const sourceDir = path.join(outputDir, 'catalog-enhanced-backup');
-    
+
     // Check if enhanced backup exists, if not use the current catalog
     let templateSource;
     try {
@@ -33,25 +33,25 @@ class EnhancedCatalogGenerator {
       // Use the existing enhanced catalog as template
       templateSource = catalogDir;
     }
-    
+
     // Generate main index.html
     await this.generateIndexHTML(tokens, analysis, catalogDir);
-    
+
     // Generate CSS file
     await this.generateCSS(catalogDir);
-    
+
     // Generate JS file
     await this.generateJS(catalogDir);
-    
+
     // Generate component pages
     await this.generateComponentPages(tokens, catalogDir);
-    
+
     // Generate token pages
     await this.generateTokenPages(tokens, catalogDir);
-    
-    console.log(chalk.green('✅ Enhanced Design System Visualizer generated'));
-    console.log(chalk.cyan(`📁 Location: ${catalogDir}/index.html`));
-    
+
+    console.log(chalk.green(' Enhanced Design System Visualizer generated'));
+    console.log(chalk.cyan(` Location: ${catalogDir}/index.html`));
+
     return path.join(catalogDir, 'index.html');
   }
 
@@ -532,13 +532,13 @@ body.bumba-dark-theme {
     return `// Enhanced Design System Visualizer JS
 document.addEventListener('DOMContentLoaded', () => {
   lucide.createIcons();
-  
+
   // Project name persistence
   const projectInput = document.querySelector('.sidebar-project-input');
   if (projectInput) {
     const savedName = localStorage.getItem('bumba-project-name');
     if (savedName) projectInput.value = savedName;
-    
+
     projectInput.addEventListener('input', (e) => {
       localStorage.setItem('bumba-project-name', e.target.value);
     });

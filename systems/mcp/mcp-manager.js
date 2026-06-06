@@ -96,19 +96,19 @@ class MCPManager extends EventEmitter {
     try {
       // Load configuration
       await this.configLoader.loadConfiguration();
-      console.log(chalk.green('  ✓ Configuration loaded'));
+      console.log(chalk.green('   Configuration loaded'));
 
       // Initialize session
       await this.sessionState.initialize();
-      console.log(chalk.green('  ✓ Session initialized'));
+      console.log(chalk.green('   Session initialized'));
 
       // Start health monitoring
       this.healthMonitor.start();
-      console.log(chalk.green('  ✓ Health monitoring started'));
+      console.log(chalk.green('   Health monitoring started'));
 
       // Setup error recovery
       this.errorRecovery.start();
-      console.log(chalk.green('  ✓ Error recovery enabled'));
+      console.log(chalk.green('   Error recovery enabled'));
 
       // Check for auto-start (skip in testing)
       const autoStart = this.sessionState.currentSession.preferences.autoStartCore;
@@ -118,7 +118,7 @@ class MCPManager extends EventEmitter {
       }
 
       this.initialized = true;
-      console.log(chalk.green('\n✅ MCP System Ready!\n'));
+      console.log(chalk.green('\n MCP System Ready!\n'));
 
       this.emit('initialized');
     } catch (error) {

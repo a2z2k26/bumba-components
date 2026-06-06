@@ -17,16 +17,16 @@ class PlatformDetector {
     this.arch = process.arch;
     this.release = os.release();
     this.type = os.type();
-    
+
     // Platform-specific details
     this.details = this.detectPlatformDetails();
-    
+
     // Path configurations
     this.paths = this.getPlatformPaths();
-    
+
     // Command configurations
     this.commands = this.getPlatformCommands();
-    
+
     // Software detection results
     this.software = {};
   }
@@ -36,7 +36,7 @@ class PlatformDetector {
    */
   detectPlatformDetails() {
     const platform = this.platform;
-    
+
     switch (platform) {
       case 'darwin':
         return {
@@ -47,7 +47,7 @@ class PlatformDetector {
           osVersion: this.getMacOSVersion(),
           isM1: this.arch === 'arm64'
         };
-        
+
       case 'win32':
         return {
           name: 'Windows',
@@ -57,7 +57,7 @@ class PlatformDetector {
           osVersion: this.getWindowsVersion(),
           isWSL: this.detectWSL()
         };
-        
+
       case 'linux':
         return {
           name: 'Linux',
@@ -67,7 +67,7 @@ class PlatformDetector {
           distribution: this.detectLinuxDistribution(),
           isWSL: this.detectWSL()
         };
-        
+
       default:
         return {
           name: platform,
@@ -84,7 +84,7 @@ class PlatformDetector {
     try {
       const release = os.release();
       const major = parseInt(release.split('.')[0]);
-      
+
       // Map Darwin version to macOS version
       const versionMap = {
         23: 'Sonoma 14',
@@ -93,7 +93,7 @@ class PlatformDetector {
         20: 'Big Sur 11',
         19: 'Catalina 10.15'
       };
-      
+
       return versionMap[major] || `Darwin ${major}`;
     } catch {
       return 'Unknown';
@@ -106,7 +106,7 @@ class PlatformDetector {
   getWindowsVersion() {
     const release = os.release();
     const version = release.split('.').map(Number);
-    
+
     if (version[0] === 10 && version[2] >= 22000) {
       return 'Windows 11';
     } else if (version[0] === 10) {
@@ -118,7 +118,7 @@ class PlatformDetector {
     } else if (version[0] === 6 && version[1] === 1) {
       return 'Windows 7';
     }
-    
+
     return `Windows ${release}`;
   }
 
@@ -130,14 +130,14 @@ class PlatformDetector {
       const osRelease = require('fs').readFileSync('/etc/os-release', 'utf8');
       const lines = osRelease.split('\n');
       const info = {};
-      
+
       for (const line of lines) {
         const [key, value] = line.split('=');
         if (key && value) {
           info[key] = value.replace(/"/g, '');
         }
       }
-      
+
       return {
         name: info.NAME || 'Unknown',
         version: info.VERSION || 'Unknown',
@@ -164,7 +164,7 @@ class PlatformDetector {
       { cmd: 'zypper', name: 'zypper' },
       { cmd: 'apk', name: 'apk' }
     ];
-    
+
     for (const manager of managers) {
       try {
         require('child_process').execSync(`which ${manager.cmd}`, { stdio: 'ignore' });
@@ -173,7 +173,7 @@ class PlatformDetector {
         // Continue checking
       }
     }
-    
+
     return 'unknown';
   }
 
@@ -195,7 +195,7 @@ class PlatformDetector {
   getPlatformPaths() {
     const homeDir = os.homedir();
     const platform = this.platform;
-    
+
     const paths = {
       home: homeDir,
       temp: os.tmpdir(),
@@ -203,7 +203,7 @@ class PlatformDetector {
       documents: path.join(homeDir, 'Documents'),
       downloads: path.join(homeDir, 'Downloads')
     };
-    
+
     // Platform-specific application paths
     switch (platform) {
       case 'darwin':
@@ -214,7 +214,7 @@ class PlatformDetector {
         paths.claudeConfig = path.join(paths.appSupport, 'Claude', 'claude_desktop_config.json');
         paths.npmGlobal = '/usr/local/lib/node_modules';
         break;
-        
+
       case 'win32':
         paths.applications = 'C:\\Program Files';
         paths.appData = process.env.APPDATA || path.join(homeDir, 'AppData', 'Roaming');
@@ -223,7 +223,7 @@ class PlatformDetector {
         paths.claudeConfig = path.join(paths.appData, 'Claude', 'claude_desktop_config.json');
         paths.npmGlobal = path.join(paths.appData, 'npm', 'node_modules');
         break;
-        
+
       case 'linux':
         paths.applications = '/usr/share/applications';
         paths.config = path.join(homeDir, '.config');
@@ -233,13 +233,13 @@ class PlatformDetector {
         paths.npmGlobal = '/usr/local/lib/node_modules';
         break;
     }
-    
+
     // BUMBA-specific paths
     paths.bumba = path.join(process.cwd(), '.bumba');
     paths.bumbaConfig = path.join(paths.bumba, 'config.json');
     paths.bumbaBackups = path.join(paths.bumba, 'backups');
     paths.bumbaLogs = path.join(paths.bumba, 'logs');
-    
+
     return paths;
   }
 
@@ -248,7 +248,7 @@ class PlatformDetector {
    */
   getPlatformCommands() {
     const platform = this.platform;
-    
+
     const commands = {
       open: '',
       clear: '',
@@ -259,7 +259,7 @@ class PlatformDetector {
       findPort: '',
       npmGlobal: ''
     };
-    
+
     switch (platform) {
       case 'darwin':
         commands.open = 'open';
@@ -271,7 +271,7 @@ class PlatformDetector {
         commands.findPort = 'lsof -i :';
         commands.npmGlobal = 'npm list -g --depth=0';
         break;
-        
+
       case 'win32':
         commands.open = 'start';
         commands.clear = 'cls';
@@ -282,7 +282,7 @@ class PlatformDetector {
         commands.findPort = 'netstat -ano | findstr :';
         commands.npmGlobal = 'npm list -g --depth=0';
         break;
-        
+
       case 'linux':
         commands.open = 'xdg-open';
         commands.clear = 'clear';
@@ -294,7 +294,7 @@ class PlatformDetector {
         commands.npmGlobal = 'npm list -g --depth=0';
         break;
     }
-    
+
     return commands;
   }
 
@@ -303,37 +303,37 @@ class PlatformDetector {
    */
   async detectSoftware() {
     const software = {};
-    
+
     // Node.js and npm
     software.node = {
       installed: true, // We're running in Node
       version: process.version,
       npm: await this.getNpmVersion()
     };
-    
+
     // Git
     software.git = await this.checkCommand('git --version', /git version ([\d.]+)/);
-    
+
     // Python
     software.python = await this.checkCommand('python3 --version', /Python ([\d.]+)/) ||
                       await this.checkCommand('python --version', /Python ([\d.]+)/);
-    
+
     // Docker
     software.docker = await this.checkCommand('docker --version', /Docker version ([\d.]+)/);
-    
+
     // Claude
     software.claude = await this.detectClaude();
-    
+
     // VS Code
     software.vscode = await this.checkCommand('code --version', /([\d.]+)/);
-    
+
     // Package managers
     if (this.platform === 'darwin') {
       software.brew = await this.checkCommand('brew --version', /Homebrew ([\d.]+)/);
     } else if (this.platform === 'win32') {
       software.choco = await this.checkCommand('choco --version', /([\d.]+)/);
     }
-    
+
     this.software = software;
     return software;
   }
@@ -344,7 +344,7 @@ class PlatformDetector {
   async checkCommand(command, versionPattern) {
     try {
       const { stdout } = await execAsync(command);
-      
+
       if (versionPattern && stdout) {
         const match = stdout.match(versionPattern);
         if (match) {
@@ -354,7 +354,7 @@ class PlatformDetector {
           };
         }
       }
-      
+
       return {
         installed: true,
         version: 'Unknown'
@@ -384,13 +384,13 @@ class PlatformDetector {
    */
   async detectClaude() {
     const platform = this.platform;
-    
+
     try {
       if (platform === 'darwin') {
         // Check macOS Applications
         const apps = await fs.readdir('/Applications').catch(() => []);
         const claudeApp = apps.find(app => app.toLowerCase().includes('claude'));
-        
+
         if (claudeApp) {
           return {
             installed: true,
@@ -405,14 +405,14 @@ class PlatformDetector {
           process.env['ProgramFiles(x86)'],
           path.join(process.env.LOCALAPPDATA || '', 'Programs')
         ];
-        
+
         for (const dir of programFiles) {
           if (!dir) continue;
-          
+
           try {
             const files = await fs.readdir(dir);
             const claudeDir = files.find(f => f.toLowerCase().includes('claude'));
-            
+
             if (claudeDir) {
               return {
                 installed: true,
@@ -431,7 +431,7 @@ class PlatformDetector {
           '/usr/local/bin/claude',
           path.join(os.homedir(), '.local/share/applications')
         ];
-        
+
         for (const location of locations) {
           if (await this.fileExists(location)) {
             return {
@@ -445,7 +445,7 @@ class PlatformDetector {
     } catch (error) {
       // Detection failed
     }
-    
+
     return {
       installed: false,
       path: null,
@@ -470,30 +470,30 @@ class PlatformDetector {
    */
   getAdapter() {
     const platform = this.platform;
-    
+
     return {
       openURL: async (url) => {
         const command = `${this.commands.open} "${url}"`;
         await execAsync(command);
       },
-      
+
       openFile: async (filePath) => {
         const command = `${this.commands.open} "${filePath}"`;
         await execAsync(command);
       },
-      
+
       copyToClipboard: async (text) => {
         const { spawn } = require('child_process');
         const child = spawn(this.commands.copy, [], { shell: true });
         child.stdin.write(text);
         child.stdin.end();
-        
+
         return new Promise((resolve, reject) => {
           child.on('close', resolve);
           child.on('error', reject);
         });
       },
-      
+
       isPortInUse: async (port) => {
         try {
           const command = `${this.commands.findPort}${port}`;
@@ -503,7 +503,7 @@ class PlatformDetector {
           return false;
         }
       },
-      
+
       killPort: async (port) => {
         if (platform === 'darwin' || platform === 'linux') {
           try {
@@ -567,7 +567,7 @@ class PlatformDetector {
   getInstallInstructions(software) {
     const platform = this.platform;
     const instructions = {};
-    
+
     if (!this.software.git?.installed) {
       if (platform === 'darwin') {
         instructions.git = 'brew install git';
@@ -577,11 +577,11 @@ class PlatformDetector {
         instructions.git = `sudo ${this.details.packageManager} install git`;
       }
     }
-    
+
     if (!this.software.claude?.installed) {
       instructions.claude = 'Download from https://claude.ai/download';
     }
-    
+
     if (!this.software.docker?.installed) {
       if (platform === 'darwin') {
         instructions.docker = 'Download Docker Desktop from https://www.docker.com/products/docker-desktop';
@@ -591,7 +591,7 @@ class PlatformDetector {
         instructions.docker = 'curl -fsSL https://get.docker.com | sh';
       }
     }
-    
+
     return instructions;
   }
 }

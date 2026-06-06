@@ -479,40 +479,40 @@ class VersionControlIntegrator extends EventEmitter {
    * Test Git flow
    */
   async testGitFlow() {
-    console.log('🧪 Testing Git integration...\n');
+    console.log(' Testing Git integration...\n');
 
     try {
       // 1. Initialize
       console.log('1. Checking Git repository...');
       const init = await this.initialize();
-      console.log(`   ✓ Repository: ${init.initialized ? 'OK' : 'NOT FOUND'}\n`);
+      console.log(`    Repository: ${init.initialized ? 'OK' : 'NOT FOUND'}\n`);
 
       if (!init.initialized) {
-        console.log('⚠️  Not a Git repository. Skipping remaining tests.\n');
+        console.log('  Not a Git repository. Skipping remaining tests.\n');
         return;
       }
 
       // 2. Get current branch
       console.log('2. Getting current branch...');
       const currentBranch = await this.getCurrentBranch();
-      console.log(`   ✓ Current branch: ${currentBranch}\n`);
+      console.log(`    Current branch: ${currentBranch}\n`);
 
       // 3. Get status
       console.log('3. Checking status...');
       const status = await this.getStatus();
-      console.log(`   ✓ Files changed: ${status.count}\n`);
+      console.log(`    Files changed: ${status.count}\n`);
 
       // 4. Get history
       console.log('4. Getting commit history...');
       const history = await this.getCommitHistory(5);
-      console.log(`   ✓ Recent commits: ${history.length}\n`);
+      console.log(`    Recent commits: ${history.length}\n`);
 
-      console.log('✅ Git integration test complete!\n');
+      console.log(' Git integration test complete!\n');
 
       return { success: true, status, history };
 
     } catch (error) {
-      console.error('❌ Git test failed:', error.message);
+      console.error(' Git test failed:', error.message);
       throw error;
     }
   }

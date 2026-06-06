@@ -94,7 +94,7 @@ class BudgetEnforcer {
       return;
     }
 
-    logger.info('💰 Initializing budget enforcer...');
+    logger.info(' Initializing budget enforcer...');
 
     try {
       // Ensure storage directory exists
@@ -107,7 +107,7 @@ class BudgetEnforcer {
       await this.checkResetSchedule();
 
       this.initialized = true;
-      logger.info('✅ Budget enforcer initialized');
+      logger.info(' Budget enforcer initialized');
     } catch (error) {
       logger.error('Failed to initialize budget enforcer:', error.message);
       throw error;
@@ -136,7 +136,7 @@ class BudgetEnforcer {
     const dailyLimit = this.config.limits[tier]?.daily || Infinity;
 
     if (dailySpent + estimatedCost > dailyLimit) {
-      logger.warn(`❌ Daily budget exceeded for ${tier}: $${dailySpent.toFixed(2)} + $${estimatedCost.toFixed(2)} > $${dailyLimit.toFixed(2)}`);
+      logger.warn(` Daily budget exceeded for ${tier}: $${dailySpent.toFixed(2)} + $${estimatedCost.toFixed(2)} > $${dailyLimit.toFixed(2)}`);
       return false;
     }
 
@@ -145,7 +145,7 @@ class BudgetEnforcer {
     const monthlyLimit = this.config.limits[tier]?.monthly || Infinity;
 
     if (monthlySpent + estimatedCost > monthlyLimit) {
-      logger.warn(`❌ Monthly budget exceeded for ${tier}: $${monthlySpent.toFixed(2)} + $${estimatedCost.toFixed(2)} > $${monthlyLimit.toFixed(2)}`);
+      logger.warn(` Monthly budget exceeded for ${tier}: $${monthlySpent.toFixed(2)} + $${estimatedCost.toFixed(2)} > $${monthlyLimit.toFixed(2)}`);
       return false;
     }
 
@@ -172,7 +172,7 @@ class BudgetEnforcer {
     this.spent[tier].daily += actualCost;
     this.spent[tier].monthly += actualCost;
 
-    logger.debug(`💵 Recorded spend for ${tier}: $${actualCost.toFixed(4)}`);
+    logger.debug(` Recorded spend for ${tier}: $${actualCost.toFixed(4)}`);
 
     // Check alert thresholds
     await this.checkAlertThresholds(tier, BudgetPeriod.DAILY);
@@ -196,8 +196,8 @@ class BudgetEnforcer {
       if (percentUsed >= threshold && !this.alertsFired.has(alertKey)) {
         // Fire alert
         const status = this.getBudgetStatus(percentUsed);
-        const emoji = status === BudgetStatus.CRITICAL ? '🔴' :
-                      status === BudgetStatus.WARNING ? '🟡' : '🟢';
+        const emoji = status === BudgetStatus.CRITICAL ? '' :
+                      status === BudgetStatus.WARNING ? '' : '';
 
         logger.warn(`${emoji} Budget Alert: ${tier} ${period} at ${percentUsed.toFixed(1)}% ($${spent.toFixed(2)}/$${limit.toFixed(2)})`);
 
@@ -261,7 +261,7 @@ class BudgetEnforcer {
    * Reset daily budgets
    */
   async resetDailyBudgets() {
-    logger.info('🔄 Resetting daily budgets...');
+    logger.info(' Resetting daily budgets...');
 
     for (const tier of Object.keys(this.spent)) {
       this.spent[tier].daily = 0;
@@ -273,14 +273,14 @@ class BudgetEnforcer {
     this.alertsFired = new Set([...this.alertsFired].filter(key => !key.includes('-daily-')));
 
     await this.saveBudgetData();
-    logger.info('✅ Daily budgets reset');
+    logger.info(' Daily budgets reset');
   }
 
   /**
    * Reset monthly budgets
    */
   async resetMonthlyBudgets() {
-    logger.info('🔄 Resetting monthly budgets...');
+    logger.info(' Resetting monthly budgets...');
 
     for (const tier of Object.keys(this.spent)) {
       this.spent[tier].monthly = 0;
@@ -292,7 +292,7 @@ class BudgetEnforcer {
     this.alertsFired = new Set([...this.alertsFired].filter(key => !key.includes('-monthly-')));
 
     await this.saveBudgetData();
-    logger.info('✅ Monthly budgets reset');
+    logger.info(' Monthly budgets reset');
   }
 
   /**
@@ -372,7 +372,7 @@ class BudgetEnforcer {
    * Manually reset all budgets (for testing)
    */
   async resetAll() {
-    logger.warn('⚠️  Manually resetting all budgets');
+    logger.warn('  Manually resetting all budgets');
     await this.resetDailyBudgets();
     await this.resetMonthlyBudgets();
   }

@@ -33,7 +33,7 @@ class ProjectCatalogGenerator {
     const catalogDataPath = path.join(catalogDir, 'catalog-data.json');
     await fs.writeFile(catalogDataPath, JSON.stringify(catalogData, null, 2));
 
-    console.log('✓ Project catalog data updated:', catalogDataPath);
+    console.log(' Project catalog data updated:', catalogDataPath);
   }
 
   /**
@@ -157,7 +157,7 @@ class ProjectCatalogGenerator {
         const y = e.offset?.y || 0;
         const blur = e.radius || 0;
         const color = e.color;
-        
+
         if (color) {
           const r = Math.round((color.r || 0) * 255);
           const g = Math.round((color.g || 0) * 255);
@@ -208,7 +208,7 @@ class ProjectCatalogGenerator {
    */
   countTokens(tokens) {
     if (!tokens) return 0;
-    
+
     return Object.keys(tokens.colors || {}).length +
            Object.keys(tokens.typography || {}).length +
            Object.keys(tokens.spacing?.values || tokens.spacing || {}).length +

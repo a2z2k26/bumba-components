@@ -15,7 +15,7 @@ const LoopController = require('./loop-controller');
 class WorkflowEngine extends EventEmitter {
   constructor(config = {}) {
     super();
-    
+
     // Configuration
     this.config = {
       maxConcurrentWorkflows: config.maxConcurrentWorkflows || 10,
@@ -30,31 +30,31 @@ class WorkflowEngine extends EventEmitter {
       analyticsEnabled: config.analyticsEnabled !== false,
       ...config
     };
-    
+
     // Workflow storage
     this.workflows = new Map();
     this.templates = new Map();
     this.activeWorkflows = new Map();
     this.completedWorkflows = new Map();
-    
+
     // Execution state
     this.executionQueue = [];
     this.runningWorkflows = new Set();
     this.pausedWorkflows = new Set();
-    
+
     // Step definitions
     this.stepDefinitions = new Map();
     this.customSteps = new Map();
-    
+
     // Conditions and triggers
     this.conditions = new Map();
     this.triggers = new Map();
     this.schedules = new Map();
-    
+
     // Specialist pool
     this.specialists = new Map();
     this.specialistPool = [];
-    
+
     // Metrics
     this.metrics = {
       workflowsCreated: 0,
@@ -66,17 +66,17 @@ class WorkflowEngine extends EventEmitter {
       stepExecutions: 0,
       stepFailures: 0
     };
-    
+
     // Enhanced components
     this.scheduler = null;
     this.orchestrator = null;
     this.optimizer = null;
     this.analytics = null;
     this.loopController = null;
-    
+
     this.initialize();
   }
-  
+
   /**
    * Initialize workflow engine
    */
@@ -84,31 +84,31 @@ class WorkflowEngine extends EventEmitter {
     try {
       // Register default step definitions
       this.registerDefaultSteps();
-      
+
       // Register default conditions
       this.registerDefaultConditions();
-      
+
       // Register default templates
       await this.loadDefaultTemplates();
-      
+
       // Initialize enhanced components if enabled
       if (this.config.enhancedMode) {
         await this.initializeEnhancedComponents();
       }
-      
+
       // Start execution loop
       this.startExecutionLoop();
-      
-      logger.info('🔄 Workflow Engine initialized' + 
+
+      logger.info(' Workflow Engine initialized' +
         (this.config.enhancedMode ? ' (Enhanced Mode)' : ''));
       this.emit('initialized');
-      
+
     } catch (error) {
       logger.error('Failed to initialize Workflow Engine:', error);
       this.emit('error', error);
     }
   }
-  
+
   /**
    * Create a new workflow (synchronous version for test compatibility)
    * Returns workflow object directly without async trigger registration
@@ -176,7 +176,7 @@ class WorkflowEngine extends EventEmitter {
       this.metrics.workflowsCreated++;
 
       this.emit('workflow:created', workflow);
-      logger.info(`📋 Created workflow: ${workflow.name}`);
+      logger.info(` Created workflow: ${workflow.name}`);
 
       return workflow;
 
@@ -200,7 +200,7 @@ class WorkflowEngine extends EventEmitter {
 
     return workflow;
   }
-  
+
   /**
    * Initialize enhanced components
    */
@@ -211,43 +211,43 @@ class WorkflowEngine extends EventEmitter {
         maxConcurrent: this.config.maxConcurrentWorkflows,
         schedulingAlgorithm: this.config.schedulingAlgorithm || 'weighted-fair'
       });
-      
+
       // Connect scheduler events
       this.scheduler.on('workflow:executing', (scheduled) => {
         this.emit('workflow:scheduled:executing', scheduled);
       });
-      
+
       this.scheduler.on('workflow:completed', (scheduled) => {
         this.emit('workflow:scheduled:completed', scheduled);
       });
     }
-    
+
     // Initialize orchestrator
     if (this.config.orchestrationEnabled) {
       this.orchestrator = new WorkflowOrchestrator({
         intelligentRouting: true,
         adaptiveExecution: true
       });
-      
+
       // Connect orchestrator events
       this.orchestrator.on('orchestration:completed', (result) => {
         this.emit('orchestration:completed', result);
       });
     }
-    
+
     // Initialize optimizer
     if (this.config.optimizationEnabled) {
       this.optimizer = new WorkflowOptimizer({
         learningRate: 0.1,
         explorationRate: 0.2
       });
-      
+
       // Connect optimizer events
       this.optimizer.on('optimization:complete', (optimization) => {
         this.emit('workflow:optimized', optimization);
       });
     }
-    
+
     // Initialize analytics
     if (this.config.analyticsEnabled) {
       this.analytics = new WorkflowAnalytics({
@@ -279,12 +279,12 @@ class WorkflowEngine extends EventEmitter {
 
     // Connect loop controller events
     this.loopController.on('loop:started', (data) => {
-      logger.info(`🔄 Loop ${data.loopId} started`);
+      logger.info(` Loop ${data.loopId} started`);
       this.emit('loop:started', data);
     });
 
     this.loopController.on('loop:terminated', (data) => {
-      logger.info(`🛑 Loop ${data.loopId} terminated: ${data.termination.message}`);
+      logger.info(` Loop ${data.loopId} terminated: ${data.termination.message}`);
       this.emit('loop:terminated', data);
     });
 
@@ -292,25 +292,25 @@ class WorkflowEngine extends EventEmitter {
       this.emit('loop:iteration:completed', data);
     });
 
-    logger.info('🟢 Enhanced workflow components initialized');
+    logger.info(' Enhanced workflow components initialized');
   }
-  
+
   /**
    * Execute a workflow
    */
   async executeWorkflow(workflowId, input = {}, options = {}) {
     try {
       let workflow = this.workflows.get(workflowId);
-      
+
       if (!workflow) {
         throw new Error(`Workflow not found: ${workflowId}`);
       }
-      
+
       // Optimize workflow if optimizer is available
       if (this.optimizer && this.config.optimizationEnabled) {
         workflow = await this.optimizer.optimizeWorkflow(workflow, { input, ...options });
       }
-      
+
       // Use scheduler if available
       if (this.scheduler && this.config.schedulingEnabled) {
         const scheduled = await this.scheduler.scheduleWorkflow(workflow, {
@@ -318,10 +318,10 @@ class WorkflowEngine extends EventEmitter {
           deadline: options.deadline,
           resources: options.resources
         });
-        
+
         return { scheduled: true, scheduleId: scheduled.id };
       }
-      
+
       // Check concurrent limit (fallback to original logic)
       if (this.runningWorkflows.size >= this.config.maxConcurrentWorkflows) {
         // Queue the workflow
@@ -329,7 +329,7 @@ class WorkflowEngine extends EventEmitter {
         logger.info(`Workflow ${workflowId} queued`);
         return { queued: true, position: this.executionQueue.length };
       }
-      
+
       // Create execution instance
       const execution = {
         id: this.generateExecutionId(),
@@ -351,52 +351,52 @@ class WorkflowEngine extends EventEmitter {
           activeLoops: new Set()
         }
       };
-      
+
       // Store active execution
       this.activeWorkflows.set(execution.id, execution);
       this.runningWorkflows.add(execution.id);
-      
+
       // Start analytics tracking if available
       if (this.analytics && this.config.analyticsEnabled) {
         this.analytics.trackWorkflowStart(workflow, execution);
       }
-      
+
       // Execute workflow
       const result = await this.runWorkflow(execution);
-      
+
       // Complete execution
       this.completeExecution(execution, result);
-      
+
       // Track completion in analytics
       if (this.analytics && this.config.analyticsEnabled) {
         this.analytics.trackWorkflowComplete(execution, result);
       }
-      
+
       return result;
-      
+
     } catch (error) {
       logger.error(`Failed to execute workflow ${workflowId}:`, error);
       throw error;
     }
   }
-  
+
   /**
    * Run workflow execution
    */
   async runWorkflow(execution) {
     const { workflow, state } = execution;
-    
+
     try {
       this.emit('workflow:started', execution);
-      
+
       // Use orchestrator for complex patterns if available
       if (this.orchestrator && workflow.pattern && this.config.orchestrationEnabled) {
         const result = await this.orchestrator.orchestrate(
-          workflow, 
-          workflow.pattern, 
+          workflow,
+          workflow.pattern,
           { context: state }
         );
-        
+
         state.results = result.results || result;
       } else {
         // Execute steps (original logic)
@@ -406,14 +406,14 @@ class WorkflowEngine extends EventEmitter {
           await this.executeSequentialSteps(execution);
         }
       }
-      
+
       // Check final state
       if (state.errors.length > 0 && workflow.config.errorHandling === 'stop') {
         throw new Error(`Workflow failed with ${state.errors.length} errors`);
       }
-      
+
       state.status = 'completed';
-      
+
       return {
         success: true,
         workflowId: workflow.id,
@@ -422,7 +422,7 @@ class WorkflowEngine extends EventEmitter {
         variables: state.variables,
         duration: Date.now() - execution.startTime
       };
-      
+
     } catch (error) {
       state.status = 'failed';
       state.errors.push({
@@ -430,32 +430,32 @@ class WorkflowEngine extends EventEmitter {
         error: error.message,
         timestamp: new Date().toISOString()
       });
-      
+
       // Attempt recovery if configured
       if (this.config.autoRecover) {
         return await this.recoverWorkflow(execution, error);
       }
-      
+
       throw error;
     }
   }
-  
+
   /**
    * Execute steps sequentially
    */
   async executeSequentialSteps(execution) {
     const { workflow, state } = execution;
-    
+
     for (let i = 0; i < workflow.steps.length; i++) {
       const step = workflow.steps[i];
       state.currentStep = i;
-      
+
       // Check conditions
       if (!await this.checkStepConditions(step, state)) {
         logger.info(`Skipping step ${step.name}: conditions not met`);
         continue;
       }
-      
+
       // Execute step - check if iterative
       try {
         let result;
@@ -470,45 +470,45 @@ class WorkflowEngine extends EventEmitter {
         // Store result
         state.results[step.id || step.name] = result;
         state.completedSteps.push(step.id || step.name);
-        
+
         // Update variables if step returns them
         if (result.variables) {
           Object.assign(state.variables, result.variables);
         }
-        
+
         // Check for workflow control
         if (result.action === 'stop') {
           break;
         } else if (result.action === 'goto') {
           i = this.findStepIndex(workflow, result.target) - 1;
         }
-        
+
       } catch (error) {
         await this.handleStepError(step, error, execution);
-        
+
         if (workflow.config.errorHandling === 'stop') {
           throw error;
         }
       }
     }
   }
-  
+
   /**
    * Execute steps in parallel
    */
   async executeParallelSteps(execution) {
     const { workflow, state } = execution;
-    
+
     // Group steps by dependencies
     const stepGroups = this.groupStepsByDependencies(workflow.steps);
-    
+
     for (const group of stepGroups) {
       const promises = group.map(async (step) => {
         // Check conditions
         if (!await this.checkStepConditions(step, state)) {
           return { skipped: true, step: step.name };
         }
-        
+
         try {
           let result;
 
@@ -524,21 +524,21 @@ class WorkflowEngine extends EventEmitter {
           state.completedSteps.push(step.id || step.name);
 
           return result;
-          
+
         } catch (error) {
           await this.handleStepError(step, error, execution);
-          
+
           if (workflow.config.errorHandling === 'stop') {
             throw error;
           }
-          
+
           return { error: error.message, step: step.name };
         }
       });
-      
+
       // Wait for group to complete
       const results = await Promise.all(promises);
-      
+
       // Update variables from results
       results.forEach(result => {
         if (result.variables) {
@@ -547,29 +547,29 @@ class WorkflowEngine extends EventEmitter {
       });
     }
   }
-  
+
   /**
    * Execute a single step
    */
   async executeStep(step, state, execution) {
     const startTime = Date.now();
-    
+
     try {
       this.emit('step:started', { step, execution });
-      
+
       // Track step in analytics
       if (this.analytics && this.config.analyticsEnabled) {
         this.analytics.trackStepStart(execution.id, step);
       }
-      
+
       // Get step definition
-      const definition = this.stepDefinitions.get(step.type) || 
+      const definition = this.stepDefinitions.get(step.type) ||
                         this.customSteps.get(step.type);
-      
+
       if (!definition) {
         throw new Error(`Unknown step type: ${step.type}`);
       }
-      
+
       // Prepare step context
       const context = {
         variables: state.variables,
@@ -577,41 +577,41 @@ class WorkflowEngine extends EventEmitter {
         workflow: execution.workflow,
         step
       };
-      
+
       // Execute step handler
       const result = await definition.handler(step, context);
-      
+
       this.metrics.stepExecutions++;
-      
+
       this.emit('step:completed', {
         step,
         execution,
         result,
         duration: Date.now() - startTime
       });
-      
+
       // Track step completion in analytics
       if (this.analytics && this.config.analyticsEnabled) {
         this.analytics.trackStepComplete(execution.id, step, result);
       }
-      
+
       return result;
-      
+
     } catch (error) {
       this.metrics.stepFailures++;
-      
+
       this.emit('step:failed', {
         step,
         execution,
         error,
         duration: Date.now() - startTime
       });
-      
+
       // Track error in analytics
       if (this.analytics && this.config.analyticsEnabled) {
         this.analytics.trackError(execution.id, error);
       }
-      
+
       throw error;
     }
   }
@@ -736,18 +736,18 @@ class WorkflowEngine extends EventEmitter {
       description: 'Execute a task',
       handler: async (step, context) => {
         const specialist = await this.getSpecialist(step.specialist);
-        
+
         if (!specialist) {
           throw new Error(`Specialist not found: ${step.specialist}`);
         }
-        
+
         return await specialist.processTask({
           ...step.task,
           variables: context.variables
         });
       }
     });
-    
+
     // Condition step
     this.registerStep('condition', {
       name: 'Condition',
@@ -755,9 +755,9 @@ class WorkflowEngine extends EventEmitter {
       handler: async (step, context) => {
         const condition = this.conditions.get(step.condition) ||
                          this.evaluateCondition;
-        
+
         const result = await condition(step.expression, context);
-        
+
         return {
           success: true,
           condition: result,
@@ -765,7 +765,7 @@ class WorkflowEngine extends EventEmitter {
         };
       }
     });
-    
+
     // Loop step
     this.registerStep('loop', {
       name: 'Loop',
@@ -773,10 +773,10 @@ class WorkflowEngine extends EventEmitter {
       handler: async (step, context) => {
         const items = this.resolveValue(step.items, context);
         const results = [];
-        
+
         for (const item of items) {
           context.variables[step.itemVar || 'item'] = item;
-          
+
           // Execute loop body
           for (const bodyStep of step.body) {
             const result = await this.executeStep(bodyStep, context.variables, {
@@ -785,26 +785,26 @@ class WorkflowEngine extends EventEmitter {
             results.push(result);
           }
         }
-        
+
         return { success: true, results };
       }
     });
-    
+
     // Parallel step
     this.registerStep('parallel', {
       name: 'Parallel',
       description: 'Execute steps in parallel',
       handler: async (step, context) => {
-        const promises = step.steps.map(s => 
+        const promises = step.steps.map(s =>
           this.executeStep(s, context.variables, { workflow: context.workflow })
         );
-        
+
         const results = await Promise.all(promises);
-        
+
         return { success: true, results };
       }
     });
-    
+
     // Wait step
     this.registerStep('wait', {
       name: 'Wait',
@@ -817,11 +817,11 @@ class WorkflowEngine extends EventEmitter {
             await new Promise(resolve => setTimeout(resolve, 1000));
           }
         }
-        
+
         return { success: true };
       }
     });
-    
+
     // Transform step
     this.registerStep('transform', {
       name: 'Transform',
@@ -832,7 +832,7 @@ class WorkflowEngine extends EventEmitter {
           input,
           step.transformation
         );
-        
+
         return {
           success: true,
           result: transformed,
@@ -840,7 +840,7 @@ class WorkflowEngine extends EventEmitter {
         };
       }
     });
-    
+
     // API call step
     this.registerStep('api', {
       name: 'API Call',
@@ -854,10 +854,10 @@ class WorkflowEngine extends EventEmitter {
             this.resolveValue(step.body, context)
           ) : undefined
         };
-        
+
         const response = await fetch(url, options);
         const data = await response.json();
-        
+
         return {
           success: response.ok,
           status: response.status,
@@ -867,7 +867,7 @@ class WorkflowEngine extends EventEmitter {
       }
     });
   }
-  
+
   /**
    * Register a custom step type
    */
@@ -876,36 +876,36 @@ class WorkflowEngine extends EventEmitter {
       type,
       ...definition
     });
-    
-    logger.info(`📝 Registered step type: ${type}`);
+
+    logger.info(` Registered step type: ${type}`);
   }
-  
+
   /**
    * Register default conditions
    */
   registerDefaultConditions() {
     // Equals condition
     this.registerCondition('equals', (a, b) => a === b);
-    
+
     // Not equals condition
     this.registerCondition('notEquals', (a, b) => a !== b);
-    
+
     // Greater than condition
     this.registerCondition('greaterThan', (a, b) => a > b);
-    
+
     // Less than condition
     this.registerCondition('lessThan', (a, b) => a < b);
-    
+
     // Contains condition
-    this.registerCondition('contains', (arr, item) => 
+    this.registerCondition('contains', (arr, item) =>
       Array.isArray(arr) ? arr.includes(item) : false
     );
-    
+
     // Exists condition
-    this.registerCondition('exists', (value) => 
+    this.registerCondition('exists', (value) =>
       value !== undefined && value !== null
     );
-    
+
     // Custom expression condition
     this.registerCondition('expression', (expr, context) => {
       try {
@@ -917,51 +917,51 @@ class WorkflowEngine extends EventEmitter {
       }
     });
   }
-  
+
   /**
    * Register a condition
    */
   registerCondition(name, evaluator) {
     this.conditions.set(name, evaluator);
   }
-  
+
   /**
    * Check step conditions
    */
   async checkStepConditions(step, state) {
     if (!step.conditions) return true;
-    
+
     for (const condition of step.conditions) {
       const evaluator = this.conditions.get(condition.type);
-      
+
       if (!evaluator) {
         logger.warn(`Unknown condition type: ${condition.type}`);
         continue;
       }
-      
+
       const result = await evaluator(
         this.resolveValue(condition.left, { variables: state.variables }),
         this.resolveValue(condition.right, { variables: state.variables })
       );
-      
+
       if (!result) return false;
     }
-    
+
     return true;
   }
-  
+
   /**
    * Evaluate a condition
    */
   async evaluateCondition(expression, context) {
     if (typeof expression === 'boolean') return expression;
-    
+
     if (typeof expression === 'string') {
       // Try to resolve as variable
       const value = this.resolveValue(expression, context);
       return !!value;
     }
-    
+
     if (expression.type) {
       const evaluator = this.conditions.get(expression.type);
       if (evaluator) {
@@ -971,10 +971,10 @@ class WorkflowEngine extends EventEmitter {
         );
       }
     }
-    
+
     return false;
   }
-  
+
   /**
    * Resolve a value (variable reference or literal)
    */
@@ -983,60 +983,60 @@ class WorkflowEngine extends EventEmitter {
       // Variable reference
       const path = value.substring(1).split('.');
       let resolved = context.variables;
-      
+
       for (const part of path) {
         resolved = resolved?.[part];
       }
-      
+
       return resolved;
     }
-    
+
     if (typeof value === 'object' && value !== null) {
       // Recursively resolve object properties
       const resolved = {};
-      
+
       for (const [key, val] of Object.entries(value)) {
         resolved[key] = this.resolveValue(val, context);
       }
-      
+
       return resolved;
     }
-    
+
     return value;
   }
-  
+
   /**
    * Group steps by dependencies
    */
   groupStepsByDependencies(steps) {
     const groups = [];
     const completed = new Set();
-    
+
     while (completed.size < steps.length) {
       const group = [];
-      
+
       for (const step of steps) {
         if (completed.has(step.id || step.name)) continue;
-        
+
         // Check if dependencies are satisfied
         const deps = step.dependencies || [];
         if (deps.every(dep => completed.has(dep))) {
           group.push(step);
         }
       }
-      
+
       if (group.length === 0) {
         // Circular dependency or invalid configuration
         throw new Error('Invalid step dependencies');
       }
-      
+
       group.forEach(step => completed.add(step.id || step.name));
       groups.push(group);
     }
-    
+
     return groups;
   }
-  
+
   /**
    * Handle step error
    */
@@ -1046,7 +1046,7 @@ class WorkflowEngine extends EventEmitter {
       error: error.message,
       timestamp: new Date().toISOString()
     });
-    
+
     // Check for error handler
     if (step.onError) {
       try {
@@ -1055,45 +1055,45 @@ class WorkflowEngine extends EventEmitter {
         logger.error('Error handler failed:', handlerError);
       }
     }
-    
+
     // Check for retry
     if (step.retries && (!step.retryCount || step.retryCount < step.retries)) {
       step.retryCount = (step.retryCount || 0) + 1;
       logger.info(`Retrying step ${step.name} (${step.retryCount}/${step.retries})`);
-      
+
       // Wait before retry
-      await new Promise(resolve => 
+      await new Promise(resolve =>
         setTimeout(resolve, step.retryDelay || 1000)
       );
-      
+
       return await this.executeStep(step, execution.state, execution);
     }
   }
-  
+
   /**
    * Complete workflow execution
    */
   completeExecution(execution, result) {
     const duration = Date.now() - execution.startTime;
-    
+
     // Update metrics
     this.metrics.workflowsExecuted++;
-    
+
     if (result.success) {
       this.metrics.workflowsCompleted++;
     } else {
       this.metrics.workflowsFailed++;
     }
-    
+
     // Update average execution time
-    this.metrics.averageExecutionTime = 
+    this.metrics.averageExecutionTime =
       (this.metrics.averageExecutionTime * (this.metrics.workflowsExecuted - 1) + duration) /
       this.metrics.workflowsExecuted;
-    
+
     // Clean up
     this.activeWorkflows.delete(execution.id);
     this.runningWorkflows.delete(execution.id);
-    
+
     // Store completed
     this.completedWorkflows.set(execution.id, {
       ...execution,
@@ -1101,24 +1101,24 @@ class WorkflowEngine extends EventEmitter {
       duration,
       completedAt: new Date().toISOString()
     });
-    
+
     // Process queue
     this.processQueue();
-    
+
     this.emit('workflow:completed', { execution, result, duration });
   }
-  
+
   /**
    * Process execution queue
    */
   async processQueue() {
     if (this.executionQueue.length === 0) return;
     if (this.runningWorkflows.size >= this.config.maxConcurrentWorkflows) return;
-    
+
     const { workflowId, input, options } = this.executionQueue.shift();
     await this.executeWorkflow(workflowId, input, options);
   }
-  
+
   /**
    * Start execution loop
    */
@@ -1127,7 +1127,7 @@ class WorkflowEngine extends EventEmitter {
       this.processQueue();
     }, 1000);
   }
-  
+
   /**
    * Helper methods
    */
@@ -1185,11 +1185,11 @@ class WorkflowEngine extends EventEmitter {
   generateWorkflowId() {
     return `wf_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
   }
-  
+
   generateExecutionId() {
     return `ex_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
   }
-  
+
   validateSteps(steps) {
     return steps.map(step => ({
       id: step.id || `step_${Math.random().toString(36).substring(2, 9)}`,
@@ -1198,44 +1198,44 @@ class WorkflowEngine extends EventEmitter {
       ...step
     }));
   }
-  
+
   validateWorkflow(workflow) {
     if (!workflow.steps || workflow.steps.length === 0) {
       throw new Error('Workflow must have at least one step');
     }
-    
+
     // Validate step types
     for (const step of workflow.steps) {
-      if (!this.stepDefinitions.has(step.type) && 
+      if (!this.stepDefinitions.has(step.type) &&
           !this.customSteps.has(step.type)) {
         throw new Error(`Unknown step type: ${step.type}`);
       }
     }
-    
+
     return true;
   }
-  
+
   findStepIndex(workflow, stepId) {
-    return workflow.steps.findIndex(s => 
+    return workflow.steps.findIndex(s =>
       s.id === stepId || s.name === stepId
     );
   }
-  
+
   async applyTransformation(data, transformation) {
     // Simple transformation implementation
     if (typeof transformation === 'function') {
       return transformation(data);
     }
-    
+
     if (typeof transformation === 'string') {
       // Use safe expression evaluator instead of new Function
       const safeEvaluator = require('./safe-expression-evaluator');
       return safeEvaluator.transform(data, transformation);
     }
-    
+
     return data;
   }
-  
+
   async loadDefaultTemplates() {
     // Load built-in workflow templates
     const templates = [
@@ -1273,12 +1273,12 @@ class WorkflowEngine extends EventEmitter {
         ]
       }
     ];
-    
+
     for (const template of templates) {
       this.templates.set(template.id, template);
     }
   }
-  
+
   async getSpecialist(type) {
     // Get or create specialist
     if (!this.specialists.has(type)) {
@@ -1287,28 +1287,28 @@ class WorkflowEngine extends EventEmitter {
         type,
         name: `${type} Specialist`
       });
-      
+
       await specialist.initialize();
       this.specialists.set(type, specialist);
     }
-    
+
     return this.specialists.get(type);
   }
-  
+
   /**
    * Get workflow by ID
    */
   getWorkflow(workflowId) {
     return this.workflows.get(workflowId);
   }
-  
+
   /**
    * List all workflows
    */
   listWorkflows() {
     return Array.from(this.workflows.values());
   }
-  
+
   /**
    * Schedule a recurring workflow
    */
@@ -1316,15 +1316,15 @@ class WorkflowEngine extends EventEmitter {
     if (!this.scheduler) {
       throw new Error('Scheduler not initialized. Enable scheduling in config.');
     }
-    
+
     const workflow = this.workflows.get(workflowId);
     if (!workflow) {
       throw new Error(`Workflow not found: ${workflowId}`);
     }
-    
+
     return this.scheduler.scheduleRecurring(workflow, pattern, options);
   }
-  
+
   /**
    * Schedule workflow with cron expression
    */
@@ -1332,15 +1332,15 @@ class WorkflowEngine extends EventEmitter {
     if (!this.scheduler) {
       throw new Error('Scheduler not initialized. Enable scheduling in config.');
     }
-    
+
     const workflow = this.workflows.get(workflowId);
     if (!workflow) {
       throw new Error(`Workflow not found: ${workflowId}`);
     }
-    
+
     return this.scheduler.scheduleCron(workflow, cronExpression, options);
   }
-  
+
   /**
    * Create workflow from template with optimization
    */
@@ -1349,22 +1349,22 @@ class WorkflowEngine extends EventEmitter {
     if (!template) {
       throw new Error(`Template not found: ${templateId}`);
     }
-    
+
     const workflow = await this.createWorkflow({
       ...template,
       ...customization,
       name: customization.name || `${template.name} (Optimized)`
     });
-    
+
     if (this.optimizer) {
       const optimized = await this.optimizer.optimizeWorkflow(workflow);
       this.workflows.set(workflow.id, optimized);
       return optimized;
     }
-    
+
     return workflow;
   }
-  
+
   /**
    * Execute workflow with orchestration pattern
    */
@@ -1372,18 +1372,18 @@ class WorkflowEngine extends EventEmitter {
     if (!this.orchestrator) {
       throw new Error('Orchestrator not initialized. Enable orchestration in config.');
     }
-    
+
     const workflow = this.workflows.get(workflowId);
     if (!workflow) {
       throw new Error(`Workflow not found: ${workflowId}`);
     }
-    
+
     return await this.orchestrator.orchestrate(workflow, pattern, {
       input,
       ...options
     });
   }
-  
+
   /**
    * Get workflow analytics
    */
@@ -1391,14 +1391,14 @@ class WorkflowEngine extends EventEmitter {
     if (!this.analytics) {
       throw new Error('Analytics not initialized. Enable analytics in config.');
     }
-    
+
     const metrics = this.analytics.getMetrics();
     const workflowMetrics = metrics.workflows[workflowId];
-    
+
     if (!workflowMetrics) {
       return null;
     }
-    
+
     return {
       workflowId,
       metrics: workflowMetrics,
@@ -1406,17 +1406,17 @@ class WorkflowEngine extends EventEmitter {
       report: this.analytics.generateReport(timeRange)
     };
   }
-  
+
   /**
    * Get system-wide analytics
    */
   getSystemAnalytics() {
     const baseMetrics = this.getMetrics();
-    
+
     if (!this.analytics) {
       return baseMetrics;
     }
-    
+
     return {
       ...baseMetrics,
       analytics: this.analytics.getMetrics(),
@@ -1424,7 +1424,7 @@ class WorkflowEngine extends EventEmitter {
       alerts: this.analytics.getAlerts(true)
     };
   }
-  
+
   /**
    * Get metrics
    */
@@ -1437,52 +1437,52 @@ class WorkflowEngine extends EventEmitter {
       specialists: this.specialists.size,
       templates: this.templates.size
     };
-    
+
     // Add enhanced metrics if components are available
     if (this.scheduler) {
       baseMetrics.scheduler = this.scheduler.getMetrics();
     }
-    
+
     if (this.orchestrator) {
       baseMetrics.orchestrator = this.orchestrator.getMetrics();
     }
-    
+
     if (this.optimizer) {
       baseMetrics.optimizer = this.optimizer.getMetrics();
     }
-    
+
     if (this.analytics) {
       baseMetrics.analytics = this.analytics.getMetrics();
     }
-    
+
     return baseMetrics;
   }
-  
+
   /**
    * Destroy the engine
    */
   destroy() {
     this.removeAllListeners();
-    
+
     // Clean up specialists
     for (const specialist of this.specialists.values()) {
       specialist.destroy();
     }
-    
+
     // Clean up enhanced components
     if (this.scheduler) {
       this.scheduler.stopScheduler();
     }
-    
+
     if (this.analytics) {
       this.analytics.destroy();
     }
-    
+
     this.workflows.clear();
     this.activeWorkflows.clear();
     this.completedWorkflows.clear();
-    
-    logger.info('💥 Workflow Engine destroyed');
+
+    logger.info(' Workflow Engine destroyed');
   }
 }
 

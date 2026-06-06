@@ -27,7 +27,7 @@ class CatalogOrchestrator extends EventEmitter {
     this.dataPath = path.join(this.projectRoot, '.bumba-design', 'catalog-data.json');
     this.designDir = path.join(this.projectRoot, '.bumba-design');
 
-    console.log('✓ CatalogOrchestrator initialized');
+    console.log(' CatalogOrchestrator initialized');
     console.log(`  Catalog path: ${this.catalogPath}`);
     console.log(`  Data path: ${this.dataPath}`);
   }
@@ -47,40 +47,40 @@ class CatalogOrchestrator extends EventEmitter {
       if (designBridge) {
         designBridge.on('tokens:extracted', async (tokens) => {
           await this.updateTokens(tokens);
-          console.log('✓ Catalog updated with design tokens');
+          console.log(' Catalog updated with design tokens');
         });
 
-        console.log('✓ Listening to Design Bridge events');
+        console.log(' Listening to Design Bridge events');
       }
 
       // Design Engineer events
       if (designEngineer) {
         designEngineer.on('component:created', async (component) => {
           await this.addComponent(component);
-          console.log(`✓ Added ${component.name} to catalog`);
+          console.log(` Added ${component.name} to catalog`);
         });
 
-        console.log('✓ Listening to Design Engineer Manager events');
+        console.log(' Listening to Design Engineer Manager events');
       }
 
       // Figma sync events (optional)
       if (figmaSync) {
         figmaSync.on('library:changed', async (changes) => {
           await this.syncChanges(changes);
-          console.log('✓ Catalog synced with Figma changes');
+          console.log(' Catalog synced with Figma changes');
         });
 
         figmaSync.on('figma:synced', async (data) => {
           await this.syncChanges(data);
-          console.log('✓ Catalog synced with Figma');
+          console.log(' Catalog synced with Figma');
         });
 
-        console.log('✓ Listening to Figma Library Sync events');
+        console.log(' Listening to Figma Library Sync events');
       }
 
-      console.log('✓ All event listeners registered');
+      console.log(' All event listeners registered');
     } catch (error) {
-      console.error('✗ Error setting up listeners:', error);
+      console.error(' Error setting up listeners:', error);
       throw error;
     }
   }
@@ -95,7 +95,7 @@ class CatalogOrchestrator extends EventEmitter {
       try {
         await fs.access(this.designDir);
       } catch {
-        console.warn('⚠ .bumba-design directory does not exist, creating it...');
+        console.warn(' .bumba-design directory does not exist, creating it...');
         await fs.mkdir(this.designDir, { recursive: true });
       }
 
@@ -103,7 +103,7 @@ class CatalogOrchestrator extends EventEmitter {
       try {
         await fs.access(this.dataPath);
       } catch {
-        console.warn('⚠ catalog-data.json does not exist, returning empty structure');
+        console.warn(' catalog-data.json does not exist, returning empty structure');
         return this.getEmptyStructure();
       }
 
@@ -113,15 +113,15 @@ class CatalogOrchestrator extends EventEmitter {
       // Parse JSON
       const data = JSON.parse(fileContent);
 
-      console.log('✓ Loaded catalog data from file');
+      console.log(' Loaded catalog data from file');
       return data;
     } catch (error) {
       if (error instanceof SyntaxError) {
-        console.error('✗ Invalid JSON in catalog-data.json, returning empty structure');
+        console.error(' Invalid JSON in catalog-data.json, returning empty structure');
         return this.getEmptyStructure();
       }
 
-      console.error('✗ Error loading catalog data:', error);
+      console.error(' Error loading catalog data:', error);
       return this.getEmptyStructure();
     }
   }
@@ -164,9 +164,9 @@ class CatalogOrchestrator extends EventEmitter {
       // Write to file
       await fs.writeFile(this.dataPath, jsonContent, 'utf8');
 
-      console.log('✓ Saved catalog data to file');
+      console.log(' Saved catalog data to file');
     } catch (error) {
-      console.error('✗ Error saving catalog data:', error);
+      console.error(' Error saving catalog data:', error);
       throw error;
     }
   }
@@ -254,9 +254,9 @@ class CatalogOrchestrator extends EventEmitter {
       // Emit success event
       this.emit('catalog:updated', { type: 'tokens', data });
 
-      console.log('✓ Tokens updated in catalog');
+      console.log(' Tokens updated in catalog');
     } catch (error) {
-      console.error('✗ Error updating tokens:', error);
+      console.error(' Error updating tokens:', error);
       this.emit('catalog:error', { operation: 'updateTokens', error });
       throw error;
     }
@@ -297,14 +297,14 @@ class CatalogOrchestrator extends EventEmitter {
           ...component,
           updatedAt: new Date().toISOString()
         };
-        console.log(`✓ Updated existing component "${component.name}"`);
+        console.log(` Updated existing component "${component.name}"`);
       } else {
         // Add new component
         data.components.unshift({
           ...component,
           createdAt: new Date().toISOString()
         });
-        console.log(`✓ Added new component "${component.name}"`);
+        console.log(` Added new component "${component.name}"`);
       }
 
       // Update timestamp
@@ -336,9 +336,9 @@ class CatalogOrchestrator extends EventEmitter {
       // Emit success event
       this.emit('catalog:updated', { type: 'component', component, data });
 
-      console.log(`✓ Component "${component.name}" added to catalog`);
+      console.log(` Component "${component.name}" added to catalog`);
     } catch (error) {
-      console.error('✗ Error adding component:', error);
+      console.error(' Error adding component:', error);
       this.emit('catalog:error', { operation: 'addComponent', error });
       throw error;
     }
@@ -406,9 +406,9 @@ class CatalogOrchestrator extends EventEmitter {
       // Emit success event
       this.emit('catalog:updated', { type: 'sync', changes, data });
 
-      console.log('✓ Figma changes synced to catalog');
+      console.log(' Figma changes synced to catalog');
     } catch (error) {
-      console.error('✗ Error syncing changes:', error);
+      console.error(' Error syncing changes:', error);
       this.emit('catalog:error', { operation: 'syncChanges', error });
       throw error;
     }
@@ -431,7 +431,7 @@ class CatalogOrchestrator extends EventEmitter {
         lastSync: data.metadata?.lastSync || null
       };
     } catch (error) {
-      console.error('✗ Error getting stats:', error);
+      console.error(' Error getting stats:', error);
       return {
         colors: 0,
         typography: 0,

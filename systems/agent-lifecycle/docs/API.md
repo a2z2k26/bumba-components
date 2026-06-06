@@ -9,7 +9,7 @@
 
 # Agent Lifecycle API Documentation
 
-> 🏁 **COMPREHENSIVE API REFERENCE** - Complete documentation for the BUMBA Agent Lifecycle Framework
+>  **COMPREHENSIVE API REFERENCE** - Complete documentation for the BUMBA Agent Lifecycle Framework
 
 ╔══════════════════════════════════════════════════════════════╗
 ║           Agent Lifecycle - API REFERENCE GUIDE                    ║
@@ -30,7 +30,7 @@
 
 ## AgentLifecycle Class
 
-🟢 **Core FSM implementation for managing individual agent lifecycles**
+ **Core FSM implementation for managing individual agent lifecycles**
 
 ### Constructor
 
@@ -42,8 +42,8 @@ new AgentLifecycle(id, config)
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `id` | `string` | ✅ | Unique identifier for the agent |
-| `config` | `object` | ❌ | Configuration options (see [Configuration](#configuration-options)) |
+| `id` | `string` |  | Unique identifier for the agent |
+| `config` | `object` |  | Configuration options (see [Configuration](#configuration-options)) |
 
 #### Example
 
@@ -57,7 +57,7 @@ const agent = new AgentLifecycle('worker-001', {
 
 ### Methods
 
-#### 🟡 `transition(event, data)`
+####  `transition(event, data)`
 
 Transitions the agent to a new state based on the provided event.
 
@@ -75,7 +75,7 @@ await agent.transition(StateEvent.SPAWN, { task: 'process-data' });
 
 ---
 
-#### 🟢 `getState()`
+####  `getState()`
 
 Returns the current state of the agent.
 
@@ -88,7 +88,7 @@ const currentState = agent.getState();
 
 ---
 
-#### 🟠 `getStatistics()`
+####  `getStatistics()`
 
 Returns comprehensive runtime statistics for the agent.
 
@@ -121,7 +121,7 @@ const stats = agent.getStatistics();
 
 ---
 
-#### 🔴 `forceComplete(reason)`
+####  `forceComplete(reason)`
 
 Forces the agent to complete immediately, bypassing normal lifecycle.
 
@@ -136,7 +136,7 @@ agent.forceComplete('timeout-exceeded');
 
 ---
 
-#### 🏁 `reset()`
+####  `reset()`
 
 Resets the agent to IDLE state, clearing all statistics.
 
@@ -150,7 +150,7 @@ agent.reset();
 
 ## AgentOrchestrator Class
 
-🟢 **Multi-agent management and coordination system**
+ **Multi-agent management and coordination system**
 
 ### Constructor
 
@@ -162,9 +162,9 @@ new AgentOrchestrator(config)
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `config` | `object` | ❌ | Orchestrator configuration |
-| `config.maxAgents` | `number` | ❌ | Maximum concurrent agents (default: 100) |
-| `config.defaultAgentConfig` | `object` | ❌ | Default config for new agents |
+| `config` | `object` |  | Orchestrator configuration |
+| `config.maxAgents` | `number` |  | Maximum concurrent agents (default: 100) |
+| `config.defaultAgentConfig` | `object` |  | Default config for new agents |
 
 #### Example
 
@@ -180,7 +180,7 @@ const orchestrator = new AgentOrchestrator({
 
 ### Methods
 
-#### 🟡 `createAgent(id, config)`
+####  `createAgent(id, config)`
 
 Creates a new managed agent instance.
 
@@ -200,7 +200,7 @@ const agent = orchestrator.createAgent('worker-001', {
 
 ---
 
-#### 🟢 `getAgent(id)`
+####  `getAgent(id)`
 
 Retrieves an agent by ID.
 
@@ -215,7 +215,7 @@ const agent = orchestrator.getAgent('worker-001');
 
 ---
 
-#### 🟠 `getMetrics()`
+####  `getMetrics()`
 
 Returns system-wide metrics for all managed agents.
 
@@ -240,7 +240,7 @@ const metrics = orchestrator.getMetrics();
 
 ---
 
-#### 🔴 `getHealth()`
+####  `getHealth()`
 
 Returns health status and diagnostics.
 
@@ -271,7 +271,7 @@ const health = orchestrator.getHealth();
 
 ---
 
-#### 🏁 `completeAll(reason)`
+####  `completeAll(reason)`
 
 Gracefully completes all active agents.
 
@@ -320,11 +320,11 @@ const StateEvent = {
 ╠═══════════════════════════════════════════════════════════════╣
 ║  Current State  →  Event  →  Next State                        ║
 ╠═══════════════════════════════════════════════════════════════╣
-║  🟡 IDLE        →  SPAWN     →  🟢 SPAWNING                   ║
-║  🟢 SPAWNING    →  ACTIVATE  →  🟢 ACTIVE                     ║
-║  🟢 ACTIVE      →  VALIDATE  →  🟠 VALIDATING                 ║
-║  🟠 VALIDATING  →  COMPLETE  →  🔴 COMPLETING                 ║
-║  🔴 COMPLETING  →  (auto)    →  🏁 COMPLETED                  ║
+║   IDLE        →  SPAWN     →   SPAWNING                   ║
+║   SPAWNING    →  ACTIVATE  →   ACTIVE                     ║
+║   ACTIVE      →  VALIDATE  →   VALIDATING                 ║
+║   VALIDATING  →  COMPLETE  →   COMPLETING                 ║
+║   COMPLETING  →  (auto)    →   COMPLETED                  ║
 ╚═══════════════════════════════════════════════════════════════╝
 ```
 
@@ -364,27 +364,27 @@ const StateEvent = {
 ### Event Usage Examples
 
 ```javascript
-// 🟡 Listen for state changes
+//  Listen for state changes
 agent.on('stateChange', ({ from, to, event, data }) => {
   console.log(`Transition: ${from} -> ${to} via ${event}`);
 });
 
-// 🟢 Monitor specific state entry
+//  Monitor specific state entry
 agent.on('enter:ACTIVE', ({ state, data }) => {
   console.log(`Agent is now active with data:`, data);
 });
 
-// 🟠 Handle errors
+//  Handle errors
 agent.on('error', ({ error, state, context }) => {
   console.error(`Error in state ${state}:`, error.message);
 });
 
-// 🔴 Track lifecycle
+//  Track lifecycle
 agent.on('lifecycle:ended', ({ id, reason }) => {
   console.log(`Agent ${id} completed: ${reason}`);
 });
 
-// 🏁 Orchestrator monitoring
+//  Orchestrator monitoring
 orchestrator.on('agent:stateChange', ({ agentId, from, to }) => {
   console.log(`[${agentId}] ${from} -> ${to}`);
 });
@@ -483,7 +483,7 @@ class ResourceError extends Error {
 ### Error Handling Patterns
 
 ```javascript
-// 🟡 Handle transition errors
+//  Handle transition errors
 try {
   await agent.transition(StateEvent.ACTIVATE);
 } catch (error) {
@@ -492,18 +492,18 @@ try {
   }
 }
 
-// 🟢 Handle timeout errors
+//  Handle timeout errors
 agent.on('timeout', ({ state, duration, limit }) => {
   console.warn(`State ${state} timed out after ${duration}ms (limit: ${limit}ms)`);
   agent.forceComplete('timeout');
 });
 
-// 🟠 Handle orchestrator resource errors
+//  Handle orchestrator resource errors
 orchestrator.on('orchestrator:full', ({ maxAgents, current }) => {
   console.error(`Cannot create agent: limit reached (${current}/${maxAgents})`);
 });
 
-// 🔴 Global error handler
+//  Global error handler
 process.on('unhandledRejection', (error) => {
   if (error instanceof TimeoutError) {
     console.error(`Unhandled timeout in ${error.state}`);
@@ -518,7 +518,7 @@ process.on('unhandledRejection', (error) => {
 ### Metrics Collection
 
 ```javascript
-// 🟡 Agent-level metrics
+//  Agent-level metrics
 const agentMetrics = agent.getStatistics();
 console.log(`Agent ${agentMetrics.id} metrics:`, {
   transitions: agentMetrics.totalTransitions,
@@ -526,7 +526,7 @@ console.log(`Agent ${agentMetrics.id} metrics:`, {
   errors: agentMetrics.errors.length
 });
 
-// 🟢 System-level metrics
+//  System-level metrics
 const systemMetrics = orchestrator.getMetrics();
 console.log('System metrics:', {
   agents: `${systemMetrics.activeAgents}/${systemMetrics.totalAgents}`,
@@ -538,7 +538,7 @@ console.log('System metrics:', {
 ### Health Monitoring
 
 ```javascript
-// 🟠 Health check endpoint
+//  Health check endpoint
 app.get('/health', async (req, res) => {
   const health = orchestrator.getHealth();
 
@@ -556,7 +556,7 @@ app.get('/health', async (req, res) => {
   });
 });
 
-// 🔴 Prometheus metrics
+//  Prometheus metrics
 app.get('/metrics', (req, res) => {
   const metrics = orchestrator.getMetrics();
 
@@ -584,7 +584,7 @@ bumba_transitions_total ${metrics.totalTransitions}
 ### Performance Monitoring
 
 ```javascript
-// 🏁 Measure transition performance
+//  Measure transition performance
 const startTime = Date.now();
 
 await agent.transition(StateEvent.SPAWN);
@@ -603,11 +603,11 @@ console.log('Performance metrics:', {
 ---
 
 ╔══════════════════════════════════════════════════════════════╗
-║                    🏁 BUMBA PLATFORM 🏁                       ║
+║                     BUMBA PLATFORM                        ║
 ║        Building Unified Multi-agent Business Applications     ║
 ╠══════════════════════════════════════════════════════════════╣
-║  🟡 ProductStrategist • 🟢 BackendEngineer                   ║
-║  🔴 DesignEngineer • 🟠 Testing • 🏁 Complete                ║
+║   ProductStrategist •  BackendEngineer                   ║
+║   DesignEngineer •  Testing •  Complete                ║
 ╚══════════════════════════════════════════════════════════════╝
 
 **Agent Lifecycle API Documentation v1.0** • Professional Framework Team

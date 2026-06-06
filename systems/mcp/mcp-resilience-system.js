@@ -22,16 +22,16 @@ class MCPServerManager {
       maxDelay: 10000,
       backoffFactor: 2
     };
-    
+
     // Initialize resilience system with circuit breakers
     this.resilienceSystem = new MCPResilienceSystem();
-    
+
     // Framework mode - health monitoring disabled by default
     // Users can enable it after configuring their MCP servers
     this.healthMonitoringEnabled = false;
-    
+
     this.initializeServerDefinitions();
-    
+
     // Only start health monitoring if explicitly enabled
     if (this.healthMonitoringEnabled) {
       this.startHealthMonitoring();
@@ -195,7 +195,7 @@ class MCPServerManager {
     }
 
     // Use fallback server
-    logger.info(`🟢 Falling back to ${config.fallback} for ${serverName}`);
+    logger.info(` Falling back to ${config.fallback} for ${serverName}`);
     return this.fallbacks.get(serverName);
   }
 
@@ -267,7 +267,7 @@ class MCPServerManager {
 
     // Create new server connection
     const server = await this.createServerConnection(serverName);
-    
+
     // Cache the connection
     this.connectionPool.set(serverName, {
       server: server,
@@ -282,7 +282,7 @@ class MCPServerManager {
    */
   async createServerConnection(serverName) {
     const config = this.servers.get(serverName);
-    
+
     return await BumbaErrorBoundary.wrap(async () => {
         return await this.attemptConnection(serverName, config);
       },
@@ -298,18 +298,18 @@ class MCPServerManager {
   async attemptConnection(serverName, config) {
     const hooks = getUniversalHooks();
     let lastError;
-    
+
     for (let attempt = 1; attempt <= this.retryConfig.maxRetries; attempt++) {
       try {
         const server = new MCPServerConnection(serverName, config);
         await server.connect();
-        
-        logger.info(`🏁 Connected to MCP server: ${serverName}`);
+
+        logger.info(` Connected to MCP server: ${serverName}`);
         return server;
-        
+
       } catch (error) {
         lastError = error;
-        
+
         // Trigger connection degraded hook on first failure
         if (attempt === 1) {
           await hooks.trigger('mcp:connection-degraded', {
@@ -318,19 +318,19 @@ class MCPServerManager {
             alternatives: config.fallback ? [config.fallback] : []
           });
         }
-        
+
         if (attempt < this.retryConfig.maxRetries) {
           const delay = Math.min(
             this.retryConfig.baseDelay * Math.pow(this.retryConfig.backoffFactor, attempt - 1),
             this.retryConfig.maxDelay
           );
-          
+
           logger.info(`⏳ Retrying ${serverName} connection in ${delay}ms (attempt ${attempt}/${this.retryConfig.maxRetries})`);
           await new Promise(resolve => setTimeout(resolve, delay));
         }
       }
     }
-    
+
     throw lastError;
   }
 
@@ -339,12 +339,12 @@ class MCPServerManager {
    */
   async isHealthy(server, config) {
     const hooks = getUniversalHooks();
-    
+
     try {
       // Use server-specific health check if available
       if (config.healthCheck) {
         const healthy = await config.healthCheck();
-        
+
         // Trigger service restored hook if was previously unhealthy
         if (healthy && this.previousHealthState && !this.previousHealthState[server.name]) {
           await hooks.trigger('mcp:service-restored', {
@@ -353,13 +353,13 @@ class MCPServerManager {
             pending_requests: this.getPendingRequests(server.name)
           });
         }
-        
+
         return healthy;
       }
-      
+
       // Generic health check
       return await server.healthCheck();
-      
+
     } catch (error) {
       return false;
     }
@@ -449,7 +449,7 @@ class MCPServerManager {
       return false;
     }
   }
-  
+
   /**
    * Test OpenRouter MCP server health
    */
@@ -457,7 +457,7 @@ class MCPServerManager {
     try {
       // Check if OpenRouter integration is available
       const openrouter = getInstance();
-      
+
       // Test connection
       const status = await openrouter.testConnection();
       return status.connected;
@@ -474,7 +474,7 @@ class MCPServerManager {
     try {
       // Check if ShadCN integration is available
       const shadcn = getInstance();
-      
+
       // Test if integration is operational
       const status = shadcn.getStatus();
       return status.mcpConnected || status.shadcnInstalled;
@@ -507,7 +507,7 @@ class MCPServerManager {
     if (!this.healthMonitoringEnabled) {
       this.healthMonitoringEnabled = true;
       this.startHealthMonitoring();
-      logger.info('🟢 MCP health monitoring enabled by user');
+      logger.info(' MCP health monitoring enabled by user');
     }
   }
 
@@ -518,13 +518,13 @@ class MCPServerManager {
     if (this.healthMonitorInterval) {
       clearInterval(this.healthMonitorInterval);
     }
-    
+
     // Check health every 5 minutes
     this.healthMonitorInterval = setInterval(async () => {
       await this.performHealthChecks();
     }, 5 * 60 * 1000);
 
-    logger.info('🟢 MCP server health monitoring started');
+    logger.info(' MCP server health monitoring started');
   }
 
   /**
@@ -532,7 +532,7 @@ class MCPServerManager {
    */
   async performHealthChecks() {
     const healthResults = {};
-    
+
     for (const [name, config] of this.servers) {
       try {
         const healthy = await this.isHealthy({ healthCheck: config.healthCheck }, config);
@@ -541,12 +541,12 @@ class MCPServerManager {
           checked_at: new Date().toISOString(),
           essential: config.essential
         };
-        
+
         // Remove from connection pool if unhealthy
         if (!healthy && this.connectionPool.has(name)) {
           this.connectionPool.delete(name);
         }
-        
+
       } catch (error) {
         healthResults[name] = {
           healthy: false,
@@ -556,16 +556,16 @@ class MCPServerManager {
         };
       }
     }
-    
+
     this.healthChecks.set('last_check', healthResults);
-    
+
     // Log unhealthy essential servers
     const unhealthyEssential = Object.entries(healthResults)
       .filter(([name, result]) => !result.healthy && result.essential)
       .map(([name]) => name);
-    
+
     if (unhealthyEssential.length > 0) {
-      logger.warn(`🟡 Essential MCP servers unhealthy: ${unhealthyEssential.join(', ')}`);
+      logger.warn(` Essential MCP servers unhealthy: ${unhealthyEssential.join(', ')}`);
     }
   }
 
@@ -595,15 +595,15 @@ class MCPServerManager {
    * Force reconnection of all servers
    */
   async reconnectAll() {
-    logger.info('🟢 Forcing reconnection of all MCP servers...');
-    
+    logger.info(' Forcing reconnection of all MCP servers...');
+
     // Clear connection pool
     this.connectionPool.clear();
-    
+
     // Perform fresh health checks
     await this.performHealthChecks();
-    
-    logger.info('🏁 MCP server reconnection completed');
+
+    logger.info(' MCP server reconnection completed');
   }
 
   /**
@@ -641,7 +641,7 @@ class MCPServerConnection {
     if (!this.connected) {
       throw new Error('Server not connected');
     }
-    
+
     // Simulate health check
     this.lastUsed = Date.now();
     return { status: 'healthy', timestamp: new Date().toISOString() };
@@ -653,7 +653,7 @@ class MCPServerConnection {
     }
 
     this.lastUsed = Date.now();
-    
+
     // Simulate operation execution
     return {
       success: true,

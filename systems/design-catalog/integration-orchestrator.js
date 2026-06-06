@@ -70,7 +70,7 @@ class IntegrationOrchestrator extends EventEmitter {
   async initialize() {
     if (this.initialized) return;
 
-    console.log('🚀 Initializing Design Bridge Integration Orchestrator...');
+    console.log(' Initializing Design Bridge Integration Orchestrator...');
 
     try {
       // Initialize all components
@@ -94,10 +94,10 @@ class IntegrationOrchestrator extends EventEmitter {
 
       this.initialized = true;
       this.emit('orchestrator-initialized');
-      console.log('✅ Integration Orchestrator initialized successfully');
+      console.log(' Integration Orchestrator initialized successfully');
 
     } catch (error) {
-      console.error('❌ Integration Orchestrator initialization failed:', error);
+      console.error(' Integration Orchestrator initialization failed:', error);
       throw error;
     }
   }
@@ -124,7 +124,7 @@ class IntegrationOrchestrator extends EventEmitter {
   }
 
   async initializeComponents() {
-    console.log('📦 Initializing system components...');
+    console.log(' Initializing system components...');
 
     // Sort by dependencies and priority
     const sortedComponents = this.topologicalSort(this.componentDefs);
@@ -158,10 +158,10 @@ class IntegrationOrchestrator extends EventEmitter {
           }
         });
 
-        console.log(`  ✅ ${componentName} initialized`);
+        console.log(`   ${componentName} initialized`);
 
       } catch (error) {
-        console.error(`  ❌ Failed to initialize ${componentName}:`, error.message);
+        console.error(`   Failed to initialize ${componentName}:`, error.message);
         this.components.set(componentName, {
           instance: null,
           definition: this.componentDefs[componentName],
@@ -194,7 +194,7 @@ class IntegrationOrchestrator extends EventEmitter {
   }
 
   async setupWorkflows() {
-    console.log('🔄 Setting up integration workflows...');
+    console.log(' Setting up integration workflows...');
 
     // Complete Design-to-Code workflow
     this.workflows.set('design-to-code', {
@@ -252,7 +252,7 @@ class IntegrationOrchestrator extends EventEmitter {
   async executeWorkflow(workflowName, context = {}) {
     const traceId = this.generateTraceId();
 
-    console.log(`🔄 Executing workflow: ${workflowName} (trace: ${traceId})`);
+    console.log(` Executing workflow: ${workflowName} (trace: ${traceId})`);
 
     try {
       const workflow = this.workflows.get(workflowName);
@@ -282,7 +282,7 @@ class IntegrationOrchestrator extends EventEmitter {
       return execution;
 
     } catch (error) {
-      console.error(`❌ Workflow ${workflowName} failed:`, error);
+      console.error(` Workflow ${workflowName} failed:`, error);
 
       this.emit('workflow-failed', {
         workflow: workflowName,
@@ -329,14 +329,14 @@ class IntegrationOrchestrator extends EventEmitter {
         results[step.component] = result;
         execution.steps.push(stepExecution);
 
-        console.log(`  ✅ Step ${step.component}.${step.action} completed (${stepExecution.duration}ms)`);
+        console.log(`   Step ${step.component}.${step.action} completed (${stepExecution.duration}ms)`);
 
       } catch (error) {
         stepExecution.status = 'failed';
         stepExecution.error = error.message;
         stepExecution.endTime = Date.now();
 
-        console.error(`  ❌ Step ${step.component}.${step.action} failed:`, error.message);
+        console.error(`   Step ${step.component}.${step.action} failed:`, error.message);
 
         // Handle rollback if enabled
         if (workflow.rollback) {
@@ -427,7 +427,7 @@ class IntegrationOrchestrator extends EventEmitter {
   }
 
   setupHealthMonitoring() {
-    console.log('🏥 Setting up health monitoring...');
+    console.log(' Setting up health monitoring...');
 
     setInterval(async () => {
       await this.performHealthChecks();
@@ -460,7 +460,7 @@ class IntegrationOrchestrator extends EventEmitter {
   }
 
   setupDistributedTracing() {
-    console.log('🔍 Setting up distributed tracing...');
+    console.log(' Setting up distributed tracing...');
 
     // Trace storage and correlation
     this.traceStorage = new Map();
@@ -468,7 +468,7 @@ class IntegrationOrchestrator extends EventEmitter {
   }
 
   setupCircuitBreakers() {
-    console.log('🔌 Setting up circuit breakers...');
+    console.log(' Setting up circuit breakers...');
 
     // Initialize circuit breakers for critical operations
     const criticalOperations = [
@@ -499,7 +499,7 @@ class IntegrationOrchestrator extends EventEmitter {
   }
 
   async rollbackWorkflow(execution) {
-    console.log(`🔄 Rolling back workflow: ${execution.workflow}`);
+    console.log(` Rolling back workflow: ${execution.workflow}`);
 
     // Reverse the completed steps
     for (let i = execution.steps.length - 1; i >= 0; i--) {
@@ -516,7 +516,7 @@ class IntegrationOrchestrator extends EventEmitter {
 
   async rollbackStep(step) {
     // Implementation would depend on the specific step type
-    console.log(`  🔄 Rolling back step: ${step.component}.${step.action}`);
+    console.log(`   Rolling back step: ${step.component}.${step.action}`);
   }
 
   getSystemHealth() {
@@ -564,7 +564,7 @@ class IntegrationOrchestrator extends EventEmitter {
   }
 
   async shutdown() {
-    console.log('🛑 Shutting down Integration Orchestrator...');
+    console.log(' Shutting down Integration Orchestrator...');
 
     // Shutdown all components
     for (const [name, component] of this.components) {
@@ -578,7 +578,7 @@ class IntegrationOrchestrator extends EventEmitter {
     }
 
     this.emit('orchestrator-shutdown');
-    console.log('✅ Integration Orchestrator shutdown complete');
+    console.log(' Integration Orchestrator shutdown complete');
   }
 }
 

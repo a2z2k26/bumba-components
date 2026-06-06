@@ -21,19 +21,19 @@ class FigmaMCPBridge extends EventEmitter {
   async start() {
     if (this.connected) return;
 
-    console.log('🔌 Starting Figma MCP server...');
+    console.log(' Starting Figma MCP server...');
 
     try {
       // Check if MCP is enabled
       if (!this.config.get('mcp.figma.enabled')) {
-        console.log('ℹ️  Figma MCP server is disabled in config');
+        console.log('ℹ  Figma MCP server is disabled in config');
         return false;
       }
 
       // Get Figma token
       const token = this.config.get('figma.accessToken');
       if (!token || token === 'mock_token_for_testing') {
-        console.log('⚠️  No valid Figma token for MCP server');
+        console.log('  No valid Figma token for MCP server');
         return false;
       }
 
@@ -66,11 +66,11 @@ class FigmaMCPBridge extends EventEmitter {
       });
 
       this.connected = true;
-      console.log('✅ Figma MCP server started');
+      console.log(' Figma MCP server started');
 
       return true;
     } catch (error) {
-      console.error('❌ Failed to start MCP server:', error);
+      console.error(' Failed to start MCP server:', error);
       return false;
     }
   }
@@ -175,7 +175,7 @@ class FigmaMCPBridge extends EventEmitter {
     if (this.mcpProcess) {
       this.mcpProcess.kill();
       this.connected = false;
-      console.log('🛑 Figma MCP server stopped');
+      console.log(' Figma MCP server stopped');
     }
   }
 }

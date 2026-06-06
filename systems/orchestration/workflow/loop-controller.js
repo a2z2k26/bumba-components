@@ -58,7 +58,7 @@ class LoopController extends EventEmitter {
       this.startResourceMonitoring();
     }
 
-    logger.info('🔄 Loop Controller initialized with safety limits');
+    logger.info(' Loop Controller initialized with safety limits');
   }
 
   /**
@@ -230,7 +230,7 @@ class LoopController extends EventEmitter {
     });
 
     this.emit('loop:started', { loopId, config });
-    logger.info(`🔄 Loop ${loopId} started with max ${loop.maxIterations} iterations`);
+    logger.info(` Loop ${loopId} started with max ${loop.maxIterations} iterations`);
 
     return loop;
   }
@@ -284,7 +284,7 @@ class LoopController extends EventEmitter {
         metrics.qualityHistory.push(qualityScore);
 
         if (qualityScore < loop.qualityThreshold) {
-          logger.warn(`⚠️ Loop ${loopId} quality below threshold: ${qualityScore}`);
+          logger.warn(` Loop ${loopId} quality below threshold: ${qualityScore}`);
 
           if (this.config.forceTerminationOnViolation) {
             return await this.terminateLoop(loopId, {
@@ -453,7 +453,7 @@ class LoopController extends EventEmitter {
       termination
     });
 
-    logger.info(`🛑 Loop ${loopId} terminated after ${loop.iterations} iterations: ${termination.message}`);
+    logger.info(` Loop ${loopId} terminated after ${loop.iterations} iterations: ${termination.message}`);
 
     return {
       continue: false,
@@ -503,7 +503,7 @@ class LoopController extends EventEmitter {
         const memoryUsed = memory.heapUsed - this.memoryBaseline;
 
         if (memoryUsed > loop.maxMemoryUsage * 0.9) {
-          logger.warn(`⚠️ Loop ${loopId} approaching memory limit: ${memoryUsed} bytes`);
+          logger.warn(` Loop ${loopId} approaching memory limit: ${memoryUsed} bytes`);
         }
       }
     }, 5000); // Check every 5 seconds

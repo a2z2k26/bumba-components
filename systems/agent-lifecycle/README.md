@@ -14,21 +14,21 @@
 
 # Agent Lifecycle - @bumba/agent-lifecycle
 
-> 🏁 **PROFESSIONAL AGENT LIFECYCLE FRAMEWORK** - A lightweight FSM primitive for managing agent lifecycles with automatic timeouts and resource cleanup
+>  **PROFESSIONAL AGENT LIFECYCLE FRAMEWORK** - A lightweight FSM primitive for managing agent lifecycles with automatic timeouts and resource cleanup
 
-**Core component of the BUMBA Platform** - Building Unified Multi-agent Business Applications
+**Core component of the Agent Primitives** - Building Unified Multi-agent Business Applications
 
 ## Features
 
-- 🟡 **Simple FSM** - Clean state transitions with validation
-- 🟢 **Automatic Timeouts** - Per-state configurable timeouts
-- 🔴 **Built-in Retry** - Exponential backoff on failures
-- 🟠 **Metrics** - Track timing, transitions, and errors
-- 🟡 **Health Monitoring** - Built-in diagnostics
-- 🟢 **Event-Driven** - EventEmitter-based architecture
-- 🔴 **Zero Dependencies** - Pure Node.js
-- 🟠 **TypeScript Ready** - Full type definitions
-- 🏁 **Production Tested** - Benchmarked at scale
+-  **Simple FSM** - Clean state transitions with validation
+-  **Automatic Timeouts** - Per-state configurable timeouts
+-  **Built-in Retry** - Exponential backoff on failures
+-  **Metrics** - Track timing, transitions, and errors
+-  **Health Monitoring** - Built-in diagnostics
+-  **Event-Driven** - EventEmitter-based architecture
+-  **Zero Dependencies** - Pure Node.js
+-  **TypeScript Ready** - Full type definitions
+-  **Production Tested** - Benchmarked at scale
 
 ## Installation
 
@@ -76,17 +76,17 @@ await agent.transition(StateEvent.COMPLETE, { result: 'success' });
 ┌───────────┐  COMPLETE  ┌─────────────┐      ┌────────────┐
 │ COMPLETED │◄───────────│ COMPLETING  │◄─────│ VALIDATING │
 └───────────┘            └─────────────┘      └────────────┘
-     🏁                                              🟠
+
 ```
 
 | State | Department | Purpose | Timeout | Status |
 |-------|------------|---------|---------|---------|
-| `IDLE` | 🟡 Strategy | Waiting to start | 5 min default | Ready |
-| `SPAWNING` | 🟢 Backend | Initializing | - | Active |
-| `ACTIVE` | 🟢 Backend | Processing | 30 min default | Running |
-| `VALIDATING` | 🟠 Testing | Verifying | 1 min default | Checking |
-| `COMPLETING` | 🔴 Frontend | Cleanup | - | Finalizing |
-| `COMPLETED` | 🏁 Complete | Finished | - | Done |
+| `IDLE` |  Strategy | Waiting to start | 5 min default | Ready |
+| `SPAWNING` |  Backend | Initializing | - | Active |
+| `ACTIVE` |  Backend | Processing | 30 min default | Running |
+| `VALIDATING` |  Testing | Verifying | 1 min default | Checking |
+| `COMPLETING` |  Frontend | Cleanup | - | Finalizing |
+| `COMPLETED` |  Complete | Finished | - | Done |
 
 ## Configuration
 
@@ -217,15 +217,15 @@ Agent Lifecycle is designed as a low-level primitive that can be composed into l
 ---
 
 ╔══════════════════════════════════════════════════════════════╗
-║                    🏁 BUMBA PLATFORM 🏁                       ║
+║                     BUMBA PLATFORM                        ║
 ║        Building Unified Multi-agent Business Applications    ║
 ╠══════════════════════════════════════════════════════════════╣
-║  🟡 ProductStrategist • 🟢 BackendEngineer                  ║
-║  🔴 DesignEngineer • 🟠 Testing • 🏁 Complete               ║
+║   ProductStrategist •  BackendEngineer                  ║
+║   DesignEngineer •  Testing •  Complete               ║
 ╚══════════════════════════════════════════════════════════════╝
 
 **Agent Lifecycle** • Professional Agent Lifecycle Management • MIT License
 
 ---
 
-🏁 **Agent Lifecycle** powers distributed agent orchestration in production at scale.
+ **Agent Lifecycle** powers distributed agent orchestration in production at scale.

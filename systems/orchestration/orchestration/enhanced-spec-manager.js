@@ -49,7 +49,7 @@ class EnhancedSpecManager extends SpecManager {
 
     // Validate API key
     if (!this.config.anthropicApiKey) {
-      console.warn('⚠️  Anthropic API key not configured. Orchestration features will be limited.');
+      console.warn('  Anthropic API key not configured. Orchestration features will be limited.');
       this.anthropic = null;
     } else {
       // Initialize Anthropic client
@@ -60,7 +60,7 @@ class EnhancedSpecManager extends SpecManager {
 
     // Initialize GitHub client
     if (!this.config.githubToken) {
-      console.warn('⚠️  GitHub token not configured. GitHub integration will be disabled.');
+      console.warn('  GitHub token not configured. GitHub integration will be disabled.');
       this.octokit = null;
       this.graphqlClient = null;
     } else {
@@ -79,7 +79,7 @@ class EnhancedSpecManager extends SpecManager {
 
     // Initialize Notion client (Phase 4)
     if (!this.config.notionToken) {
-      console.warn('⚠️  Notion API token not configured. Notion integration will be disabled.');
+      console.warn('  Notion API token not configured. Notion integration will be disabled.');
       this.notionClient = null;
     } else {
       // Initialize Notion client
@@ -146,24 +146,24 @@ class EnhancedSpecManager extends SpecManager {
    * @throws {Error} If orchestration fails
    */
   async orchestrate(specId, options = {}) {
-    console.log(`🎯 Starting orchestration for ${specId}...`);
+    console.log(` Starting orchestration for ${specId}...`);
     console.log('━'.repeat(60));
 
     try {
       // Step 1: Load and validate specification
-      console.log('\n📋 Step 1: Loading specification...');
+      console.log('\n Step 1: Loading specification...');
       const spec = this.loadSpec(specId);
 
       if (!spec) {
         throw new Error(`Specification not found: ${specId}`);
       }
 
-      console.log(`✅ Loaded: ${spec.title || spec.description?.substring(0, 50) || specId}`);
+      console.log(` Loaded: ${spec.title || spec.description?.substring(0, 50) || specId}`);
 
       // Step 2: Check if already orchestrated
-      console.log('\n🔍 Step 2: Checking orchestration status...');
+      console.log('\n Step 2: Checking orchestration status...');
       if (spec.orchestrated && !options.force) {
-        console.log('⚠️  Specification already orchestrated');
+        console.log('  Specification already orchestrated');
         console.log('   Use --force to re-orchestrate');
 
         return {
@@ -175,53 +175,53 @@ class EnhancedSpecManager extends SpecManager {
       }
 
       if (spec.orchestrated && options.force) {
-        console.log('🔄 Force re-orchestration requested');
+        console.log(' Force re-orchestration requested');
       } else {
-        console.log('✅ Ready for orchestration');
+        console.log(' Ready for orchestration');
       }
 
       // Step 3: Generate sprint plan
-      console.log('\n🧠 Step 3: Generating sprint plan...');
+      console.log('\n Step 3: Generating sprint plan...');
 
       let sprintPlan;
       if (options.skipPlanning && spec.sprintPlan) {
-        console.log('⏭️  Using existing sprint plan');
+        console.log('⏭  Using existing sprint plan');
         sprintPlan = spec.sprintPlan;
       } else {
         if (!this.anthropic) {
           throw new Error('Anthropic API client not initialized. Check ANTHROPIC_API_KEY.');
         }
 
-        console.log('🤖 Calling Claude API...');
+        console.log(' Calling Claude API...');
         sprintPlan = await this.generateSprintPlan(spec, options);
-        console.log(`✅ Generated plan with ${this.countTasks(sprintPlan)} tasks`);
+        console.log(` Generated plan with ${this.countTasks(sprintPlan)} tasks`);
       }
 
       // Step 4: Save plan to spec
-      console.log('\n💾 Step 4: Saving sprint plan...');
+      console.log('\n Step 4: Saving sprint plan...');
       spec.sprintPlan = sprintPlan;
       spec.orchestrationDate = new Date().toISOString();
       spec.orchestrated = true;
 
       // Save spec file
       this.saveSpec(specId, spec);
-      console.log('✅ Sprint plan saved to specification');
+      console.log(' Sprint plan saved to specification');
 
       // Step 5: Update spec status
-      console.log('\n📊 Step 5: Updating specification status...');
+      console.log('\n Step 5: Updating specification status...');
       spec.status = spec.status || 'planned';
       if (spec.status === 'draft') {
         spec.status = 'planned';
       }
       this.saveSpec(specId, spec);
-      console.log(`✅ Status updated: ${spec.status}`);
+      console.log(` Status updated: ${spec.status}`);
 
       // Step 6: Create GitHub Project (if enabled)
       let githubProject = null;
       if (!options.skipGitHub && this.graphqlClient) {
         try {
           console.log('\n━'.repeat(60));
-          console.log('🔗 Step 6: GitHub Integration');
+          console.log(' Step 6: GitHub Integration');
           console.log('━'.repeat(60));
 
           // Create project
@@ -253,23 +253,23 @@ class EnhancedSpecManager extends SpecManager {
 
             this.saveSpec(specId, spec);
 
-            console.log('\n✅ GitHub project created and populated');
+            console.log('\n GitHub project created and populated');
             console.log(`   Project: ${githubProject.url}`);
           }
         } catch (error) {
-          console.warn('\n⚠️  GitHub integration failed:', error.message);
+          console.warn('\n  GitHub integration failed:', error.message);
           console.warn('   Sprint plan saved, but GitHub project not created');
           // Don't fail orchestration if GitHub fails
         }
       } else if (options.skipGitHub) {
-        console.log('\n⏭️  GitHub integration skipped (--skip-github)');
+        console.log('\n⏭  GitHub integration skipped (--skip-github)');
       } else if (!this.graphqlClient) {
-        console.log('\n⏭️  GitHub integration skipped (no token configured)');
+        console.log('\n⏭  GitHub integration skipped (no token configured)');
       }
 
       // Step 7: Return result
       console.log('\n━'.repeat(60));
-      console.log('✅ Orchestration complete!');
+      console.log(' Orchestration complete!');
       console.log(`   Spec ID: ${specId}`);
       console.log(`   Sprints: ${sprintPlan.sprints?.length || 0}`);
       console.log(`   Tasks: ${this.countTasks(sprintPlan)}`);
@@ -296,7 +296,7 @@ class EnhancedSpecManager extends SpecManager {
       };
 
     } catch (error) {
-      console.error('\n❌ Orchestration failed:', error.message);
+      console.error('\n Orchestration failed:', error.message);
       console.log('━'.repeat(60));
 
       return {
@@ -844,7 +844,7 @@ Generate the sprint plan now:`;
       throw new Error('GitHub GraphQL client not initialized. Check GITHUB_TOKEN.');
     }
 
-    console.log('\n📊 Creating GitHub Project...');
+    console.log('\n Creating GitHub Project...');
 
     try {
       // Determine owner
@@ -895,7 +895,7 @@ Generate the sprint plan now:`;
 
       const project = result.createProjectV2.projectV2;
 
-      console.log(`✅ Project created: #${project.number}`);
+      console.log(` Project created: #${project.number}`);
       console.log(`   URL: ${project.url}`);
 
       return {
@@ -908,7 +908,7 @@ Generate the sprint plan now:`;
         }
       };
     } catch (error) {
-      console.error('❌ Project creation failed:', error.message);
+      console.error(' Project creation failed:', error.message);
       throw new Error(`GitHub project creation failed: ${error.message}`);
     }
   }
@@ -1067,7 +1067,7 @@ Generate the sprint plan now:`;
       throw new Error('GitHub GraphQL client not initialized');
     }
 
-    console.log('\n📝 Populating project with tasks...');
+    console.log('\n Populating project with tasks...');
 
     const asDrafts = options.asDrafts !== false; // default true
     const createdItems = [];
@@ -1100,7 +1100,7 @@ Generate the sprint plan now:`;
               title: task.title
             });
 
-            console.log(`      ✓ ${task.taskId}: ${task.title}`);
+            console.log(`       ${task.taskId}: ${task.title}`);
           }
 
           // Small delay to avoid rate limiting
@@ -1108,7 +1108,7 @@ Generate the sprint plan now:`;
         }
       }
 
-      console.log(`\n✅ Created ${totalTasks} tasks in project`);
+      console.log(`\n Created ${totalTasks} tasks in project`);
 
       return {
         success: true,
@@ -1117,7 +1117,7 @@ Generate the sprint plan now:`;
         items: createdItems
       };
     } catch (error) {
-      console.error('❌ Project population failed:', error.message);
+      console.error(' Project population failed:', error.message);
       throw new Error(`Failed to populate project: ${error.message}`);
     }
   }
@@ -1401,7 +1401,7 @@ Generate the sprint plan now:`;
       throw new Error('GitHub GraphQL client not initialized');
     }
 
-    console.log('\n🔄 Syncing from GitHub...');
+    console.log('\n Syncing from GitHub...');
 
     try {
       // Load spec
@@ -1551,29 +1551,29 @@ Generate the sprint plan now:`;
         // Save spec
         this.saveSpec(spec);
 
-        console.log('✅ Sync from GitHub complete');
+        console.log(' Sync from GitHub complete');
 
         // Auto-resolve conflicts if requested (Sprint 5.7)
         let conflictResolution = null;
         if (options.autoResolveStrategy) {
           try {
-            console.log(`\n🔍 Detecting conflicts after GitHub sync...`);
+            console.log(`\n Detecting conflicts after GitHub sync...`);
             const conflicts = await this.detectConflicts(specId, {
               githubProjectId: options.projectId,
               notionTaskDatabaseId: null // Only check GitHub for now
             });
 
             if (conflicts.total > 0) {
-              console.log(`⚠️  Found ${conflicts.total} conflicts`);
-              console.log(`🔧 Auto-resolving with '${options.autoResolveStrategy}' strategy...`);
+              console.log(`  Found ${conflicts.total} conflicts`);
+              console.log(` Auto-resolving with '${options.autoResolveStrategy}' strategy...`);
 
               conflictResolution = this.resolveAllConflicts(specId, options.autoResolveStrategy);
-              console.log(`✅ Auto-resolved ${conflictResolution.resolved}/${conflictResolution.total} conflicts`);
+              console.log(` Auto-resolved ${conflictResolution.resolved}/${conflictResolution.total} conflicts`);
             } else {
-              console.log('✅ No conflicts detected');
+              console.log(' No conflicts detected');
             }
           } catch (error) {
-            console.error(`⚠️  Auto-resolution failed: ${error.message}`);
+            console.error(`  Auto-resolution failed: ${error.message}`);
             conflictResolution = { error: error.message };
           }
         }
@@ -1590,7 +1590,7 @@ Generate the sprint plan now:`;
         throw new Error('No sprint plan found in spec');
       }
     } catch (error) {
-      console.error('❌ Sync from GitHub failed:', error.message);
+      console.error(' Sync from GitHub failed:', error.message);
       throw new Error(`GitHub sync failed: ${error.message}`);
     }
   }
@@ -1652,7 +1652,7 @@ Generate the sprint plan now:`;
       throw new Error('taskDatabaseId is required in options');
     }
 
-    console.log('\n🔄 Syncing from Notion...');
+    console.log('\n Syncing from Notion...');
 
     try {
       // Load spec
@@ -1678,7 +1678,7 @@ Generate the sprint plan now:`;
             });
           }
         } catch (error) {
-          console.warn(`   ⚠️  Failed to map Notion page ${page.id}: ${error.message}`);
+          console.warn(`     Failed to map Notion page ${page.id}: ${error.message}`);
         }
       });
 
@@ -1784,29 +1784,29 @@ Generate the sprint plan now:`;
         // Save spec
         this.saveSpec(spec);
 
-        console.log('✅ Sync from Notion complete');
+        console.log(' Sync from Notion complete');
 
         // Auto-resolve conflicts if requested (Sprint 5.7)
         let conflictResolution = null;
         if (options.autoResolveStrategy) {
           try {
-            console.log(`\n🔍 Detecting conflicts after Notion sync...`);
+            console.log(`\n Detecting conflicts after Notion sync...`);
             const conflicts = await this.detectConflicts(specId, {
               githubProjectId: null, // Only check Notion for now
               notionTaskDatabaseId: options.taskDatabaseId
             });
 
             if (conflicts.total > 0) {
-              console.log(`⚠️  Found ${conflicts.total} conflicts`);
-              console.log(`🔧 Auto-resolving with '${options.autoResolveStrategy}' strategy...`);
+              console.log(`  Found ${conflicts.total} conflicts`);
+              console.log(` Auto-resolving with '${options.autoResolveStrategy}' strategy...`);
 
               conflictResolution = this.resolveAllConflicts(specId, options.autoResolveStrategy);
-              console.log(`✅ Auto-resolved ${conflictResolution.resolved}/${conflictResolution.total} conflicts`);
+              console.log(` Auto-resolved ${conflictResolution.resolved}/${conflictResolution.total} conflicts`);
             } else {
-              console.log('✅ No conflicts detected');
+              console.log(' No conflicts detected');
             }
           } catch (error) {
-            console.error(`⚠️  Auto-resolution failed: ${error.message}`);
+            console.error(`  Auto-resolution failed: ${error.message}`);
             conflictResolution = { error: error.message };
           }
         }
@@ -1823,7 +1823,7 @@ Generate the sprint plan now:`;
         throw new Error('No sprint plan found in spec');
       }
     } catch (error) {
-      console.error('❌ Sync from Notion failed:', error.message);
+      console.error(' Sync from Notion failed:', error.message);
       throw new Error(`Notion sync failed: ${error.message}`);
     }
   }
@@ -2088,7 +2088,7 @@ Generate the sprint plan now:`;
    * @returns {Promise<object>} Conflict detection result
    */
   async detectConflicts(specId, options = {}) {
-    console.log('\n🔍 Detecting conflicts...');
+    console.log('\n Detecting conflicts...');
 
     try {
       // Load spec
@@ -2240,7 +2240,7 @@ Generate the sprint plan now:`;
       // Save spec with conflict info
       this.saveSpec(spec);
 
-      console.log('✅ Conflict detection complete');
+      console.log(' Conflict detection complete');
 
       return {
         success: true,
@@ -2254,7 +2254,7 @@ Generate the sprint plan now:`;
       };
 
     } catch (error) {
-      console.error('❌ Conflict detection failed:', error.message);
+      console.error(' Conflict detection failed:', error.message);
       throw new Error(`Conflict detection failed: ${error.message}`);
     }
   }
@@ -2415,7 +2415,7 @@ Generate the sprint plan now:`;
       };
     }
 
-    console.log(`\n🔧 Resolving ${spec.conflicts.total} conflicts using '${strategy}' strategy...`);
+    console.log(`\n Resolving ${spec.conflicts.total} conflicts using '${strategy}' strategy...`);
 
     let resolvedCount = 0;
     const resolutions = [];
@@ -2431,13 +2431,13 @@ Generate the sprint plan now:`;
           value: resolution.value
         });
 
-        console.log(`   ✅ ${conflict.taskId}.${conflict.field} → ${resolution.winner}`);
+        console.log(`    ${conflict.taskId}.${conflict.field} → ${resolution.winner}`);
       } catch (error) {
         if (strategy === 'manual') {
           // Manual strategy is expected to throw
-          console.log(`   ⚠️  ${conflict.taskId}.${conflict.field} → requires manual resolution`);
+          console.log(`     ${conflict.taskId}.${conflict.field} → requires manual resolution`);
         } else {
-          console.error(`   ❌ ${conflict.taskId}.${conflict.field} → ${error.message}`);
+          console.error(`    ${conflict.taskId}.${conflict.field} → ${error.message}`);
         }
       }
     });
@@ -2450,7 +2450,7 @@ Generate the sprint plan now:`;
     // Save spec
     this.saveSpec(spec);
 
-    console.log(`✅ Resolved ${resolvedCount}/${spec.conflicts.total} conflicts`);
+    console.log(` Resolved ${resolvedCount}/${spec.conflicts.total} conflicts`);
 
     return {
       success: true,
@@ -2552,7 +2552,7 @@ Generate the sprint plan now:`;
     }
 
     if (!spec.conflicts || spec.conflicts.total === 0) {
-      console.log('✅ No conflicts to resolve');
+      console.log(' No conflicts to resolve');
       return {
         success: true,
         message: 'No conflicts to resolve',
@@ -2562,7 +2562,7 @@ Generate the sprint plan now:`;
       };
     }
 
-    console.log(`\n🔧 Starting interactive resolution for ${spec.conflicts.total} conflicts...`);
+    console.log(`\n Starting interactive resolution for ${spec.conflicts.total} conflicts...`);
 
     let resolvedCount = 0;
     let skippedCount = 0;
@@ -2574,7 +2574,7 @@ Generate the sprint plan now:`;
 
         if (resolution.skipped) {
           skippedCount++;
-          console.log(`   ⏭️  Skipped ${conflict.taskId}.${conflict.field}`);
+          console.log(`   ⏭  Skipped ${conflict.taskId}.${conflict.field}`);
         } else {
           // Apply resolution
           conflict.resolution = {
@@ -2593,10 +2593,10 @@ Generate the sprint plan now:`;
             value: resolution.value
           });
 
-          console.log(`   ✅ ${conflict.taskId}.${conflict.field} → ${resolution.winner}`);
+          console.log(`    ${conflict.taskId}.${conflict.field} → ${resolution.winner}`);
         }
       } catch (error) {
-        console.error(`   ❌ ${conflict.taskId}.${conflict.field} → ${error.message}`);
+        console.error(`    ${conflict.taskId}.${conflict.field} → ${error.message}`);
         skippedCount++;
       }
     }
@@ -2610,7 +2610,7 @@ Generate the sprint plan now:`;
     // Save spec
     this.saveSpec(spec);
 
-    console.log(`\n✅ Interactive resolution complete: ${resolvedCount} resolved, ${skippedCount} skipped`);
+    console.log(`\n Interactive resolution complete: ${resolvedCount} resolved, ${skippedCount} skipped`);
 
     return {
       success: true,
@@ -2677,40 +2677,40 @@ Generate the sprint plan now:`;
     try {
       // Step 1: Sync from GitHub (if configured)
       if (options.githubProjectId && this.graphqlClient) {
-        console.log('\n📥 Step 1: Syncing from GitHub...');
+        console.log('\n Step 1: Syncing from GitHub...');
         try {
           syncReport.github = await this.syncFromGitHub(specId, {
             projectId: options.githubProjectId,
             statusOnly: options.statusOnly || false
           });
-          console.log(`   ✅ GitHub sync: ${syncReport.github.tasksUpdated} tasks updated`);
+          console.log(`    GitHub sync: ${syncReport.github.tasksUpdated} tasks updated`);
         } catch (error) {
-          console.error(`   ❌ GitHub sync failed: ${error.message}`);
+          console.error(`    GitHub sync failed: ${error.message}`);
           syncReport.github = { error: error.message };
         }
       } else {
-        console.log('\n⏭️  Step 1: GitHub sync skipped (not configured)');
+        console.log('\n⏭  Step 1: GitHub sync skipped (not configured)');
       }
 
       // Step 2: Sync from Notion (if configured)
       if (options.notionTaskDatabaseId && this.notionClient) {
-        console.log('\n📥 Step 2: Syncing from Notion...');
+        console.log('\n Step 2: Syncing from Notion...');
         try {
           syncReport.notion = await this.syncFromNotion(specId, {
             taskDatabaseId: options.notionTaskDatabaseId,
             sprintDatabaseId: options.notionSprintDatabaseId || null
           });
-          console.log(`   ✅ Notion sync: ${syncReport.notion.tasksUpdated} tasks updated`);
+          console.log(`    Notion sync: ${syncReport.notion.tasksUpdated} tasks updated`);
         } catch (error) {
-          console.error(`   ❌ Notion sync failed: ${error.message}`);
+          console.error(`    Notion sync failed: ${error.message}`);
           syncReport.notion = { error: error.message };
         }
       } else {
-        console.log('\n⏭️  Step 2: Notion sync skipped (not configured)');
+        console.log('\n⏭  Step 2: Notion sync skipped (not configured)');
       }
 
       // Step 3: Detect conflicts
-      console.log('\n🔍 Step 3: Detecting conflicts...');
+      console.log('\n Step 3: Detecting conflicts...');
       try {
         syncReport.conflicts = await this.detectConflicts(specId, {
           githubProjectId: options.githubProjectId || null,
@@ -2718,42 +2718,42 @@ Generate the sprint plan now:`;
         });
 
         if (syncReport.conflicts.total > 0) {
-          console.log(`   ⚠️  Found ${syncReport.conflicts.total} conflicts:`);
+          console.log(`     Found ${syncReport.conflicts.total} conflicts:`);
           console.log(`      Two-way: ${syncReport.conflicts.byType.twoWay}`);
           console.log(`      Three-way: ${syncReport.conflicts.byType.threeWay}`);
           console.log(`      Deletion: ${syncReport.conflicts.byType.deletion}`);
         } else {
-          console.log('   ✅ No conflicts detected');
+          console.log('    No conflicts detected');
         }
       } catch (error) {
-        console.error(`   ❌ Conflict detection failed: ${error.message}`);
+        console.error(`    Conflict detection failed: ${error.message}`);
         syncReport.conflicts = { error: error.message };
       }
 
       // Step 4: Resolve conflicts (if any and resolution requested)
       if (syncReport.conflicts && syncReport.conflicts.total > 0) {
         if (options.resolveStrategy) {
-          console.log(`\n🔧 Step 4: Resolving conflicts with '${options.resolveStrategy}' strategy...`);
+          console.log(`\n Step 4: Resolving conflicts with '${options.resolveStrategy}' strategy...`);
           try {
             if (options.resolveStrategy === 'manual-interactive') {
               syncReport.resolution = await this.interactiveConflictResolution(specId);
             } else {
               syncReport.resolution = this.resolveAllConflicts(specId, options.resolveStrategy);
             }
-            console.log(`   ✅ Resolved ${syncReport.resolution.resolved}/${syncReport.resolution.total} conflicts`);
+            console.log(`    Resolved ${syncReport.resolution.resolved}/${syncReport.resolution.total} conflicts`);
             if (syncReport.resolution.skipped > 0) {
-              console.log(`   ⏭️  Skipped ${syncReport.resolution.skipped} conflicts`);
+              console.log(`   ⏭  Skipped ${syncReport.resolution.skipped} conflicts`);
             }
           } catch (error) {
-            console.error(`   ❌ Conflict resolution failed: ${error.message}`);
+            console.error(`    Conflict resolution failed: ${error.message}`);
             syncReport.resolution = { error: error.message };
           }
         } else {
-          console.log('\n⏭️  Step 4: Conflict resolution skipped (no strategy specified)');
-          console.log('      💡 Tip: Add resolveStrategy option to auto-resolve conflicts');
+          console.log('\n⏭  Step 4: Conflict resolution skipped (no strategy specified)');
+          console.log('       Tip: Add resolveStrategy option to auto-resolve conflicts');
         }
       } else {
-        console.log('\n⏭️  Step 4: Conflict resolution skipped (no conflicts)');
+        console.log('\n⏭  Step 4: Conflict resolution skipped (no conflicts)');
       }
 
       // Complete sync
@@ -2762,7 +2762,7 @@ Generate the sprint plan now:`;
       syncReport.success = true;
 
       console.log('\n' + '='.repeat(80));
-      console.log('✅ BIDIRECTIONAL SYNC COMPLETE');
+      console.log(' BIDIRECTIONAL SYNC COMPLETE');
       console.log('='.repeat(80));
       console.log(`Duration: ${syncReport.duration}ms`);
 
@@ -2792,7 +2792,7 @@ Generate the sprint plan now:`;
       syncReport.error = error.message;
 
       console.error('\n' + '='.repeat(80));
-      console.error('❌ BIDIRECTIONAL SYNC FAILED');
+      console.error(' BIDIRECTIONAL SYNC FAILED');
       console.error('='.repeat(80));
       console.error(`Error: ${error.message}`);
       console.error('='.repeat(80));
@@ -2843,7 +2843,7 @@ Generate the sprint plan now:`;
     const lastSyncTime = spec.lastGitHubSync?.syncedAt;
 
     if (options.incremental && lastSyncTime) {
-      console.log(`   📊 Incremental mode: Only syncing items changed since ${lastSyncTime}`);
+      console.log(`    Incremental mode: Only syncing items changed since ${lastSyncTime}`);
 
       // Fetch all items (we'll filter after)
       const result = await this.syncFromGitHub(specId, options);
@@ -2857,7 +2857,7 @@ Generate the sprint plan now:`;
     } else {
       // Full sync
       if (options.incremental && !lastSyncTime) {
-        console.log('   📊 Incremental mode: No previous sync found, performing full sync');
+        console.log('    Incremental mode: No previous sync found, performing full sync');
       }
       return this.syncFromGitHub(specId, options);
     }
@@ -2877,7 +2877,7 @@ Generate the sprint plan now:`;
     const lastSyncTime = spec.lastNotionSync?.syncedAt;
 
     if (options.incremental && lastSyncTime) {
-      console.log(`   📊 Incremental mode: Only syncing pages changed since ${lastSyncTime}`);
+      console.log(`    Incremental mode: Only syncing pages changed since ${lastSyncTime}`);
 
       // Fetch all pages (we'll filter after)
       const result = await this.syncFromNotion(specId, options);
@@ -2891,7 +2891,7 @@ Generate the sprint plan now:`;
     } else {
       // Full sync
       if (options.incremental && !lastSyncTime) {
-        console.log('   📊 Incremental mode: No previous sync found, performing full sync');
+        console.log('    Incremental mode: No previous sync found, performing full sync');
       }
       return this.syncFromNotion(specId, options);
     }
@@ -2946,7 +2946,7 @@ Generate the sprint plan now:`;
     const intervalMs = options.intervalMs || 60000; // Default: 1 minute
     const useIncremental = options.incremental !== false; // Default: true
 
-    console.log(`\n🔄 Starting watch mode for ${specId}`);
+    console.log(`\n Starting watch mode for ${specId}`);
     console.log(`   Interval: ${intervalMs}ms (${intervalMs / 1000}s)`);
     console.log(`   Mode: ${useIncremental ? 'Incremental' : 'Full'}`);
 
@@ -2970,9 +2970,9 @@ Generate the sprint plan now:`;
         const result = await syncFn();
         controller.syncCount++;
         controller.lastSyncTime = new Date().toISOString();
-        console.log(`✅ Watch sync complete`);
+        console.log(` Watch sync complete`);
       } catch (error) {
-        console.error(`❌ Watch sync failed: ${error.message}`);
+        console.error(` Watch sync failed: ${error.message}`);
         controller.errors.push({
           timestamp: new Date().toISOString(),
           error: error.message
@@ -2987,7 +2987,7 @@ Generate the sprint plan now:`;
       if (controller.intervalId) {
         clearInterval(controller.intervalId);
         controller.running = false;
-        console.log(`\n⏹️  Watch mode stopped for ${specId}`);
+        console.log(`\n⏹  Watch mode stopped for ${specId}`);
         console.log(`   Total syncs: ${controller.syncCount}`);
         console.log(`   Errors: ${controller.errors.length}`);
       }
@@ -3014,11 +3014,11 @@ Generate the sprint plan now:`;
     const backup = JSON.parse(JSON.stringify(spec));
     const backupPath = this._createBackup(specId, backup);
 
-    console.log(`💾 Backup created: ${backupPath}`);
+    console.log(` Backup created: ${backupPath}`);
 
     try {
       const result = await syncFn();
-      console.log('✅ Sync completed successfully');
+      console.log(' Sync completed successfully');
       return {
         success: true,
         result,
@@ -3026,12 +3026,12 @@ Generate the sprint plan now:`;
         rolledBack: false
       };
     } catch (error) {
-      console.error(`❌ Sync failed: ${error.message}`);
-      console.log('🔄 Rolling back to backup...');
+      console.error(` Sync failed: ${error.message}`);
+      console.log(' Rolling back to backup...');
 
       // Restore from backup
       this.saveSpec(backup);
-      console.log('✅ Rollback complete');
+      console.log(' Rollback complete');
 
       return {
         success: false,
@@ -3075,12 +3075,12 @@ Generate the sprint plan now:`;
     if (!task) throw new Error(`Task not found: ${taskId}`);
 
     if (!task.externalIds?.githubItemId) {
-      console.log(`⏭️  Skipping GitHub propagation: Task ${taskId} not linked to GitHub`);
+      console.log(`⏭  Skipping GitHub propagation: Task ${taskId} not linked to GitHub`);
       return { skipped: true, reason: 'No GitHub link' };
     }
 
     const githubStatus = this._mapSpecStatusToGitHub(newStatus);
-    console.log(`📤 Propagating ${taskId} status to GitHub: ${newStatus} → ${githubStatus}`);
+    console.log(` Propagating ${taskId} status to GitHub: ${newStatus} → ${githubStatus}`);
 
     // Would call GitHub API here
     // await this.updateGitHubItemStatus(task.externalIds.githubItemId, githubStatus);
@@ -3108,12 +3108,12 @@ Generate the sprint plan now:`;
     if (!task) throw new Error(`Task not found: ${taskId}`);
 
     if (!task.externalIds?.notionPageId) {
-      console.log(`⏭️  Skipping Notion propagation: Task ${taskId} not linked to Notion`);
+      console.log(`⏭  Skipping Notion propagation: Task ${taskId} not linked to Notion`);
       return { skipped: true, reason: 'No Notion link' };
     }
 
     const notionStatus = this._mapSpecStatusToNotion(newStatus);
-    console.log(`📤 Propagating ${taskId} status to Notion: ${newStatus} → ${notionStatus}`);
+    console.log(` Propagating ${taskId} status to Notion: ${newStatus} → ${notionStatus}`);
 
     // Would call Notion API here
     // await this.updateNotionPageStatus(task.externalIds.notionPageId, notionStatus);
@@ -3177,19 +3177,19 @@ Generate the sprint plan now:`;
     task.deletedAt = new Date().toISOString();
     task.deletedFrom = deletedFrom;
 
-    console.log(`🗑️  Marking task ${taskId} as deleted (from: ${deletedFrom})`);
+    console.log(`  Marking task ${taskId} as deleted (from: ${deletedFrom})`);
 
     // Propagate deletion to other platforms
     const propagation = { github: null, notion: null };
 
     if (task.externalIds?.githubItemId) {
-      console.log(`   📤 Propagating deletion to GitHub...`);
+      console.log(`    Propagating deletion to GitHub...`);
       // Would call GitHub API to delete/archive item
       propagation.github = { propagated: true, timestamp: new Date().toISOString() };
     }
 
     if (task.externalIds?.notionPageId) {
-      console.log(`   📤 Propagating deletion to Notion...`);
+      console.log(`    Propagating deletion to Notion...`);
       // Would call Notion API to archive/delete page
       propagation.notion = { propagated: true, timestamp: new Date().toISOString() };
     }
@@ -3218,7 +3218,7 @@ Generate the sprint plan now:`;
     if (!task) throw new Error(`Task not found: ${taskId}`);
 
     if (!task.deleted) {
-      console.log(`⏭️  Task ${taskId} is not deleted`);
+      console.log(`⏭  Task ${taskId} is not deleted`);
       return { skipped: true, reason: 'Not deleted' };
     }
 
@@ -3226,7 +3226,7 @@ Generate the sprint plan now:`;
     task.deleted = false;
     task.restoredAt = new Date().toISOString();
 
-    console.log(`♻️  Restoring task ${taskId}`);
+    console.log(`  Restoring task ${taskId}`);
     this.saveSpec(spec);
 
     return {
@@ -3246,7 +3246,7 @@ Generate the sprint plan now:`;
    */
   async handleGitHubWebhook(event) {
     const eventType = event.action || event.type;
-    console.log(`\n🔔 Received GitHub webhook: ${eventType}`);
+    console.log(`\n Received GitHub webhook: ${eventType}`);
 
     const handlers = {
       'issues.opened': this._handleIssueOpened.bind(this),
@@ -3262,37 +3262,37 @@ Generate the sprint plan now:`;
     if (handler) {
       return await handler(event);
     } else {
-      console.log(`⏭️  No handler for event: ${handlerKey}`);
+      console.log(`⏭  No handler for event: ${handlerKey}`);
       return { skipped: true, reason: 'No handler configured' };
     }
   }
 
   async _handleIssueOpened(event) {
-    console.log(`   📝 Issue opened: ${event.issue.title}`);
+    console.log(`    Issue opened: ${event.issue.title}`);
     // Trigger sync to pull new issue into spec
     return { handled: true, action: 'issue_opened' };
   }
 
   async _handleIssueEdited(event) {
-    console.log(`   ✏️  Issue edited: ${event.issue.title}`);
+    console.log(`     Issue edited: ${event.issue.title}`);
     // Trigger incremental sync
     return { handled: true, action: 'issue_edited' };
   }
 
   async _handleIssueClosed(event) {
-    console.log(`   ✅ Issue closed: ${event.issue.title}`);
+    console.log(`    Issue closed: ${event.issue.title}`);
     // Update spec with closed status
     return { handled: true, action: 'issue_closed' };
   }
 
   async _handleProjectItemEdited(event) {
-    console.log(`   📊 Project item edited`);
+    console.log(`    Project item edited`);
     // Trigger incremental sync
     return { handled: true, action: 'project_item_edited' };
   }
 
   async _handleProjectItemDeleted(event) {
-    console.log(`   🗑️  Project item deleted`);
+    console.log(`     Project item deleted`);
     // Mark task as deleted in spec
     return { handled: true, action: 'project_item_deleted' };
   }
@@ -3309,7 +3309,7 @@ Generate the sprint plan now:`;
     const intervalMs = options.intervalMs || 300000; // Default: 5 minutes
     const taskDatabaseId = options.taskDatabaseId;
 
-    console.log(`\n🔄 Starting Notion polling for ${specId}`);
+    console.log(`\n Starting Notion polling for ${specId}`);
     console.log(`   Interval: ${intervalMs}ms (${intervalMs / 60000} minutes)`);
     console.log(`   Database: ${taskDatabaseId}`);
 
@@ -3340,12 +3340,12 @@ Generate the sprint plan now:`;
 
         if (result.tasksUpdated > 0) {
           controller.changesDetected += result.tasksUpdated;
-          console.log(`✅ Poll complete: ${result.tasksUpdated} changes detected`);
+          console.log(` Poll complete: ${result.tasksUpdated} changes detected`);
         } else {
-          console.log(`✅ Poll complete: No changes`);
+          console.log(` Poll complete: No changes`);
         }
       } catch (error) {
-        console.error(`❌ Poll failed: ${error.message}`);
+        console.error(` Poll failed: ${error.message}`);
         controller.errors.push({
           timestamp: new Date().toISOString(),
           error: error.message
@@ -3359,7 +3359,7 @@ Generate the sprint plan now:`;
       if (controller.intervalId) {
         clearInterval(controller.intervalId);
         controller.running = false;
-        console.log(`\n⏹️  Notion polling stopped for ${specId}`);
+        console.log(`\n⏹  Notion polling stopped for ${specId}`);
         console.log(`   Total polls: ${controller.pollCount}`);
         console.log(`   Changes detected: ${controller.changesDetected}`);
         console.log(`   Errors: ${controller.errors.length}`);
@@ -3396,11 +3396,11 @@ Generate the sprint plan now:`;
       const syncResult = await this.bidirectionalSync(specId, config);
       results.tests.push({ name: 'Bidirectional Sync', passed: true, result: syncResult });
       results.passed++;
-      console.log('✅ PASSED');
+      console.log(' PASSED');
     } catch (error) {
       results.tests.push({ name: 'Bidirectional Sync', passed: false, error: error.message });
       results.failed++;
-      console.log(`❌ FAILED: ${error.message}`);
+      console.log(` FAILED: ${error.message}`);
     }
 
     // Test 2: Conflict detection
@@ -3409,11 +3409,11 @@ Generate the sprint plan now:`;
       const conflictResult = await this.detectConflicts(specId, config);
       results.tests.push({ name: 'Conflict Detection', passed: true, result: conflictResult });
       results.passed++;
-      console.log('✅ PASSED');
+      console.log(' PASSED');
     } catch (error) {
       results.tests.push({ name: 'Conflict Detection', passed: false, error: error.message });
       results.failed++;
-      console.log(`❌ FAILED: ${error.message}`);
+      console.log(` FAILED: ${error.message}`);
     }
 
     // Test 3: Status propagation
@@ -3425,16 +3425,16 @@ Generate the sprint plan now:`;
         const statusResult = await this.propagateStatusToAll(specId, firstTask.taskId, 'in-progress');
         results.tests.push({ name: 'Status Propagation', passed: true, result: statusResult });
         results.passed++;
-        console.log('✅ PASSED');
+        console.log(' PASSED');
       } else {
         results.tests.push({ name: 'Status Propagation', passed: false, error: 'No tasks found' });
         results.failed++;
-        console.log('❌ FAILED: No tasks found');
+        console.log(' FAILED: No tasks found');
       }
     } catch (error) {
       results.tests.push({ name: 'Status Propagation', passed: false, error: error.message });
       results.failed++;
-      console.log(`❌ FAILED: ${error.message}`);
+      console.log(` FAILED: ${error.message}`);
     }
 
     results.endTime = new Date().toISOString();
@@ -3522,7 +3522,7 @@ Generate the sprint plan now:`;
     console.log(`\nFeatures Implemented:\n`);
 
     Object.entries(status.features).forEach(([sprint, info]) => {
-      console.log(`  ${info.status === 'complete' ? '✅' : '⏳'} ${sprint}: ${info.name}`);
+      console.log(`  ${info.status === 'complete' ? '' : '⏳'} ${sprint}: ${info.name}`);
     });
 
     console.log(`\n\nCapabilities:\n`);
@@ -4328,9 +4328,9 @@ Generate the sprint plan now:`;
     // Default to using templates
     const useTemplates = options.useTemplates !== false;
 
-    console.log(`\n🔄 Syncing ${specId} to Notion...`);
+    console.log(`\n Syncing ${specId} to Notion...`);
     if (useTemplates) {
-      console.log('  📄 Using Notion templates for enhanced formatting');
+      console.log('   Using Notion templates for enhanced formatting');
     }
 
     const spec = this.loadSpec(specId);
@@ -4350,7 +4350,7 @@ Generate the sprint plan now:`;
 
     try {
       // Step 1: Create project page
-      console.log('  📄 Creating project page...');
+      console.log('   Creating project page...');
 
       // Prepare page children
       let pageChildren = [];
@@ -4401,13 +4401,13 @@ Generate the sprint plan now:`;
       });
 
       result.projectPage = projectPage;
-      console.log(`  ✅ Project page created: ${projectPage.id}`);
+      console.log(`   Project page created: ${projectPage.id}`);
 
       // Step 2: Create Sprint database
-      console.log('  📊 Creating Sprint database...');
+      console.log('   Creating Sprint database...');
       const sprintDatabase = await this.createNotionDatabase(projectPage.id, {
         title: 'Sprints',
-        icon: '🏃',
+        icon: '',
         properties: {
           Name: { title: {} },
           'Sprint Number': { number: {} },
@@ -4426,13 +4426,13 @@ Generate the sprint plan now:`;
       });
 
       result.sprintDatabase = sprintDatabase;
-      console.log(`  ✅ Sprint database created: ${sprintDatabase.id}`);
+      console.log(`   Sprint database created: ${sprintDatabase.id}`);
 
       // Step 3: Create Task database
-      console.log('  📊 Creating Task database...');
+      console.log('   Creating Task database...');
       const taskDatabase = await this.createNotionDatabase(projectPage.id, {
         title: 'Tasks',
-        icon: '✅',
+        icon: '',
         properties: {
           Name: { title: {} },
           'Task ID': { rich_text: {} },
@@ -4466,10 +4466,10 @@ Generate the sprint plan now:`;
       });
 
       result.taskDatabase = taskDatabase;
-      console.log(`  ✅ Task database created: ${taskDatabase.id}`);
+      console.log(`   Task database created: ${taskDatabase.id}`);
 
       // Step 4: Create sprint pages
-      console.log(`  🏃 Creating ${spec.sprintPlan.sprints.length} sprint pages...`);
+      console.log(`   Creating ${spec.sprintPlan.sprints.length} sprint pages...`);
       const sprintPages = new Map();
 
       for (const sprint of spec.sprintPlan.sprints) {
@@ -4500,10 +4500,10 @@ Generate the sprint plan now:`;
         await new Promise(resolve => setTimeout(resolve, 350));
       }
 
-      console.log(`  ✅ Created ${result.sprintsCreated} sprints`);
+      console.log(`   Created ${result.sprintsCreated} sprints`);
 
       // Step 5: Create task pages
-      console.log('  ✅ Creating task pages...');
+      console.log('   Creating task pages...');
       let taskCount = 0;
 
       for (const sprint of spec.sprintPlan.sprints) {
@@ -4551,16 +4551,16 @@ Generate the sprint plan now:`;
         }
       }
 
-      console.log(`  ✅ Created ${result.tasksCreated} tasks`);
+      console.log(`   Created ${result.tasksCreated} tasks`);
 
       result.success = true;
-      console.log(`\n✅ Notion sync complete for ${specId}`);
+      console.log(`\n Notion sync complete for ${specId}`);
 
       return result;
 
     } catch (error) {
       result.errors.push(error.message);
-      console.error(`\n❌ Notion sync failed: ${error.message}`);
+      console.error(`\n Notion sync failed: ${error.message}`);
       throw error;
     }
   }
@@ -4900,7 +4900,7 @@ Generate the sprint plan now:`;
 
         // Exponential backoff: 1s, 2s, 4s
         const delay = initialDelay * Math.pow(2, attempt);
-        console.log(`  ⚠️  Retry ${attempt + 1}/${maxRetries} after ${delay}ms...`);
+        console.log(`    Retry ${attempt + 1}/${maxRetries} after ${delay}ms...`);
         await new Promise(resolve => setTimeout(resolve, delay));
       }
     }

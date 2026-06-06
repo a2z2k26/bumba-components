@@ -56,7 +56,7 @@ class MCPSetupWizard extends EventEmitter {
       for (const step of this.steps) {
         const continueWizard = await step();
         if (!continueWizard) {
-          console.log(yellow('\n🟡 Wizard cancelled.'));
+          console.log(yellow('\n Wizard cancelled.'));
           return false;
         }
       }
@@ -66,7 +66,7 @@ class MCPSetupWizard extends EventEmitter {
       return true;
 
     } catch (error) {
-      console.error(red(`\n✗ Wizard error: ${error.message}`));
+      console.error(red(`\n Wizard error: ${error.message}`));
       return false;
     }
   }
@@ -76,7 +76,7 @@ class MCPSetupWizard extends EventEmitter {
    */
   async welcomeStep() {
     console.log(lime.bold('\n╔═══════════════════════════════════════════╗'));
-    console.log(lime.bold('║   🏁 Welcome to MCP Setup Wizard 🏁      ║'));
+    console.log(lime.bold('║    Welcome to MCP Setup Wizard       ║'));
     console.log(lime.bold('╚═══════════════════════════════════════════╝'));
     console.log();
     console.log(white('This wizard will help you configure MCP servers for BUMBA.'));
@@ -97,29 +97,29 @@ class MCPSetupWizard extends EventEmitter {
    * Profile selection step
    */
   async profileStep() {
-    console.log(lime('\n🟢 Step 1: Choose Your Profile\n'));
+    console.log(lime('\n Step 1: Choose Your Profile\n'));
 
     const profiles = {
       developer: {
-        name: '🟢 Developer',
+        name: ' Developer',
         description: 'Optimized for coding with GitHub, databases, and dev tools',
         coreServers: ['memory', 'filesystem', 'github'],
         categories: ['development', 'databases', 'testing']
       },
       designer: {
-        name: '🎨 Designer',
+        name: ' Designer',
         description: 'Focused on design tools, Figma, and visual workflows',
         coreServers: ['memory', 'filesystem', 'figma'],
         categories: ['design', 'development', 'search']
       },
       data: {
-        name: '📊 Data Analyst',
+        name: ' Data Analyst',
         description: 'Database management, search, and data processing',
         coreServers: ['memory', 'filesystem', 'postgres'],
         categories: ['databases', 'search', 'cloud']
       },
       custom: {
-        name: '⚙️  Custom',
+        name: '  Custom',
         description: 'Choose exactly which servers and features you need',
         coreServers: ['memory', 'filesystem'],
         categories: []
@@ -148,7 +148,7 @@ class MCPSetupWizard extends EventEmitter {
    * Core servers configuration
    */
   async coreServersStep() {
-    console.log(lime('\n🟡 Step 2: Core Servers\n'));
+    console.log(lime('\n Step 2: Core Servers\n'));
 
     const coreServers = this.registry.getServersByCategory('core');
 
@@ -175,7 +175,7 @@ class MCPSetupWizard extends EventEmitter {
       return true; // Skip for non-custom profiles
     }
 
-    console.log(lime('\n🟠 Step 3: Server Categories\n'));
+    console.log(lime('\n Step 3: Server Categories\n'));
 
     const categories = this.registry.getCategories();
 
@@ -200,13 +200,13 @@ class MCPSetupWizard extends EventEmitter {
    * Auth configuration step
    */
   async authConfigStep() {
-    console.log(lime('\n🔴 Step 4: MCP Server Credentials\n'));
+    console.log(lime('\n Step 4: MCP Server Credentials\n'));
 
     // Use EnvManager for comprehensive credential handling
     const envManager = getEnvManager();
 
     // Show vital MCPs (auto-enabled, no credentials needed)
-    console.log(green('✓ Vital servers (enabled by default, no credentials required):'));
+    console.log(green(' Vital servers (enabled by default, no credentials required):'));
     envManager.getVitalMCPs().forEach(server => {
       console.log(green(`   ● ${server}`));
     });
@@ -224,7 +224,7 @@ class MCPSetupWizard extends EventEmitter {
       return true;
     }
 
-    console.log(yellow('🟡 Optional servers (configure now or later):'));
+    console.log(yellow(' Optional servers (configure now or later):'));
     authRequired.forEach(server => {
       const info = envManager.getCredentialInfo(server);
       console.log(yellow(`   ○ ${server} - ${info.description}`));
@@ -244,7 +244,7 @@ class MCPSetupWizard extends EventEmitter {
       for (const server of authRequired) {
         const info = envManager.getCredentialInfo(server);
 
-        console.log(lime(`\n🟢 ${server}:`));
+        console.log(lime(`\n ${server}:`));
         console.log(gray(`   ${info.description}`));
         console.log(gray(`   Help: ${info.helpUrl}`));
         console.log();
@@ -273,17 +273,17 @@ class MCPSetupWizard extends EventEmitter {
           // Store in config for later saving
           this.config.authServers[server] = answers;
 
-          console.log(green(`   ✓ ${server} credentials saved`));
+          console.log(green(`    ${server} credentials saved`));
         }
       }
 
       // Save credentials to global .env immediately
       if (Object.keys(credentials).length > 0) {
         await envManager.addCredentials(credentials, 'global');
-        console.log(green('\n✓ Credentials saved to global template (~/.bumba/.env)'));
+        console.log(green('\n Credentials saved to global template (~/.bumba/.env)'));
       }
     } else {
-      console.log(gray('\n🟡 You can configure credentials later with: bumba mcp -i'));
+      console.log(gray('\n You can configure credentials later with: bumba mcp -i'));
       console.log(gray('   Or manually edit: ~/.bumba/.env'));
     }
 
@@ -294,7 +294,7 @@ class MCPSetupWizard extends EventEmitter {
    * Preferences step
    */
   async preferencesStep() {
-    console.log(lime('\n🏁 Step 5: Preferences\n'));
+    console.log(lime('\n Step 5: Preferences\n'));
 
     const { preferences } = await inquirer.prompt([
       {
@@ -331,7 +331,7 @@ class MCPSetupWizard extends EventEmitter {
    * Confirmation step
    */
   async confirmationStep() {
-    console.log(lime('\n✓ Step 6: Review Configuration\n'));
+    console.log(lime('\n Step 6: Review Configuration\n'));
 
     console.log(white('Profile:'), this.config.profile);
     console.log(white('Core Servers:'), this.config.coreServers.join(', '));
@@ -406,7 +406,7 @@ class MCPSetupWizard extends EventEmitter {
    * Save configuration
    */
   async saveConfiguration() {
-    console.log(lime('\n🟢 Saving configuration...\n'));
+    console.log(lime('\n Saving configuration...\n'));
 
     // Update session state
     this.sessionState.updatePreference('profile', this.config.profile);
@@ -464,7 +464,7 @@ class MCPSetupWizard extends EventEmitter {
 
     // Save to global location
     await builder.saveToGlobal();
-    console.log(green('  ✓ Saved global template (~/.bumba/.env.template)'));
+    console.log(green('   Saved global template (~/.bumba/.env.template)'));
 
     // Save to project location
     // If project .env exists, merge; otherwise create new
@@ -474,16 +474,16 @@ class MCPSetupWizard extends EventEmitter {
       projectBuilder.buildStandardTemplate(credentials);
       projectBuilder.merge(existingProjectEnv);
       await fs.writeFile(projectEnvPath, projectBuilder.toString());
-      console.log(green('  ✓ Updated project .env (preserved existing values)'));
+      console.log(green('   Updated project .env (preserved existing values)'));
     } else {
       // Create new .env from template
       await fs.writeFile(projectEnvPath, builder.toString());
-      console.log(green('  ✓ Created project .env'));
+      console.log(green('   Created project .env'));
     }
 
     // Save session state
     await this.sessionState.saveState();
-    console.log(green('  ✓ Saved session preferences'));
+    console.log(green('   Saved session preferences'));
 
     // Emit completion event with stats
     const stats = builder.getStats();
@@ -497,7 +497,7 @@ class MCPSetupWizard extends EventEmitter {
    * Show success message
    */
   async showSuccess() {
-    console.log(green.bold('\n🏁 Setup Complete! 🏁\n'));
+    console.log(green.bold('\n Setup Complete! \n'));
 
     console.log(white('Your MCP servers are now configured.'));
     console.log();
@@ -513,7 +513,7 @@ class MCPSetupWizard extends EventEmitter {
    * Quick setup (non-interactive)
    */
   async quickSetup(profile = 'developer') {
-    console.log(lime('\n🏁 Quick Setup\n'));
+    console.log(lime('\n Quick Setup\n'));
 
     const profiles = {
       developer: {
@@ -546,7 +546,7 @@ class MCPSetupWizard extends EventEmitter {
     };
 
     await this.saveConfiguration();
-    console.log(green(`\n✓ Quick setup complete with ${profile} profile!`));
+    console.log(green(`\n Quick setup complete with ${profile} profile!`));
 
     return true;
   }
@@ -575,7 +575,7 @@ class MCPSetupWizard extends EventEmitter {
     await fs.writeFile(globalEnvPath, envContent, 'utf8');
 
     const brand = new BumbaBrand();
-    console.log(brand.wheat(`\n✓ Global configuration saved`));
+    console.log(brand.wheat(`\n Global configuration saved`));
     console.log(brand.grey(`  Location: ${globalEnvPath}`));
     console.log(brand.grey('  Auto-copies to new projects on "bumba init"\n'));
 

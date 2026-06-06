@@ -113,10 +113,10 @@ Recommend specific improvements for:
 
       this.initialized = true;
       this.emit('assistant-initialized');
-      console.log('✅ AI Assistant initialized');
+      console.log(' AI Assistant initialized');
 
     } catch (error) {
-      console.error('❌ AI Assistant initialization failed:', error);
+      console.error(' AI Assistant initialization failed:', error);
       throw error;
     }
   }
@@ -128,20 +128,20 @@ Recommend specific improvements for:
         throw new Error('API connection test failed');
       }
     } catch (error) {
-      console.warn('⚠️ API connection failed, falling back to local mode');
+      console.warn(' API connection failed, falling back to local mode');
       this.config.apiProvider = 'local';
     }
   }
 
   async askQuestion(query, context = {}) {
-    console.log(`🤖 Processing query: "${query}"`);
+    console.log(` Processing query: "${query}"`);
 
     try {
       // Check cache first
       const cacheKey = this.generateCacheKey(query, context);
       if (this.config.cacheEnabled && this.suggestionCache.has(cacheKey)) {
         const cached = this.suggestionCache.get(cacheKey);
-        console.log('📋 Using cached response');
+        console.log(' Using cached response');
         return cached;
       }
 
@@ -168,13 +168,13 @@ Recommend specific improvements for:
       return processedResponse;
 
     } catch (error) {
-      console.error('❌ Query processing failed:', error);
+      console.error(' Query processing failed:', error);
       return this.getFallbackResponse(query);
     }
   }
 
   async analyzeComponent(componentData, analysisType = 'full') {
-    console.log(`🔍 Analyzing component: ${componentData.name || 'Unknown'}`);
+    console.log(` Analyzing component: ${componentData.name || 'Unknown'}`);
 
     const analysis = {
       component: componentData,
@@ -221,14 +221,14 @@ Recommend specific improvements for:
       return analysis;
 
     } catch (error) {
-      console.error('❌ Component analysis failed:', error);
+      console.error(' Component analysis failed:', error);
       analysis.error = error.message;
       return analysis;
     }
   }
 
   async suggestComponents(requirement, context = {}) {
-    console.log(`💡 Suggesting components for: "${requirement}"`);
+    console.log(` Suggesting components for: "${requirement}"`);
 
     try {
       // Parse requirement
@@ -253,13 +253,13 @@ Recommend specific improvements for:
       return suggestions;
 
     } catch (error) {
-      console.error('❌ Component suggestion failed:', error);
+      console.error(' Component suggestion failed:', error);
       return this.getFallbackSuggestions(requirement);
     }
   }
 
   async optimizeDesign(design, goals = []) {
-    console.log(`⚡ Optimizing design with goals: ${goals.join(', ')}`);
+    console.log(` Optimizing design with goals: ${goals.join(', ')}`);
 
     const optimization = {
       original: design,
@@ -307,7 +307,7 @@ Recommend specific improvements for:
       return optimization;
 
     } catch (error) {
-      console.error('❌ Design optimization failed:', error);
+      console.error(' Design optimization failed:', error);
       optimization.error = error.message;
       return optimization;
     }

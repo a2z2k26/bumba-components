@@ -18,7 +18,7 @@ class OpenRouterConnector extends BaseAIConnector {
     this.options = {
       ...this.options,
       apiKey: options.apiKey || process.env.OPENROUTER_API_KEY,
-      httpReferer: options.httpReferer || process.env.OPENROUTER_HTTP_REFERER || 'https://github.com/a2z2k26/bumba-features',
+      httpReferer: options.httpReferer || process.env.OPENROUTER_HTTP_REFERER || 'https://github.com/a2z2k26/agent-primitives',
       appName: options.appName || process.env.OPENROUTER_APP_NAME || 'BUMBA',
       includeGenerationCost: options.includeGenerationCost !== false
     };

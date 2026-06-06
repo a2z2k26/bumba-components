@@ -65,7 +65,7 @@ class MCPStatusDisplay {
     const status = this.loader.getServerStatus();
     const sessionStats = this.sessionState.getSessionStats();
 
-    console.log(chalk.cyan.bold('\n📊 Quick Statistics\n'));
+    console.log(chalk.cyan.bold('\n Quick Statistics\n'));
 
     const quickTable = new Table({
       style: { head: ['cyan'] }
@@ -86,7 +86,7 @@ class MCPStatusDisplay {
    * Display server status by category
    */
   async displayServerStatus() {
-    console.log(chalk.cyan.bold('\n📦 Server Status by Category\n'));
+    console.log(chalk.cyan.bold('\n Server Status by Category\n'));
 
     const categories = this.registry.getCategories();
 
@@ -114,7 +114,7 @@ class MCPStatusDisplay {
         table.push([
           server.displayName,
           this.formatStatus(isRunning),
-          config?.enabled ? '✓' : '✗',
+          config?.enabled ? '' : '',
           metrics.health ? this.formatHealth(metrics.health.status) : 'N/A',
           serverInfo ? this.formatDuration(Date.now() - serverInfo.startTime) : '-'
         ]);
@@ -128,7 +128,7 @@ class MCPStatusDisplay {
    * Display health summary
    */
   async displayHealthSummary() {
-    console.log(chalk.cyan.bold('\n💚 Health Summary\n'));
+    console.log(chalk.cyan.bold('\n Health Summary\n'));
 
     const summary = this.healthMonitor.getHealthSummary();
 
@@ -153,7 +153,7 @@ class MCPStatusDisplay {
     }
 
     if (problemServers.length > 0) {
-      console.log(chalk.yellow('\n⚠️  Servers Needing Attention:\n'));
+      console.log(chalk.yellow('\n  Servers Needing Attention:\n'));
 
       const table = new Table({
         head: ['Server', 'Status', 'Issue', 'Action'],
@@ -172,7 +172,7 @@ class MCPStatusDisplay {
 
       console.log(table.toString());
     } else {
-      console.log(chalk.green('\n✅ All servers are healthy!\n'));
+      console.log(chalk.green('\n All servers are healthy!\n'));
     }
   }
 
@@ -183,7 +183,7 @@ class MCPStatusDisplay {
     const recoveryStatus = this.errorRecovery.getRecoveryStatus();
 
     if (recoveryStatus.isolated.length > 0 || recoveryStatus.recovering.length > 0) {
-      console.log(chalk.cyan.bold('\n🔧 Recovery Status\n'));
+      console.log(chalk.cyan.bold('\n Recovery Status\n'));
 
       if (recoveryStatus.isolated.length > 0) {
         console.log(chalk.red('Isolated Servers:'));
@@ -208,7 +208,7 @@ class MCPStatusDisplay {
    * Display session information
    */
   async displaySessionInfo() {
-    console.log(chalk.cyan.bold('\n📋 Session Information\n'));
+    console.log(chalk.cyan.bold('\n Session Information\n'));
 
     const sessionStats = this.sessionState.getSessionStats();
     const preferences = this.sessionState.currentSession.preferences;
@@ -308,7 +308,7 @@ class MCPStatusDisplay {
     const fs = require('fs').promises;
     await fs.writeFile(outputPath, JSON.stringify(report, null, 2), 'utf8');
 
-    console.log(chalk.green(`✓ Status report exported to: ${outputPath}`));
+    console.log(chalk.green(` Status report exported to: ${outputPath}`));
   }
 
   /**
@@ -316,9 +316,9 @@ class MCPStatusDisplay {
    */
   formatStatus(isRunning) {
     if (isRunning) {
-      return this.config.useEmojis ? '🟢 Running' : chalk.green('Running');
+      return this.config.useEmojis ? ' Running' : chalk.green('Running');
     }
-    return this.config.useEmojis ? '⚪ Stopped' : chalk.gray('Stopped');
+    return this.config.useEmojis ? ' Stopped' : chalk.gray('Stopped');
   }
 
   /**
@@ -326,11 +326,11 @@ class MCPStatusDisplay {
    */
   formatHealth(status) {
     const emojis = {
-      healthy: '🟢',
-      degraded: '🟡',
-      unhealthy: '🟠',
-      critical: '🔴',
-      error: '❌'
+      healthy: '',
+      degraded: '',
+      unhealthy: '',
+      critical: '',
+      error: ''
     };
 
     const colors = {
@@ -341,7 +341,7 @@ class MCPStatusDisplay {
       error: chalk.red.bold
     };
 
-    const emoji = this.config.useEmojis ? emojis[status] || '⚪' : '';
+    const emoji = this.config.useEmojis ? emojis[status] || '' : '';
     const color = colors[status] || chalk.white;
 
     return `${emoji} ${color(status)}`;
@@ -425,7 +425,7 @@ class MCPStatusDisplay {
       ['Category', def.category],
       ['Description', def.description],
       ['Status', this.formatStatus(isRunning)],
-      ['Enabled', config?.enabled ? '✓' : '✗'],
+      ['Enabled', config?.enabled ? '' : ''],
       ['Requires Auth', def.requiresAuth ? 'Yes' : 'No']
     );
 

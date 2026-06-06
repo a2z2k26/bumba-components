@@ -63,17 +63,17 @@ class AutoSyncManager extends EventEmitter {
 
     // Wire up conflict events
     this.conflictResolver.on('conflict:detected', (conflict) => {
-      console.log(chalk.yellow(`⚠️  Conflict detected: ${conflict.type}`));
+      console.log(chalk.yellow(`  Conflict detected: ${conflict.type}`));
       this.emit('conflict:detected', conflict);
     });
 
     this.conflictResolver.on('conflict:resolved', (resolution) => {
-      console.log(chalk.green(`✓ Conflict auto-resolved: ${resolution.strategy}`));
+      console.log(chalk.green(` Conflict auto-resolved: ${resolution.strategy}`));
       this.emit('conflict:resolved', resolution);
     });
 
     this.conflictResolver.on('conflict:requires_user', (resolution) => {
-      console.log(chalk.red(`❗ Conflict requires user input: ${resolution.conflictId}`));
+      console.log(chalk.red(` Conflict requires user input: ${resolution.conflictId}`));
       this.emit('conflict:requires_user', resolution);
     });
 
@@ -133,7 +133,7 @@ class AutoSyncManager extends EventEmitter {
    */
   enable() {
     this.enabled = true;
-    console.log(chalk.green('✅ Auto-sync enabled'));
+    console.log(chalk.green(' Auto-sync enabled'));
     this.emit('enabled');
   }
 
@@ -149,7 +149,7 @@ class AutoSyncManager extends EventEmitter {
     }
     this.debounceTimers.clear();
 
-    console.log(chalk.yellow('🔇 Auto-sync disabled'));
+    console.log(chalk.yellow(' Auto-sync disabled'));
     this.emit('disabled');
   }
 
@@ -284,7 +284,7 @@ class AutoSyncManager extends EventEmitter {
     this.pendingSyncs.delete(fileKey);
     this.emit('sync:started', { syncId, fileKey, trigger, eventType });
 
-    console.log(chalk.blue(`\n🔄 Syncing file: ${fileKey}`));
+    console.log(chalk.blue(`\n Syncing file: ${fileKey}`));
     console.log(chalk.gray(`   Trigger: ${trigger}`));
     console.log(chalk.gray(`   Event: ${eventType}`));
     if (retryCount > 0) {
@@ -323,7 +323,7 @@ class AutoSyncManager extends EventEmitter {
         );
 
         if (conflicts.length > 0) {
-          console.log(chalk.yellow(`   ⚠️  ${conflicts.length} conflict(s) detected`));
+          console.log(chalk.yellow(`     ${conflicts.length} conflict(s) detected`));
           this.stats.conflictsDetected += conflicts.length;
 
           // Resolve conflicts
@@ -338,7 +338,7 @@ class AutoSyncManager extends EventEmitter {
           conflictResolutions = resolution.conflicts;
 
           const resolvedCount = conflictResolutions.filter(r => r.status === 'resolved').length;
-          console.log(chalk.green(`   ✓ ${resolvedCount} conflict(s) auto-resolved`));
+          console.log(chalk.green(`    ${resolvedCount} conflict(s) auto-resolved`));
           this.stats.conflictsResolved += resolvedCount;
         }
 
@@ -398,7 +398,7 @@ class AutoSyncManager extends EventEmitter {
       // Remove from current syncs
       this.currentSyncs.delete(fileKey);
 
-      console.log(chalk.green(`   ✓ Sync completed (${duration}ms)`));
+      console.log(chalk.green(`    Sync completed (${duration}ms)`));
       if (result.changes) {
         console.log(chalk.gray(`   Changes: ${JSON.stringify(result.changes)}`));
       }
@@ -425,7 +425,7 @@ class AutoSyncManager extends EventEmitter {
 
       // Check if should retry
       if (retryCount < this.maxRetries) {
-        console.log(chalk.yellow(`   ⚠️  Sync failed, will retry...`));
+        console.log(chalk.yellow(`     Sync failed, will retry...`));
 
         // Schedule retry with exponential backoff
         const retryDelay = this.retryDelay * Math.pow(this.retryBackoffMultiplier, retryCount);
@@ -443,7 +443,7 @@ class AutoSyncManager extends EventEmitter {
 
       } else {
         // Max retries reached
-        console.log(chalk.red(`   ✗ Sync failed after ${retryCount} retries`));
+        console.log(chalk.red(`    Sync failed after ${retryCount} retries`));
 
         this.stats.totalSyncs++;
         this.stats.failedSyncs++;
@@ -598,7 +598,7 @@ class AutoSyncManager extends EventEmitter {
       this.debounceTimers.delete(fileKey);
       this.pendingSyncs.delete(fileKey);
 
-      console.log(chalk.yellow(`⏹️  Cancelled pending sync for: ${fileKey}`));
+      console.log(chalk.yellow(`⏹  Cancelled pending sync for: ${fileKey}`));
       this.emit('sync:cancelled', { fileKey });
 
       return true;
@@ -620,7 +620,7 @@ class AutoSyncManager extends EventEmitter {
     this.debounceTimers.clear();
     this.pendingSyncs.clear();
 
-    console.log(chalk.yellow(`⏹️  Cancelled ${count} pending sync(s)`));
+    console.log(chalk.yellow(`⏹  Cancelled ${count} pending sync(s)`));
     this.emit('syncs:cancelled_all', { count });
 
     return count;

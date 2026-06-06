@@ -462,7 +462,7 @@ class JetpackComposeOptimizer extends EventEmitter {
    * Test Jetpack Compose generation
    */
   async testGeneration() {
-    console.log('🧪 Testing Jetpack Compose generation...\n');
+    console.log(' Testing Jetpack Compose generation...\n');
 
     const sampleComposable = {
       name: 'MyButton',
@@ -486,17 +486,17 @@ class JetpackComposeOptimizer extends EventEmitter {
     };
 
     try {
-      console.log('1️⃣ Generating Composable function...');
+      console.log('1⃣ Generating Composable function...');
       const composable = await this.generateComposable(sampleComposable);
-      console.log(`   ✓ Generated ${composable.split('\n').length} lines of Kotlin\n`);
+      console.log(`    Generated ${composable.split('\n').length} lines of Kotlin\n`);
 
-      console.log('2️⃣ Checking statistics...');
+      console.log('2⃣ Checking statistics...');
       const stats = this.getStats();
-      console.log(`   ✓ Composables generated: ${stats.composablesGenerated}`);
-      console.log(`   ✓ State variables: ${stats.stateVariables}`);
-      console.log(`   ✓ Modifiers applied: ${stats.modifiers}\n`);
+      console.log(`    Composables generated: ${stats.composablesGenerated}`);
+      console.log(`    State variables: ${stats.stateVariables}`);
+      console.log(`    Modifiers applied: ${stats.modifiers}\n`);
 
-      console.log('✅ Jetpack Compose generation test complete!\n');
+      console.log(' Jetpack Compose generation test complete!\n');
 
       return {
         success: true,
@@ -505,7 +505,7 @@ class JetpackComposeOptimizer extends EventEmitter {
       };
 
     } catch (error) {
-      console.error('❌ Jetpack Compose test failed:', error.message);
+      console.error(' Jetpack Compose test failed:', error.message);
       throw error;
     }
   }

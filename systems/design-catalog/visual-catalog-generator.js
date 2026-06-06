@@ -44,7 +44,7 @@ class VisualCatalogGenerator {
    * Generate complete visual catalog
    */
   async generate(tokens, metadata = {}) {
-    console.log(chalk.blue('🎨 Generating Visual Catalog...'));
+    console.log(chalk.blue(' Generating Visual Catalog...'));
 
     try {
       // Ensure output directory exists
@@ -98,7 +98,7 @@ class VisualCatalogGenerator {
       // Copy token files
       await this.copyTokenFiles(tokens);
 
-      console.log(chalk.green('✅ Visual Catalog generated successfully'));
+      console.log(chalk.green(' Visual Catalog generated successfully'));
       console.log(chalk.gray(`   Open ${path.join(this.outputDir, 'index.html')} to view`));
 
       return {
@@ -107,7 +107,7 @@ class VisualCatalogGenerator {
         pages: Object.keys(pages).filter(p => pages[p])
       };
     } catch (error) {
-      console.error(chalk.red('❌ Catalog generation failed:'), error.message);
+      console.error(chalk.red(' Catalog generation failed:'), error.message);
       throw error;
     }
   }

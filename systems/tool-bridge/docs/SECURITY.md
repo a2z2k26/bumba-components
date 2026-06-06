@@ -1,15 +1,15 @@
-# 🔴 Security Policy
+#  Security Policy
 
 **Building Unified Multi-agent Business Applications**
 
-## 🟡 Supported Versions
+##  Supported Versions
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 1.0.x   | 🏁 |
-| < 1.0   | 🔴 |
+| 1.0.x   |  |
+| < 1.0   |  |
 
-## 🟢 Reporting a Vulnerability
+##  Reporting a Vulnerability
 
 We take the security of Tool Bridge seriously. If you believe you have found a security vulnerability, please report it to us as described below.
 
@@ -33,33 +33,33 @@ We take the security of Tool Bridge seriously. If you believe you have found a s
 - We will try to keep you informed about our progress
 - We will credit you in the security advisory (unless you prefer to remain anonymous)
 
-## 🟠 Security Best Practices for Users
+##  Security Best Practices for Users
 
-### 🟡 API Key Management
+###  API Key Management
 - **NEVER** commit API keys to version control
 - Use environment variables or `.env` files (not tracked in git)
 - Rotate API keys regularly
 - Use different API keys for development and production
 
-### 🟢 Network Security
+###  Network Security
 - Always use HTTPS in production
 - Configure CORS properly for your use case
 - Enable rate limiting to prevent abuse
 - Use strong JWT secrets (generate with `openssl rand -hex 32`)
 
-### 🔴 Docker Security
+###  Docker Security
 - Don't run containers as root
 - Keep base images updated
 - Scan images for vulnerabilities
 - Use specific version tags, not `latest`
 
-### 🟠 Configuration Security
+###  Configuration Security
 - Store configuration in `~/.tool-bridge` with proper permissions
 - Don't expose the Tool Bridge server directly to the internet without authentication
 - Use a reverse proxy (nginx, Apache) in production
 - Enable all security features in production
 
-## 🟡 Security Features
+##  Security Features
 
 Tool Bridge includes several security features:
 
@@ -71,14 +71,14 @@ Tool Bridge includes several security features:
 6. **Secure Headers**: Using Helmet.js for secure HTTP headers
 7. **Environment Isolation**: Separate configs for dev/prod
 
-## 🟢 Regular Security Updates
+##  Regular Security Updates
 
 We regularly update dependencies to patch known vulnerabilities:
 - Run `npm audit` regularly
 - Update dependencies with `npm update`
 - Check for security advisories
 
-## 🔴 Compliance
+##  Compliance
 
 Tool Bridge is designed to help you maintain compliance with:
 - API provider terms of service

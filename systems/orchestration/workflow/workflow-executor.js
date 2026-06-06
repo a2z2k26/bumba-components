@@ -55,7 +55,7 @@ class WorkflowExecutor extends EventEmitter {
     // Setup event handlers
     this.setupEventHandlers();
 
-    console.log(chalk.blue('🎯 Workflow Executor initialized'));
+    console.log(chalk.blue(' Workflow Executor initialized'));
   }
 
   /**
@@ -113,7 +113,7 @@ class WorkflowExecutor extends EventEmitter {
         startTime: Date.now()
       });
 
-      console.log(chalk.green(`▶️ Starting workflow: ${workflow.name}`));
+      console.log(chalk.green(`▶ Starting workflow: ${workflow.name}`));
 
       // Pre-spawn agents if configured
       await this.preSpawnAgents(workflow, context);
@@ -126,7 +126,7 @@ class WorkflowExecutor extends EventEmitter {
 
       this.stats.workflowsExecuted++;
 
-      console.log(chalk.green(`✅ Workflow completed: ${workflow.name}`));
+      console.log(chalk.green(` Workflow completed: ${workflow.name}`));
 
       return result;
 
@@ -188,7 +188,7 @@ class WorkflowExecutor extends EventEmitter {
         context.agents.set(agent.role, agent);
         this.stats.agentsSpawned++;
 
-        console.log(chalk.cyan(`🤖 Pre-spawned agent: ${agent.role}`));
+        console.log(chalk.cyan(` Pre-spawned agent: ${agent.role}`));
 
       } catch (error) {
         console.error(chalk.red(`Failed to pre-spawn agent: ${agentConfig.role}`));
@@ -205,7 +205,7 @@ class WorkflowExecutor extends EventEmitter {
 
     for (const step of steps) {
       try {
-        console.log(chalk.blue(`📍 Executing step: ${step.name}`));
+        console.log(chalk.blue(` Executing step: ${step.name}`));
 
         // Update context metrics
         context.metrics.stepsExecuted++;
@@ -275,7 +275,7 @@ class WorkflowExecutor extends EventEmitter {
     // Check if agent should be reused
     if (step.agentConfig?.reuse && context.agents.has(step.agentConfig.role)) {
       agent = context.agents.get(step.agentConfig.role);
-      console.log(chalk.gray(`♻️ Reusing agent: ${agent.role}`));
+      console.log(chalk.gray(` Reusing agent: ${agent.role}`));
     } else if (step.agentConfig?.spawn !== false) {
       // Spawn new agent
       agent = await this.agentFactory.spawnAgent({
@@ -294,7 +294,7 @@ class WorkflowExecutor extends EventEmitter {
 
       context.agents.set(agent.role, agent);
       this.stats.agentsSpawned++;
-      console.log(chalk.cyan(`🤖 Spawned agent: ${agent.role}`));
+      console.log(chalk.cyan(` Spawned agent: ${agent.role}`));
     }
 
     // Execute task through agent factory
@@ -319,7 +319,7 @@ class WorkflowExecutor extends EventEmitter {
   async executeParallelSteps(step, context) {
     const tracks = step.tracks || step.tasks || [];
 
-    console.log(chalk.magenta(`⚡ Executing ${tracks.length} parallel tracks`));
+    console.log(chalk.magenta(` Executing ${tracks.length} parallel tracks`));
 
     const promises = tracks.map(track =>
       this.executeTaskStep({
@@ -343,7 +343,7 @@ class WorkflowExecutor extends EventEmitter {
     const qualityThreshold = step.qualityThreshold || 0.8;
     const results = [];
 
-    console.log(chalk.yellow(`🔄 Starting iterative step (max: ${maxIterations})`));
+    console.log(chalk.yellow(` Starting iterative step (max: ${maxIterations})`));
 
     for (let i = 0; i < maxIterations; i++) {
       const iterationResult = await this.executeTaskStep({
@@ -356,13 +356,13 @@ class WorkflowExecutor extends EventEmitter {
 
       // Check termination conditions
       if (this.checkTerminationConditions(step, iterationResult, results)) {
-        console.log(chalk.green(`✓ Iteration complete at ${i + 1}`));
+        console.log(chalk.green(` Iteration complete at ${i + 1}`));
         break;
       }
 
       // Check quality threshold
       if (iterationResult.quality >= qualityThreshold) {
-        console.log(chalk.green(`✓ Quality threshold met at iteration ${i + 1}`));
+        console.log(chalk.green(` Quality threshold met at iteration ${i + 1}`));
         break;
       }
     }
@@ -376,7 +376,7 @@ class WorkflowExecutor extends EventEmitter {
   async executeConditionalStep(step, context) {
     const condition = this.evaluateCondition(step.condition, context);
 
-    console.log(chalk.yellow(`❓ Condition evaluated: ${condition}`));
+    console.log(chalk.yellow(` Condition evaluated: ${condition}`));
 
     if (condition) {
       if (step.ifTrue) {
@@ -543,7 +543,7 @@ class WorkflowExecutor extends EventEmitter {
    * Handle step error
    */
   async handleStepError(step, context, error) {
-    console.error(chalk.red(`❌ Step error: ${step.name}`), error.message);
+    console.error(chalk.red(` Step error: ${step.name}`), error.message);
 
     // Try error recovery
     const strategy = this.errorHandler.determineStrategy(error);
@@ -560,7 +560,7 @@ class WorkflowExecutor extends EventEmitter {
    * Handle workflow error
    */
   async handleWorkflowError(workflowId, error) {
-    console.error(chalk.red(`❌ Workflow error: ${workflowId}`), error.message);
+    console.error(chalk.red(` Workflow error: ${workflowId}`), error.message);
 
     // Clean up workflow
     await this.cleanupWorkflow(workflowId);
@@ -584,7 +584,7 @@ class WorkflowExecutor extends EventEmitter {
         try {
           this.communicationHub.unregisterAgent(agent.id);
           await this.agentFactory.terminateAgent(agent.id);
-          console.log(chalk.gray(`🧹 Cleaned up agent: ${role}`));
+          console.log(chalk.gray(` Cleaned up agent: ${role}`));
         } catch (error) {
           // Ignore cleanup errors
         }
@@ -641,7 +641,7 @@ class WorkflowExecutor extends EventEmitter {
 
     this.agentMappings.set(agentProfile.id, agentProfile);
 
-    console.log(chalk.green(`✅ Registered workflow agent: ${agentProfile.name}`));
+    console.log(chalk.green(` Registered workflow agent: ${agentProfile.name}`));
 
     this.emit('agent:registered', agentProfile);
 

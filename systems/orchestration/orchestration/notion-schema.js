@@ -14,7 +14,7 @@ const NotionWorkspaceSchema = {
     name: 'BUMBA Projects',
     properties: {
       title: { type: 'title' },
-      status: { 
+      status: {
         type: 'select',
         options: ['planning', 'active', 'blocked', 'review', 'completed']
       },
@@ -44,7 +44,7 @@ const NotionWorkspaceSchema = {
     properties: {
       title: { type: 'title' },
       sprint_id: { type: 'rich_text' },
-      project: { 
+      project: {
         type: 'relation',
         database: 'projects'
       },
@@ -334,10 +334,10 @@ const NotionSchemaValidator = {
 
       // Sanitize properties
       validation.sanitized = this.sanitizeNotionOutput(output);
-      
+
       return validation;
     } catch (error) {
-      logger.error(`🔴 Notion schema validation error: ${error.message}`);
+      logger.error(` Notion schema validation error: ${error.message}`);
       return {
         valid: false,
         errors: [`Validation error: ${error.message}`],
@@ -351,19 +351,19 @@ const NotionSchemaValidator = {
    */
   sanitizeNotionOutput(output) {
     if (!output) return null;
-    
+
     const sanitized = { ...output };
-    
+
     // Remove sensitive fields
     delete sanitized.secret;
     delete sanitized.token;
     delete sanitized.internal_id;
-    
+
     // Sanitize text fields
     if (sanitized.title) {
       sanitized.title = this.sanitizeText(sanitized.title);
     }
-    
+
     if (sanitized.properties) {
       Object.keys(sanitized.properties).forEach(key => {
         if (sanitized.properties[key].rich_text) {
@@ -373,7 +373,7 @@ const NotionSchemaValidator = {
         }
       });
     }
-    
+
     return sanitized;
   },
 
@@ -382,7 +382,7 @@ const NotionSchemaValidator = {
    */
   sanitizeText(text) {
     if (typeof text !== 'string') return text;
-    
+
     return text
       .replace(/<script[^>]*>.*?<\/script>/gi, '')
       .replace(/<iframe[^>]*>.*?<\/iframe>/gi, '')
@@ -448,7 +448,7 @@ const NotionViews = {
       sort: [{ property: 'priority', direction: 'descending' }]
     }
   },
-  
+
   agents: {
     availability: {
       name: 'Agent Availability',
@@ -461,7 +461,7 @@ const NotionViews = {
       sort: [{ property: 'performance_score', direction: 'descending' }]
     }
   },
-  
+
   knowledge_base: {
     by_type: {
       name: 'Knowledge by Type',
@@ -484,7 +484,7 @@ const PageTemplates = {
   project_dashboard: {
     blocks: [
       { type: 'heading_1', text: 'Project Dashboard' },
-      { type: 'callout', text: 'Project Overview', icon: '🟢' },
+      { type: 'callout', text: 'Project Overview', icon: '' },
       { type: 'database_view', database: 'tasks', view: 'kanban' },
       { type: 'divider' },
       { type: 'heading_2', text: 'Progress Metrics' },
@@ -497,7 +497,7 @@ const PageTemplates = {
       { type: 'database_view', database: 'knowledge_base', view: 'recent' }
     ]
   },
-  
+
   agent_workspace: {
     blocks: [
       { type: 'heading_1', text: 'Agent Workspace' },

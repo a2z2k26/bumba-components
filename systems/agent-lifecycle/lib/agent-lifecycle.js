@@ -1,7 +1,7 @@
 /**
  * Agent Lifecycle - @bumba/agent-lifecycle v1.0
  * Finite state machine for managing agent lifecycles
- * Part of the BUMBA Platform
+ * Part of the Agent Primitives
  */
 
 const { EventEmitter } = require('events');
@@ -38,13 +38,13 @@ const StateEvent = {
 class AgentLifecycle extends EventEmitter {
   constructor(agentId, options = {}) {
     super();
-    
+
     this.agentId = agentId;
     this.currentState = AgentState.IDLE;
     this.previousState = null;
     this.stateHistory = [];
     this.metadata = {};
-    
+
     this.config = {
       maxIdleTime: options.maxIdleTime || 300000, // 5 minutes
       maxActiveTime: options.maxActiveTime || 1800000, // 30 minutes
@@ -54,10 +54,10 @@ class AgentLifecycle extends EventEmitter {
       storeHistory: options.storeHistory !== false,
       ...options
     };
-    
+
     this.timers = {};
     this.retryCount = 0;
-    
+
     this.stats = {
       createdAt: Date.now(),
       lastStateChange: Date.now(),
@@ -65,16 +65,16 @@ class AgentLifecycle extends EventEmitter {
       timeInStates: {},
       errors: []
     };
-    
+
     // Initialize time tracking
     Object.values(AgentState).forEach(state => {
       this.stats.timeInStates[state] = 0;
     });
-    
+
     this.transitions = this.defineTransitions();
     this.startTracking();
   }
-  
+
   defineTransitions() {
     return {
       [AgentState.IDLE]: {
@@ -110,7 +110,7 @@ class AgentLifecycle extends EventEmitter {
       }
     };
   }
-  
+
   async transition(event, data = {}) {
     const fromState = this.currentState;
     const validTransitions = this.transitions[fromState];
@@ -122,21 +122,21 @@ class AgentLifecycle extends EventEmitter {
     }
 
     const toState = validTransitions[event];
-    
+
     // Check if transition is allowed
     if (!this.canTransition(fromState, toState, data)) {
       return false;
     }
-    
+
     // Update state timing
     this.updateStateTime(fromState);
-    
+
     // Store previous state
     this.previousState = fromState;
     this.currentState = toState;
     this.stats.lastStateChange = Date.now();
     this.stats.totalTransitions++;
-    
+
     // Store in history
     if (this.config.storeHistory) {
       this.stateHistory.push({
@@ -147,7 +147,7 @@ class AgentLifecycle extends EventEmitter {
         data: { ...data }
       });
     }
-    
+
     // Clear old timers and set new ones
     this.clearTimers(fromState);
     this.setTimers(toState);
@@ -171,10 +171,10 @@ class AgentLifecycle extends EventEmitter {
     await this.handleStateEntry(toState, data);
 
     debug(`Agent ${this.agentId}: transitioned ${fromState} → ${toState}`);
-    
+
     return true;
   }
-  
+
   canTransition(from, to, data) {
     if (to === AgentState.SPAWNING && data.resourceCheck === false) {
       return false;
@@ -188,36 +188,36 @@ class AgentLifecycle extends EventEmitter {
 
     return true;
   }
-  
+
   async handleStateEntry(state, data) {
     switch (state) {
       case AgentState.SPAWNING:
         this.metadata.spawnStartTime = Date.now();
         this.metadata.spawnData = data;
         break;
-        
+
       case AgentState.ACTIVE:
         this.metadata.activationTime = Date.now();
         this.metadata.taskCount = data.taskCount || 0;
         break;
-        
+
       case AgentState.VALIDATING:
         this.metadata.validationStartTime = Date.now();
         this.metadata.validationData = data;
         break;
-        
+
       case AgentState.COMPLETING:
         this.metadata.completionStartTime = Date.now();
         this.metadata.completionReason = data.reason || 'normal';
         break;
-        
+
       case AgentState.COMPLETED:
         this.metadata.completedAt = Date.now();
         this.cleanup();
         break;
     }
   }
-  
+
   setTimers(state) {
     switch (state) {
       case AgentState.IDLE:
@@ -227,7 +227,7 @@ class AgentLifecycle extends EventEmitter {
           }, this.config.maxIdleTime);
         }
         break;
-        
+
       case AgentState.ACTIVE:
         if (this.config.maxActiveTime > 0) {
           this.timers.active = setTimeout(() => {
@@ -235,7 +235,7 @@ class AgentLifecycle extends EventEmitter {
           }, this.config.maxActiveTime);
         }
         break;
-        
+
       case AgentState.VALIDATING:
         if (this.config.maxValidationTime > 0) {
           this.timers.validation = setTimeout(() => {
@@ -245,7 +245,7 @@ class AgentLifecycle extends EventEmitter {
         break;
     }
   }
-  
+
   clearTimers(state) {
     const timerName = state.toLowerCase();
     if (this.timers[timerName]) {
@@ -253,16 +253,16 @@ class AgentLifecycle extends EventEmitter {
       delete this.timers[timerName];
     }
   }
-  
+
   updateStateTime(state) {
     const timeInState = Date.now() - this.stats.lastStateChange;
     this.stats.timeInStates[state] += timeInState;
   }
-  
+
   hasActiveTasks() {
     return this.metadata.taskCount && this.metadata.taskCount > 0;
   }
-  
+
   startTracking() {
     if (this.config.maxIdleTime > 0 && this.currentState === AgentState.IDLE) {
       this.setTimers(AgentState.IDLE);
@@ -276,23 +276,23 @@ class AgentLifecycle extends EventEmitter {
       });
     });
   }
-  
+
   cleanup() {
     // Clear all timers
     Object.keys(this.timers).forEach(timer => {
       clearTimeout(this.timers[timer]);
       delete this.timers[timer];
     });
-    
+
     // Update final state time
     this.updateStateTime(this.currentState);
-    
+
     this.emit('lifecycle:ended', {
       agentId: this.agentId,
       stats: this.getStatistics()
     });
   }
-  
+
   async forceComplete(reason = 'forced') {
     try {
       // Drive to COMPLETED, passing through intermediate states as needed
@@ -313,39 +313,39 @@ class AgentLifecycle extends EventEmitter {
       this.cleanup();
     }
   }
-  
+
   async retry(data = {}) {
     if (this.retryCount >= this.config.maxRetries) {
       throw new Error(`Max retries (${this.config.maxRetries}) exceeded`);
     }
-    
+
     this.retryCount++;
     data.retryAttempt = this.retryCount;
-    
+
     return await this.transition(StateEvent.RETRY, data);
   }
-  
+
   // Getter methods
   getState() {
     return this.currentState;
   }
-  
+
   isInState(state) {
     return this.currentState === state;
   }
-  
+
   isAvailable() {
     return this.currentState === AgentState.ACTIVE;
   }
-  
+
   isCompleted() {
     return this.currentState === AgentState.COMPLETED;
   }
-  
+
   canAcceptWork() {
     return [AgentState.IDLE, AgentState.ACTIVE].includes(this.currentState);
   }
-  
+
   getStatistics() {
     const totalTime = Date.now() - this.stats.createdAt;
     const currentStateElapsed = Date.now() - this.stats.lastStateChange;
@@ -366,19 +366,19 @@ class AgentLifecycle extends EventEmitter {
       }, {})
     };
   }
-  
+
   getHistory() {
     return [...this.stateHistory];
   }
-  
+
   getMetadata() {
     return { ...this.metadata };
   }
-  
+
   updateMetadata(updates) {
     this.metadata = { ...this.metadata, ...updates };
   }
-  
+
   recordError(error) {
     this.stats.errors.push({
       timestamp: Date.now(),
@@ -392,7 +392,7 @@ class AgentLifecycle extends EventEmitter {
 class AgentOrchestrator extends EventEmitter {
   constructor(options = {}) {
     super();
-    
+
     this.agents = new Map();
     this.config = {
       maxAgents: options.maxAgents || 50,
@@ -400,50 +400,50 @@ class AgentOrchestrator extends EventEmitter {
       enableMetrics: options.enableMetrics !== false,
       ...options
     };
-    
+
     this.metrics = {
       totalSpawned: 0,
       totalCompleted: 0,
       activeAgents: 0,
       stateDistribution: {}
     };
-    
+
     Object.values(AgentState).forEach(state => {
       this.metrics.stateDistribution[state] = 0;
     });
   }
-  
+
   createAgent(agentId, config = {}) {
     if (this.agents.has(agentId)) {
       throw new Error(`Agent ${agentId} already exists`);
     }
-    
+
     if (this.agents.size >= this.config.maxAgents) {
       throw new Error(`Maximum agent limit (${this.config.maxAgents}) reached`);
     }
-    
+
     const agentConfig = { ...this.config.defaultAgentConfig, ...config };
     const agent = new AgentLifecycle(agentId, agentConfig);
-    
+
     // Subscribe to events
     agent.on('stateChange', (data) => {
       this.handleStateChange(data);
     });
-    
+
     agent.on('lifecycle:ended', (data) => {
       this.handleLifecycleEnd(data);
     });
-    
+
     this.agents.set(agentId, agent);
     this.metrics.totalSpawned++;
-    
+
     return agent;
   }
-  
+
   getAgent(agentId) {
     return this.agents.get(agentId);
   }
-  
+
   removeAgent(agentId) {
     const agent = this.agents.get(agentId);
     if (agent) {
@@ -452,38 +452,38 @@ class AgentOrchestrator extends EventEmitter {
       agent.cleanup();
     }
   }
-  
+
   handleStateChange(data) {
     if (this.config.enableMetrics) {
       this.updateMetrics();
     }
-    
+
     this.emit('agent:stateChange', data);
   }
-  
+
   handleLifecycleEnd(data) {
     this.removeAgent(data.agentId);
     this.emit('agent:completed', data);
   }
-  
+
   updateMetrics() {
     Object.keys(this.metrics.stateDistribution).forEach(state => {
       this.metrics.stateDistribution[state] = 0;
     });
-    
+
     let activeCount = 0;
     this.agents.forEach(agent => {
       const state = agent.getState();
       this.metrics.stateDistribution[state]++;
-      
+
       if (state === AgentState.ACTIVE) {
         activeCount++;
       }
     });
-    
+
     this.metrics.activeAgents = activeCount;
   }
-  
+
   getAgentsInState(state) {
     const agents = [];
     this.agents.forEach((agent, id) => {
@@ -493,26 +493,26 @@ class AgentOrchestrator extends EventEmitter {
     });
     return agents;
   }
-  
+
   getMetrics() {
     this.updateMetrics();
     return {
       ...this.metrics,
       totalAgents: this.agents.size,
-      utilization: this.config.maxAgents > 0 
+      utilization: this.config.maxAgents > 0
         ? `${((this.agents.size / this.config.maxAgents) * 100).toFixed(1)}%`
         : '0%'
     };
   }
-  
+
   async completeAll(reason = 'shutdown') {
-    const promises = Array.from(this.agents.values()).map(agent => 
+    const promises = Array.from(this.agents.values()).map(agent =>
       agent.forceComplete(reason)
     );
-    
+
     await Promise.allSettled(promises);
   }
-  
+
   getSummary() {
     return {
       totalAgents: this.agents.size,

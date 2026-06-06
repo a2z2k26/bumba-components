@@ -426,7 +426,7 @@ export { ${name} }`;
             const filePath = path.join(outputPath, fileName);
 
             await fs.writeFile(filePath, html, 'utf8');
-            console.log(`✅ Generated: ${fileName}`);
+            console.log(` Generated: ${fileName}`);
         }
     }
 }

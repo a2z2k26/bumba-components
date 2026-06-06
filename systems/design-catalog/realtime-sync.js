@@ -69,7 +69,7 @@ class RealtimeSync extends EventEmitter {
     this.setupConflictResolution();
 
     this.initialized = true;
-    console.log('✅ Real-time sync initialized');
+    console.log(' Real-time sync initialized');
     return this;
   }
 

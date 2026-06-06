@@ -592,7 +592,7 @@ class AccessibilityAutomation extends EventEmitter {
     if (audit.passed.length > 0) {
       report += `PASSED (${audit.passed.length}):\n`;
       audit.passed.forEach((p, i) => {
-        report += `  ✓ ${p}\n`;
+        report += `   ${p}\n`;
       });
       report += `\n`;
     }

@@ -8,17 +8,17 @@ const { EventEmitter } = require('events');
 class CircuitBreaker extends EventEmitter {
   constructor(options = {}) {
     super();
-    
+
     this.threshold = options.threshold || 5;
     this.timeout = options.timeout || 60000; // 1 minute
     this.resetTimeout = options.resetTimeout || 30000; // 30 seconds
-    
+
     this.failureCount = 0;
     this.successCount = 0;
     this.lastFailureTime = null;
     this.state = 'CLOSED'; // CLOSED, OPEN, HALF_OPEN
     this.nextAttempt = 0;
-    
+
     this.stats = {
       totalRequests: 0,
       successfulRequests: 0,
@@ -30,7 +30,7 @@ class CircuitBreaker extends EventEmitter {
 
   async execute(fn, fallback = null) {
     this.stats.totalRequests++;
-    
+
     // Check circuit state
     if (this.state === 'OPEN') {
       if (Date.now() < this.nextAttempt) {
@@ -39,14 +39,14 @@ class CircuitBreaker extends EventEmitter {
           state: this.state,
           nextAttempt: this.nextAttempt
         });
-        
+
         if (fallback) {
           return fallback();
         }
-        
+
         throw new Error('Circuit breaker is OPEN');
       }
-      
+
       // Try to recover
       this.state = 'HALF_OPEN';
       this.emit('state-change', { from: 'OPEN', to: 'HALF_OPEN' });
@@ -58,11 +58,11 @@ class CircuitBreaker extends EventEmitter {
       return result;
     } catch (error) {
       this.onFailure(error);
-      
+
       if (fallback) {
         return fallback();
       }
-      
+
       throw error;
     }
   }
@@ -88,13 +88,13 @@ class CircuitBreaker extends EventEmitter {
     this.stats.successfulRequests++;
     this.failureCount = 0;
     this.successCount++;
-    
+
     if (this.state === 'HALF_OPEN') {
       this.state = 'CLOSED';
       this.emit('state-change', { from: 'HALF_OPEN', to: 'CLOSED' });
       this.emit('recovered');
     }
-    
+
     this.emit('success', { state: this.state });
   }
 
@@ -102,13 +102,13 @@ class CircuitBreaker extends EventEmitter {
     this.stats.failedRequests++;
     this.failureCount++;
     this.lastFailureTime = Date.now();
-    
-    this.emit('failure', { 
-      error, 
+
+    this.emit('failure', {
+      error,
       failureCount: this.failureCount,
-      state: this.state 
+      state: this.state
     });
-    
+
     if (this.failureCount >= this.threshold) {
       this.tripCircuit();
     }
@@ -119,20 +119,20 @@ class CircuitBreaker extends EventEmitter {
       const previousState = this.state;
       this.state = 'OPEN';
       this.nextAttempt = Date.now() + this.resetTimeout;
-      
+
       this.stats.stateChanges.push({
         from: previousState,
         to: 'OPEN',
         timestamp: Date.now(),
         reason: `Failure threshold (${this.threshold}) exceeded`
       });
-      
-      this.emit('state-change', { 
-        from: previousState, 
+
+      this.emit('state-change', {
+        from: previousState,
         to: 'OPEN',
         nextAttempt: this.nextAttempt
       });
-      
+
       this.emit('open', {
         failures: this.failureCount,
         lastFailure: this.lastFailureTime
@@ -145,7 +145,7 @@ class CircuitBreaker extends EventEmitter {
     this.successCount = 0;
     this.state = 'CLOSED';
     this.nextAttempt = 0;
-    
+
     this.emit('reset');
   }
 
@@ -162,8 +162,8 @@ class CircuitBreaker extends EventEmitter {
     return {
       ...this.stats,
       currentState: this.state,
-      failureRate: this.stats.totalRequests > 0 
-        ? (this.stats.failedRequests / this.stats.totalRequests) * 100 
+      failureRate: this.stats.totalRequests > 0
+        ? (this.stats.failedRequests / this.stats.totalRequests) * 100
         : 0,
       successRate: this.stats.totalRequests > 0
         ? (this.stats.successfulRequests / this.stats.totalRequests) * 100
@@ -181,7 +181,7 @@ class CircuitBreaker extends EventEmitter {
     if (settings.resetTimeout !== undefined) {
       this.resetTimeout = settings.resetTimeout;
     }
-    
+
     this.emit('settings-updated', settings);
   }
 }
@@ -192,18 +192,18 @@ class CircuitBreaker extends EventEmitter {
 class MCPResilienceSystem extends EventEmitter {
   constructor() {
     super();
-    
+
     this.circuitBreakers = new Map();
     this.healthChecks = new Map();
     this.fallbacks = new Map();
-    
+
     this.config = {
       defaultThreshold: 5,
       defaultTimeout: 60000,
       defaultResetTimeout: 30000,
       healthCheckInterval: 30000
     };
-    
+
     this.stats = {
       totalCalls: 0,
       successfulCalls: 0,
@@ -217,27 +217,27 @@ class MCPResilienceSystem extends EventEmitter {
    */
   async executeWithCircuitBreaker(serverName, fn, options = {}) {
     this.stats.totalCalls++;
-    
+
     // Get or create circuit breaker for this server
     if (!this.circuitBreakers.has(serverName)) {
       this.createCircuitBreaker(serverName, options);
     }
-    
+
     const breaker = this.circuitBreakers.get(serverName);
     const fallback = this.fallbacks.get(serverName);
-    
+
     try {
       const result = await breaker.execute(fn, fallback);
       this.stats.successfulCalls++;
       return result;
     } catch (error) {
       this.stats.failedCalls++;
-      
+
       if (fallback && breaker.getState().state === 'OPEN') {
         this.stats.fallbackCalls++;
         return fallback();
       }
-      
+
       throw error;
     }
   }
@@ -251,7 +251,7 @@ class MCPResilienceSystem extends EventEmitter {
       timeout: options.timeout || this.config.defaultTimeout,
       resetTimeout: options.resetTimeout || this.config.defaultResetTimeout
     });
-    
+
     // Set up event forwarding
     breaker.on('state-change', (data) => {
       this.emit('breaker-state-change', {
@@ -259,22 +259,22 @@ class MCPResilienceSystem extends EventEmitter {
         ...data
       });
     });
-    
+
     breaker.on('open', (data) => {
       this.emit('breaker-open', {
         server: serverName,
         ...data
       });
     });
-    
+
     breaker.on('recovered', () => {
       this.emit('breaker-recovered', {
         server: serverName
       });
     });
-    
+
     this.circuitBreakers.set(serverName, breaker);
-    
+
     return breaker;
   }
 
@@ -296,19 +296,19 @@ class MCPResilienceSystem extends EventEmitter {
       lastResult: null,
       timer: null
     };
-    
+
     // Start health check
     healthCheck.timer = setInterval(async () => {
       try {
         healthCheck.lastResult = await checkFn();
         healthCheck.lastCheck = Date.now();
-        
+
         this.emit('health-check', {
           server: serverName,
           healthy: healthCheck.lastResult,
           timestamp: healthCheck.lastCheck
         });
-        
+
         // Reset circuit breaker if healthy
         if (healthCheck.lastResult && this.circuitBreakers.has(serverName)) {
           const breaker = this.circuitBreakers.get(serverName);
@@ -319,7 +319,7 @@ class MCPResilienceSystem extends EventEmitter {
       } catch (error) {
         healthCheck.lastResult = false;
         healthCheck.lastCheck = Date.now();
-        
+
         this.emit('health-check-failed', {
           server: serverName,
           error: error.message,
@@ -327,7 +327,7 @@ class MCPResilienceSystem extends EventEmitter {
         });
       }
     }, healthCheck.interval);
-    
+
     this.healthChecks.set(serverName, healthCheck);
   }
 
@@ -343,11 +343,11 @@ class MCPResilienceSystem extends EventEmitter {
    */
   getAllStates() {
     const states = {};
-    
+
     for (const [server, breaker] of this.circuitBreakers) {
       states[server] = breaker.getState();
     }
-    
+
     return states;
   }
 
@@ -356,11 +356,11 @@ class MCPResilienceSystem extends EventEmitter {
    */
   getStats() {
     const serverStats = {};
-    
+
     for (const [server, breaker] of this.circuitBreakers) {
       serverStats[server] = breaker.getStats();
     }
-    
+
     return {
       global: this.stats,
       servers: serverStats,
@@ -373,7 +373,7 @@ class MCPResilienceSystem extends EventEmitter {
    */
   getHealthCheckStatus() {
     const status = {};
-    
+
     for (const [server, check] of this.healthChecks) {
       status[server] = {
         lastCheck: check.lastCheck,
@@ -381,7 +381,7 @@ class MCPResilienceSystem extends EventEmitter {
         interval: check.interval
       };
     }
-    
+
     return status;
   }
 
@@ -431,7 +431,7 @@ class MCPResilienceSystem extends EventEmitter {
 module.exports = {
   CircuitBreaker,
   MCPResilienceSystem,
-  
+
   // Singleton instance of resilience system
   getInstance() {
     if (!global.mcpResilienceSystem) {

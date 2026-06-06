@@ -8,7 +8,7 @@ const EventEmitter = require('events');
 class PineconeConnector extends EventEmitter {
   constructor(options = {}) {
     super();
-    
+
     this.options = {
       apiKey: options.apiKey || process.env.PINECONE_API_KEY,
       environment: options.environment || process.env.PINECONE_ENVIRONMENT,
@@ -16,35 +16,35 @@ class PineconeConnector extends EventEmitter {
       timeout: options.timeout || 30000,
       ...options
     };
-    
+
     if (!this.options.apiKey) {
       throw new Error('Pinecone API key is required');
     }
-    
+
     this.baseURL = `https://${this.options.projectName}-${this.options.environment}.svc.pinecone.io`;
   }
 
   async makeRequest(endpoint, options = {}) {
     const url = endpoint.startsWith('http') ? endpoint : `${this.baseURL}${endpoint}`;
-    
+
     const headers = {
       'Api-Key': this.options.apiKey,
       'Content-Type': 'application/json',
       ...options.headers
     };
-    
+
     const response = await fetch(url, {
       method: options.method || 'GET',
       headers,
       body: options.body ? JSON.stringify(options.body) : undefined,
       signal: AbortSignal.timeout(this.options.timeout)
     });
-    
+
     if (!response.ok) {
       const error = await response.json().catch(() => ({}));
       throw new Error(error.message || `Pinecone API error: ${response.status}`);
     }
-    
+
     return response.json();
   }
 
@@ -76,7 +76,7 @@ class PineconeConnector extends EventEmitter {
 
   async upsert(indexName, vectors, namespace = '') {
     const indexURL = `https://${indexName}-${this.options.projectName}.svc.${this.options.environment}.pinecone.io`;
-    
+
     return this.makeRequest(`${indexURL}/vectors/upsert`, {
       method: 'POST',
       body: {
@@ -88,7 +88,7 @@ class PineconeConnector extends EventEmitter {
 
   async query(indexName, vector, options = {}) {
     const indexURL = `https://${indexName}-${this.options.projectName}.svc.${this.options.environment}.pinecone.io`;
-    
+
     return this.makeRequest(`${indexURL}/query`, {
       method: 'POST',
       body: {
@@ -104,7 +104,7 @@ class PineconeConnector extends EventEmitter {
 
   async deleteVectors(indexName, ids, namespace = '') {
     const indexURL = `https://${indexName}-${this.options.projectName}.svc.${this.options.environment}.pinecone.io`;
-    
+
     return this.makeRequest(`${indexURL}/vectors/delete`, {
       method: 'POST',
       body: {
@@ -116,7 +116,7 @@ class PineconeConnector extends EventEmitter {
 
   async fetch(indexName, ids, namespace = '') {
     const indexURL = `https://${indexName}-${this.options.projectName}.svc.${this.options.environment}.pinecone.io`;
-    
+
     return this.makeRequest(`${indexURL}/vectors/fetch?ids=${ids.join(',')}&namespace=${namespace}`);
   }
 }

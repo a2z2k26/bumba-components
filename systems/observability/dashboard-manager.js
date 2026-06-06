@@ -682,7 +682,7 @@ class DashboardManager {
 
     // Real-time metrics
     const realTime = this.getRealTimeMetrics();
-    output += chalk.yellow('📊 Real-Time Metrics\n\n');
+    output += chalk.yellow(' Real-Time Metrics\n\n');
     output += chalk.white(`Total Queries: ${realTime.totalQueries}\n`);
     output += chalk.white(`Success Rate: ${realTime.successRate}%\n`);
     output += chalk.white(`Avg Duration: ${realTime.avgDuration}ms\n`);
@@ -694,7 +694,7 @@ class DashboardManager {
 
     // Comparisons
     if (this.metrics.comparisons.total > 0) {
-      output += chalk.yellow('🔬 Comparison Results\n\n');
+      output += chalk.yellow(' Comparison Results\n\n');
       output += chalk.white(`Total Comparisons: ${this.metrics.comparisons.total}\n`);
       output += chalk.blue(`Orchestration Wins: ${this.metrics.comparisons.orchestrationWins}\n`);
       output += chalk.green(`Simple Wins: ${this.metrics.comparisons.simpleWins}\n`);
@@ -704,7 +704,7 @@ class DashboardManager {
     // Performance
     const perfInsights = this.getPerformanceInsights();
     if (perfInsights) {
-      output += chalk.yellow('⚡ Performance Insights\n\n');
+      output += chalk.yellow(' Performance Insights\n\n');
       if (perfInsights.fastestQuery) {
         output += chalk.green(`Fastest Query: ${perfInsights.fastestQuery.duration}ms\n`);
       }
@@ -723,10 +723,10 @@ class DashboardManager {
 
     // Insights
     if (this.insights && this.insights.length > 0) {
-      output += chalk.yellow('💡 Insights & Recommendations\n\n');
+      output += chalk.yellow(' Insights & Recommendations\n\n');
       this.insights.forEach((insight, i) => {
-        const icon = insight.type === 'warning' ? '⚠️ ' :
-                     insight.type === 'success' ? '✅ ' : 'ℹ️  ';
+        const icon = insight.type === 'warning' ? ' ' :
+                     insight.type === 'success' ? ' ' : 'ℹ  ';
         const color = insight.type === 'warning' ? chalk.yellow :
                       insight.type === 'success' ? chalk.green : chalk.blue;
         output += color(`${icon}${insight.message}\n`);

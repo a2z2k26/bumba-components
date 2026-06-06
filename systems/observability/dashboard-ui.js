@@ -1,6 +1,6 @@
 /**
  * BUMBA Agent Observability Dashboard UI
- * 
+ *
  * Provides visual dashboard components for agent observability data
  */
 
@@ -21,7 +21,7 @@ class ObservabilityDashboard {
    */
   generateHTML() {
     const dashboard = this.observability.getDashboard();
-    
+
     return `
 <!DOCTYPE html>
 <html lang="en">
@@ -36,7 +36,7 @@ class ObservabilityDashboard {
 <body>
     <div class="dashboard">
         <header class="dashboard-header">
-            <h1>🟢 BUMBA Agent Observability</h1>
+            <h1> BUMBA Agent Observability</h1>
             <div class="header-info">
                 <span class="timestamp">Last Updated: ${new Date(dashboard.timestamp).toLocaleString()}</span>
                 <span class="health-indicator ${this.getHealthClass(dashboard.system_overview.health_status)}">
@@ -132,7 +132,7 @@ class ObservabilityDashboard {
    */
   generateAgentStatus(agentStatus) {
     const agents = Object.values(agentStatus);
-    
+
     if (agents.length === 0) {
       return `
         <div class="card agent-status">
@@ -646,7 +646,7 @@ class ObservabilityDashboard {
    */
   generateTextDashboard() {
     const dashboard = this.observability.getDashboard();
-    
+
     return `
 ╔══════════════════════════════════════════════════════════════════════════════╗
 ║                     BUMBA Agent Observability Dashboard                     ║
@@ -679,7 +679,7 @@ class ObservabilityDashboard {
    */
   startServer(port = 3000) {
     // This would integrate with Express or similar to serve the dashboard
-    logger.info(`🟢 Dashboard would be available at http://localhost:${port}/dashboard`);
+    logger.info(` Dashboard would be available at http://localhost:${port}/dashboard`);
     return {
       port,
       url: `http://localhost:${port}/dashboard`,

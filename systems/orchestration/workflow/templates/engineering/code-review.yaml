@@ -68,7 +68,7 @@ steps:
           - name: dead-code
             tool: dead-code-analyzer
             action: flag-for-removal
-      
+
       - name: security-review
         agent: security-reviewer
         checks:
@@ -90,7 +90,7 @@ steps:
               - authentication-flows
               - authorization-checks
               - session-management
-      
+
       - name: performance-analysis
         agent: performance-reviewer
         checks:
@@ -200,14 +200,14 @@ steps:
           - no-new-issues
           - existing-tests-pass
           - coverage-maintained
-      
+
       - name: integration-check
         agent: architecture-reviewer
         verify:
           - api-compatibility
           - database-migrations
           - configuration-changes
-      
+
       - name: deployment-readiness
         agent: code-analyzer
         verify:

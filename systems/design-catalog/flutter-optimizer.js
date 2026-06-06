@@ -580,7 +580,7 @@ class FlutterOptimizer extends EventEmitter {
    * Test Flutter widget generation
    */
   async testGeneration() {
-    console.log('🧪 Testing Flutter widget generation...\n');
+    console.log(' Testing Flutter widget generation...\n');
 
     const sampleWidget = {
       name: 'MyButton',
@@ -602,24 +602,24 @@ class FlutterOptimizer extends EventEmitter {
     };
 
     try {
-      console.log('1️⃣ Generating StatelessWidget...');
+      console.log('1⃣ Generating StatelessWidget...');
       const stateless = await this.generateWidget(sampleWidget);
-      console.log(`   ✓ Generated ${stateless.split('\n').length} lines of Dart\n`);
+      console.log(`    Generated ${stateless.split('\n').length} lines of Dart\n`);
 
-      console.log('2️⃣ Generating StatefulWidget...');
+      console.log('2⃣ Generating StatefulWidget...');
       const stateful = await this.generateWidget({
         ...sampleWidget,
         state: { counter: { type: 'number', default: 0 } }
       });
-      console.log(`   ✓ Generated ${stateful.split('\n').length} lines of Dart\n`);
+      console.log(`    Generated ${stateful.split('\n').length} lines of Dart\n`);
 
-      console.log('3️⃣ Checking statistics...');
+      console.log('3⃣ Checking statistics...');
       const stats = this.getStats();
-      console.log(`   ✓ Widgets generated: ${stats.widgetsGenerated}`);
-      console.log(`   ✓ Stateless widgets: ${stats.statelessWidgets}`);
-      console.log(`   ✓ Stateful widgets: ${stats.statefulWidgets}\n`);
+      console.log(`    Widgets generated: ${stats.widgetsGenerated}`);
+      console.log(`    Stateless widgets: ${stats.statelessWidgets}`);
+      console.log(`    Stateful widgets: ${stats.statefulWidgets}\n`);
 
-      console.log('✅ Flutter generation test complete!\n');
+      console.log(' Flutter generation test complete!\n');
 
       return {
         success: true,
@@ -629,7 +629,7 @@ class FlutterOptimizer extends EventEmitter {
       };
 
     } catch (error) {
-      console.error('❌ Flutter test failed:', error.message);
+      console.error(' Flutter test failed:', error.message);
       throw error;
     }
   }

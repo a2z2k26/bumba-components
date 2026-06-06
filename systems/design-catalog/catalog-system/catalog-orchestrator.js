@@ -57,7 +57,7 @@ class CatalogOrchestrator extends EventEmitter {
    * Auto-create catalog for new projects
    */
   async createProjectCatalog(projectName, projectPath = process.cwd()) {
-    console.log(chalk.cyan('🎨 Creating Design System Catalog for project:', projectName));
+    console.log(chalk.cyan(' Creating Design System Catalog for project:', projectName));
 
     // Create catalog structure
     const catalog = {
@@ -148,8 +148,8 @@ class CatalogOrchestrator extends EventEmitter {
       catalog
     });
 
-    console.log(chalk.green('✅ Design System Catalog created successfully'));
-    console.log(chalk.cyan(`📁 Location: ${catalogPath}`));
+    console.log(chalk.green(' Design System Catalog created successfully'));
+    console.log(chalk.cyan(` Location: ${catalogPath}`));
 
     return catalog;
   }
@@ -160,7 +160,7 @@ class CatalogOrchestrator extends EventEmitter {
   async registerDesignAsset(assetData) {
     const { type, name, source, metadata } = assetData;
 
-    console.log(chalk.blue(`📥 Registering design asset: ${name}`));
+    console.log(chalk.blue(` Registering design asset: ${name}`));
 
     // Store in registry
     const assetId = this.generateAssetId(name, type);
@@ -385,7 +385,7 @@ ${Object.entries(properties).map(([key, value]) =>
    * Create sandbox environment for component iteration
    */
   async createSandbox(componentId, options = {}) {
-    console.log(chalk.cyan('🧪 Creating sandbox environment for:', componentId));
+    console.log(chalk.cyan(' Creating sandbox environment for:', componentId));
 
     const sandbox = {
       id: `sandbox-${Date.now()}`,

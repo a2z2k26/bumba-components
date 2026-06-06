@@ -11,11 +11,11 @@ const { ConsolidationStrategies } = require('./consolidation-strategies');
 class WaveOrchestrator extends EventEmitter {
   constructor(config = {}) {
     super();
-    
+
     this.parallelSystem = new ParallelAgentSystem(config);
     this.waveHistory = [];
     this.currentWave = null;
-    
+
     // Wave configuration
     this.config = {
       maxWaves: config.maxWaves || 5,
@@ -25,7 +25,7 @@ class WaveOrchestrator extends EventEmitter {
       enableNLP: config.enableNLP !== false,
       enableML: config.enableML !== false
     };
-    
+
     // Learning system - patterns that work well
     this.patterns = {
       successful: [],
@@ -47,14 +47,14 @@ class WaveOrchestrator extends EventEmitter {
     // Intelligent Consolidation (uses consolidation strategies)
     this.intelligentConsolidation = this.consolidationStrategies.initializeIntelligentConsolidation();
   }
-  
+
   /**
    * Execute a full feature development with wave orchestration
    * This is the main entry point for complex multi-agent tasks
    */
   async orchestrateFeature(requirement, options = {}) {
-    logger.info(`🟢 Starting wave orchestration for: ${requirement}`);
-    
+    logger.info(` Starting wave orchestration for: ${requirement}`);
+
     const orchestration = {
       id: `orch_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       requirement,
@@ -62,7 +62,7 @@ class WaveOrchestrator extends EventEmitter {
       startTime: Date.now(),
       status: 'in_progress'
     };
-    
+
     try {
       // Wave 1: Analysis & Discovery
       const wave1Results = await this.executeWave('analysis', [
@@ -87,12 +87,12 @@ class WaveOrchestrator extends EventEmitter {
           model: 'claude'
         }
       ]);
-      
+
       orchestration.waves.push(wave1Results);
-      
+
       // Consolidation Phase 1
       const analysisConsolidation = await this.consolidateResults(wave1Results.results, 'analysis');
-      
+
       // Wave 2: Planning & Design
       const wave2Results = await this.executeWave('planning', [
         {
@@ -111,12 +111,12 @@ class WaveOrchestrator extends EventEmitter {
           model: 'claude'
         }
       ]);
-      
+
       orchestration.waves.push(wave2Results);
-      
+
       // Consolidation Phase 2
       const planConsolidation = await this.consolidateResults(wave2Results.results, 'planning');
-      
+
       // Wave 3: Implementation
       const wave3Results = await this.executeWave('implementation', [
         {
@@ -135,12 +135,12 @@ class WaveOrchestrator extends EventEmitter {
           model: 'claude'
         }
       ]);
-      
+
       orchestration.waves.push(wave3Results);
-      
+
       // Consolidation Phase 3
       const implementationConsolidation = await this.consolidateResults(wave3Results.results, 'implementation');
-      
+
       // Wave 4: Testing & Validation
       const wave4Results = await this.executeWave('validation', [
         {
@@ -159,56 +159,56 @@ class WaveOrchestrator extends EventEmitter {
           model: 'claude'
         }
       ]);
-      
+
       orchestration.waves.push(wave4Results);
-      
+
       // Final Consolidation
       const finalConsolidation = await this.consolidateResults(wave4Results.results, 'final');
-      
+
       // Mark as complete
       orchestration.status = 'completed';
       orchestration.endTime = Date.now();
       orchestration.totalTime = orchestration.endTime - orchestration.startTime;
       orchestration.result = finalConsolidation;
-      
+
       // Learn from this orchestration
       if (this.config.enableLearning) {
         await this.learnFromOrchestration(orchestration);
       }
-      
+
       // Store in history
       this.waveHistory.push(orchestration);
-      
-      logger.info(`🏁 Wave orchestration completed in ${orchestration.totalTime}ms`);
-      
+
+      logger.info(` Wave orchestration completed in ${orchestration.totalTime}ms`);
+
       return orchestration;
-      
+
     } catch (error) {
       orchestration.status = 'failed';
       orchestration.error = error.message;
       orchestration.endTime = Date.now();
-      
-      logger.error(`🔴 Wave orchestration failed: ${error.message}`);
-      
+
+      logger.error(` Wave orchestration failed: ${error.message}`);
+
       this.waveHistory.push(orchestration);
       throw error;
     }
   }
-  
+
   /**
    * Execute a single wave of parallel agents
    */
   async executeWave(waveType, tasks) {
-    logger.info(`🟢 Executing ${waveType} wave with ${tasks.length} parallel agents`);
-    
+    logger.info(` Executing ${waveType} wave with ${tasks.length} parallel agents`);
+
     this.currentWave = {
       type: waveType,
       tasks: tasks.length,
       startTime: Date.now()
     };
-    
+
     this.emit('wave:start', this.currentWave);
-    
+
     // Decide whether to run parallel or sequential based on threshold
     let results;
     if (tasks.length >= this.config.parallelThreshold) {
@@ -217,26 +217,26 @@ class WaveOrchestrator extends EventEmitter {
       // Fall back to sequential for small task sets
       results = await this.executeSequential(tasks);
     }
-    
+
     this.currentWave.endTime = Date.now();
     this.currentWave.duration = this.currentWave.endTime - this.currentWave.startTime;
     this.currentWave.results = results;
-    
+
     this.emit('wave:complete', this.currentWave);
-    
+
     return {
       type: waveType,
       ...results,
       duration: this.currentWave.duration
     };
   }
-  
+
   /**
    * Consolidate results from multiple agents with ML optimization
    */
   async consolidateResults(results, phase) {
-    logger.info(`🟢 Consolidating ${results.length} agent results for ${phase} phase`);
-    
+    logger.info(` Consolidating ${results.length} agent results for ${phase} phase`);
+
     const consolidation = {
       phase,
       timestamp: Date.now(),
@@ -248,7 +248,7 @@ class WaveOrchestrator extends EventEmitter {
       semanticAnalysis: {},
       confidence: 0
     };
-    
+
     // Apply ML-enhanced consolidation if available
     if (this.config.enableML && this.mlIntegration.enabled) {
       const mlConsolidation = await this.consolidationStrategies.mlEnhancedConsolidation(results, phase);
@@ -259,14 +259,14 @@ class WaveOrchestrator extends EventEmitter {
     if (this.config.enableNLP && this.semanticAnalyzer.enabled) {
       consolidation.semanticAnalysis = await this.consolidationStrategies.performSemanticAnalysis(results);
     }
-    
+
     // Extract successful results
     const successfulResults = results.filter(r => r.success);
-    
+
     if (successfulResults.length === 0) {
       throw new Error(`No successful results to consolidate in ${phase} phase`);
     }
-    
+
     // Enhanced strategy-based consolidation
     switch (this.config.consolidationStrategy) {
       case 'consensus':
@@ -290,12 +290,12 @@ class WaveOrchestrator extends EventEmitter {
       default:
         consolidation.all = successfulResults;
     }
-    
+
     // Apply pattern recognition
     if (this.patternRecognition.enabled) {
       consolidation.patterns = await this.recognizePatterns(successfulResults, phase);
     }
-    
+
     // Extract key information based on phase
     switch (phase) {
       case 'analysis':
@@ -319,10 +319,10 @@ class WaveOrchestrator extends EventEmitter {
         consolidation.deployment = this.extractDeployment(successfulResults);
         break;
     }
-    
+
     return consolidation;
   }
-  
+
   /**
    * Find consensus among agent results with ML enhancement
    */
@@ -333,30 +333,30 @@ class WaveOrchestrator extends EventEmitter {
       confidence: 0,
       method: 'standard'
     };
-    
+
     // Use ML consensus if available
     if (this.config.enableML && this.mlIntegration.consensus) {
       return await this.mlConsensus(results);
     }
-    
+
     // Enhanced consensus with semantic similarity
     const semanticGroups = await this.groupBySemantic(results);
-    
+
     // Find largest agreement group
     const largestGroup = semanticGroups.sort((a, b) => b.members.length - a.members.length)[0];
-    
+
     if (largestGroup) {
       consensus.agreements = largestGroup.commonPoints;
       consensus.confidence = largestGroup.members.length / results.length;
       consensus.semanticScore = largestGroup.similarity;
     }
-    
+
     // Identify disagreements
     consensus.disagreements = await this.identifyDisagreements(semanticGroups);
-    
+
     return consensus;
   }
-  
+
   /**
    * Merge results from multiple agents
    */
@@ -369,7 +369,7 @@ class WaveOrchestrator extends EventEmitter {
       count: results.length
     };
   }
-  
+
   /**
    * Vote on best results
    */
@@ -382,7 +382,7 @@ class WaveOrchestrator extends EventEmitter {
       runnerUp: sorted[1] || null
     };
   }
-  
+
   /**
    * Extract key points from text with NLP
    */
@@ -390,14 +390,14 @@ class WaveOrchestrator extends EventEmitter {
     if (this.config.enableNLP && this.nlpSystem.enabled) {
       return await this.nlpExtractKeyPoints(text);
     }
-    
+
     // Fallback to intelligent text processing
     return this.intelligentTextExtraction(text);
   }
-  
+
   async nlpExtractKeyPoints(text) {
     const analysis = await this.nlpSystem.analyze(text);
-    
+
     return {
       keywords: analysis.keywords || [],
       entities: analysis.entities || [],
@@ -407,13 +407,13 @@ class WaveOrchestrator extends EventEmitter {
       confidence: analysis.confidence || 0.7
     };
   }
-  
+
   intelligentTextExtraction(text) {
     // Advanced fallback without NLP APIs
     const sentences = this.splitIntoSentences(text);
     const keywords = this.extractKeywordsHeuristic(text);
     const entities = this.extractEntitiesPattern(text);
-    
+
     return {
       keywords,
       entities,
@@ -422,69 +422,69 @@ class WaveOrchestrator extends EventEmitter {
       confidence: 0.6
     };
   }
-  
+
   /**
    * Phase-specific extraction methods
    */
   extractAnalysisSummary(results) {
     return results.map(r => r.result.substring(0, 200)).join('\n');
   }
-  
+
   extractDesignRequirements(results) {
     const designResult = results.find(r => r.agent === 'design');
     return designResult ? designResult.result : '';
   }
-  
+
   extractTechnicalRequirements(results) {
     const techResult = results.find(r => r.agent === 'backend');
     return techResult ? techResult.result : '';
   }
-  
+
   extractDesignPlans(results) {
     const designResult = results.find(r => r.agent === 'design');
     return designResult ? designResult.result : '';
   }
-  
+
   extractAPIDesign(results) {
     const apiResult = results.find(r => r.agent === 'backend');
     return apiResult ? apiResult.result : '';
   }
-  
+
   extractDataModel(results) {
     const backendResult = results.find(r => r.agent === 'backend');
     return backendResult ? backendResult.result : '';
   }
-  
+
   extractComponents(results) {
     const frontendResult = results.find(r => r.agent === 'frontend');
     return frontendResult ? frontendResult.result : '';
   }
-  
+
   extractCode(results) {
     return results.map(r => r.result).join('\n\n');
   }
-  
+
   extractInfrastructure(results) {
     const devopsResult = results.find(r => r.agent === 'devops');
     return devopsResult ? devopsResult.result : '';
   }
-  
+
   extractDeliverables(results) {
     return results.map(r => ({
       agent: r.agent,
       deliverable: r.result.substring(0, 500)
     }));
   }
-  
+
   extractDocumentation(results) {
     return results.map(r => r.result).join('\n\n---\n\n');
   }
-  
+
   extractDeployment(results) {
     const devopsResult = results.find(r => r.agent === 'devops');
     return devopsResult ? devopsResult.result : '';
   }
-  
+
   /**
    * Sequential execution fallback
    */
@@ -502,7 +502,7 @@ class WaveOrchestrator extends EventEmitter {
         });
       }
     }
-    
+
     return {
       results,
       metadata: {
@@ -512,7 +512,7 @@ class WaveOrchestrator extends EventEmitter {
       }
     };
   }
-  
+
   /**
    * Learn from orchestration patterns
    */
@@ -531,12 +531,12 @@ class WaveOrchestrator extends EventEmitter {
         timestamp: Date.now()
       });
     }
-    
+
     // Keep only recent patterns (last 100)
     this.patterns.successful = this.patterns.successful.slice(-100);
     this.patterns.failed = this.patterns.failed.slice(-100);
   }
-  
+
   /**
    * Get orchestration status
    */
@@ -551,76 +551,76 @@ class WaveOrchestrator extends EventEmitter {
       parallelSystemStatus: this.parallelSystem.getStatus()
     };
   }
-  
+
   /**
    * Get orchestration history
    */
   getHistory(limit = 10) {
     return this.waveHistory.slice(-limit);
   }
-  
+
   /**
    * Clean shutdown
    */
   async shutdown() {
-    logger.info('🟢 Shutting down Wave Orchestrator');
+    logger.info(' Shutting down Wave Orchestrator');
     await this.parallelSystem.shutdown();
-    
+
     // Cleanup NLP resources
     if (this.nlpSystem.enabled) {
       await this.nlpSystem.cleanup();
     }
-    
+
     // Cleanup ML resources
     if (this.mlIntegration.enabled) {
       await this.mlIntegration.cleanup();
     }
-    
+
     this.removeAllListeners();
   }
-  
-  
+
+
 
   // ========== HELPER METHODS ==========
-  
+
   splitIntoSentences(text) {
     // Split text into sentences
     return text.match(/[^.!?]+[.!?]+/g) || [text];
   }
-  
+
   extractKeywordsHeuristic(text) {
     // Extract keywords using heuristics
     const words = text.toLowerCase().split(/\s+/);
     const wordFreq = new Map();
-    
+
     for (const word of words) {
       if (word.length > 4) {
         wordFreq.set(word, (wordFreq.get(word) || 0) + 1);
       }
     }
-    
+
     return Array.from(wordFreq.entries())
       .sort((a, b) => b[1] - a[1])
       .slice(0, 10)
       .map(([word]) => word);
   }
-  
+
   extractEntitiesPattern(text) {
     // Extract entities using patterns
     const entities = [];
-    
+
     // Capital words (potential names/places)
     const capitalWords = text.match(/[A-Z][a-z]+/g) || [];
     entities.push(...capitalWords.map(w => ({ type: 'NAME', value: w })));
-    
+
     // Numbers
     const numbers = text.match(/\d+/g) || [];
     entities.push(...numbers.map(n => ({ type: 'NUMBER', value: n })));
-    
+
     // URLs
     const urls = text.match(/https?:\/\/[^\s]+/g) || [];
     entities.push(...urls.map(u => ({ type: 'URL', value: u })));
-    
+
     return entities;
   }
 }

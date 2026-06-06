@@ -602,7 +602,7 @@ class ReactNativeOptimizer extends EventEmitter {
    * Test React Native generation
    */
   async testGeneration() {
-    console.log('🧪 Testing React Native code generation...\n');
+    console.log(' Testing React Native code generation...\n');
 
     const sampleComponent = {
       name: 'MyButton',
@@ -631,20 +631,20 @@ class ReactNativeOptimizer extends EventEmitter {
     };
 
     try {
-      console.log('1️⃣ Generating TypeScript component...');
+      console.log('1⃣ Generating TypeScript component...');
       const tsComponent = await this.generateComponent(sampleComponent, { useTypeScript: true });
-      console.log(`   ✓ Generated ${tsComponent.split('\n').length} lines of TypeScript\n`);
+      console.log(`    Generated ${tsComponent.split('\n').length} lines of TypeScript\n`);
 
-      console.log('2️⃣ Generating JavaScript component...');
+      console.log('2⃣ Generating JavaScript component...');
       const jsComponent = await this.generateComponent(sampleComponent, { useTypeScript: false });
-      console.log(`   ✓ Generated ${jsComponent.split('\n').length} lines of JavaScript\n`);
+      console.log(`    Generated ${jsComponent.split('\n').length} lines of JavaScript\n`);
 
-      console.log('3️⃣ Checking statistics...');
+      console.log('3⃣ Checking statistics...');
       const stats = this.getStats();
-      console.log(`   ✓ Components generated: ${stats.componentsGenerated}`);
-      console.log(`   ✓ StyleSheets created: ${stats.styleSheets}\n`);
+      console.log(`    Components generated: ${stats.componentsGenerated}`);
+      console.log(`    StyleSheets created: ${stats.styleSheets}\n`);
 
-      console.log('✅ React Native generation test complete!\n');
+      console.log(' React Native generation test complete!\n');
 
       return {
         success: true,
@@ -654,7 +654,7 @@ class ReactNativeOptimizer extends EventEmitter {
       };
 
     } catch (error) {
-      console.error('❌ React Native test failed:', error.message);
+      console.error(' React Native test failed:', error.message);
       throw error;
     }
   }

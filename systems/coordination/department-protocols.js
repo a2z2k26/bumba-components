@@ -36,9 +36,9 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
       coordinationTypes: Object.keys(this.coordinationTypes).length,
       qualityGates: Object.keys(this.qualityGates).length
     });
-    logger.info('🏁 Department Coordination Protocols initialized');
+    logger.info(' Department Coordination Protocols initialized');
   }
-  
+
   /**
    * Register department coordination hooks
    */
@@ -55,7 +55,7 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
         context: 'object'
       }
     });
-    
+
     // Register afterDepartmentCoordination hook
     this.addHook('department:afterCoordination', async (ctx) => ({ success: true }), {
       category: 'department',
@@ -67,7 +67,7 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
         success: 'boolean'
       }
     });
-    
+
     // Register conflict resolution hooks
     this.addHook('department:onConflict', async (ctx) => ({ success: true }), {
       category: 'department',
@@ -79,7 +79,7 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
         resolution: 'object'
       }
     });
-    
+
     // Register handoff hooks
     this.addHook('department:beforeHandoff', async (ctx) => ({ success: true }), {
       category: 'department',
@@ -103,8 +103,8 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
         result: 'object'
       }
     });
-    
-    logger.info('🏁 Department coordination hooks registered');
+
+    logger.info(' Department coordination hooks registered');
   }
 
   initializeCoordinationProtocols() {
@@ -117,7 +117,7 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
       },
       'parallel': {
         description: 'Parallel execution with synchronization points',
-        complexity: 'medium', 
+        complexity: 'medium',
         consciousness_validation: 'enhanced'
       },
       'collaborative': {
@@ -203,7 +203,7 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
   }
 
   async coordinateDepartments(task, departments, coordinationType = 'auto', context = {}) {
-    logger.info(`🏁 Coordinating ${departments.length} departments for: ${task.description}`);
+    logger.info(` Coordinating ${departments.length} departments for: ${task.description}`);
 
     // Execute beforeCoordination hook
     const beforeHookContext = await this.runHooks('department:beforeCoordination', {
@@ -212,7 +212,7 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
       coordinationType,
       context
     });
-    
+
     // Allow hook to modify parameters
     if (beforeHookContext.task) {task = beforeHookContext.task;}
     if (beforeHookContext.departments) {departments = beforeHookContext.departments;}
@@ -229,14 +229,14 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
 
     // Execute coordination protocol
     const result = await this.executeCoordinationProtocol(coordination);
-    
+
     // Execute afterCoordination hook
     const afterHookContext = await this.runHooks('department:afterCoordination', {
       coordination,
       result,
       success: result.success || true
     });
-    
+
     // Allow hook to modify result
     if (afterHookContext.result) {
       Object.assign(result, afterHookContext.result);
@@ -250,12 +250,12 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
 
   async determineOptimalCoordinationType(task, departments) {
     const analysis = await this.analyzeCoordinationRequirements(task, departments);
-    
+
     // AI-driven coordination type selection
     if (analysis.requires_executive_oversight) {return 'orchestrated';}
     if (analysis.requires_deep_collaboration) {return 'collaborative';}
     if (analysis.can_parallelize) {return 'parallel';}
-    
+
     return 'sequential';
   }
 
@@ -278,18 +278,18 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
       coordination_type: coordinationType,
       context: context,
       start_time: Date.now(),
-      
+
       // Coordination state
       current_phase: 'initialization',
       department_states: new Map(),
       synchronization_points: [],
       quality_gates_passed: new Map(),
-      
+
       // Knowledge and communication
       shared_knowledge: new Map(),
       communication_log: [],
       coordination_artifacts: new Map(),
-      
+
       // Consciousness integration
       consciousness_validations: [],
       ethical_checkpoints: [],
@@ -306,7 +306,7 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
         quality_metrics: {},
         last_activity: Date.now()
       });
-      
+
       // Notify department of coordination via enhanced hooks
       await this.runHooks('department:enter', {
         agent: department.name,
@@ -321,18 +321,18 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
       description: `Initialize ${coordinationType} coordination for ${task.description}`,
       coordination: coordination
     });
-    
+
     coordination.consciousness_validations.push(consciousnessValidation);
 
     // Register active coordination
     this.activeCoordinations.set(coordination.id, coordination);
 
-    logger.info(`🏁 Coordination ${coordination.id} initialized with type: ${coordinationType}`);
+    logger.info(` Coordination ${coordination.id} initialized with type: ${coordinationType}`);
     return coordination;
   }
 
   async executeCoordinationProtocol(coordination) {
-    logger.info(`🏁 Executing ${coordination.coordination_type} coordination protocol`);
+    logger.info(` Executing ${coordination.coordination_type} coordination protocol`);
 
     const protocol = this.getCoordinationProtocol(coordination.coordination_type);
     const executionResult = {
@@ -350,10 +350,10 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
       for (const phase of protocol.phases) {
         const phaseResult = await this.executeCoordinationPhase(phase, coordination);
         executionResult.phases.push(phaseResult);
-        
+
         // Update coordination state
         coordination.current_phase = phase.name;
-        
+
         // Quality gate validation
         if (phase.quality_gate) {
           const qualityCheck = await this.validateQualityGate(phase.quality_gate, coordination);
@@ -361,7 +361,7 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
             throw new Error(`Quality gate failed: ${phase.quality_gate}`);
           }
         }
-        
+
         // Consciousness checkpoint
         if (phase.consciousness_checkpoint) {
           const consciousnessCheck = await this.performConsciousnessCheckpoint(coordination);
@@ -375,11 +375,11 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
       executionResult.quality_metrics = finalValidation.quality_metrics;
       executionResult.consciousness_compliance = finalValidation.consciousness_compliance;
 
-      logger.info(`🏁 Coordination ${coordination.id} completed successfully`);
+      logger.info(` Coordination ${coordination.id} completed successfully`);
 
     } catch (error) {
-      logger.error(`🏁 Coordination ${coordination.id} failed: ${error.message}`);
-      
+      logger.error(` Coordination ${coordination.id} failed: ${error.message}`);
+
       // Handle coordination failure
       await this.handleCoordinationFailure(coordination, error);
       executionResult.overall_success = false;
@@ -454,7 +454,7 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
   }
 
   async executeCoordinationPhase(phase, coordination) {
-    logger.info(`🏁 Executing coordination phase: ${phase.name}`);
+    logger.info(` Executing coordination phase: ${phase.name}`);
 
     const phaseResult = {
       phase: phase.name,
@@ -507,17 +507,17 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
     // Initialize all departments for coordination
     for (const [deptName, deptState] of coordination.department_states) {
       const department = coordination.departments.find(d => d.name === deptName);
-      
+
       // Prepare department for coordination
       const preparation = await department.prepareForCoordination(coordination.task, coordination.context);
-      
+
       phaseResult.department_activities[deptName] = {
         activity: 'coordination_preparation',
         preparation: preparation,
         specialists_assigned: preparation.specialists_assigned || [],
         readiness_score: preparation.readiness_score || 0.8
       };
-      
+
       // Update department state
       deptState.status = 'prepared';
       deptState.assigned_specialists = preparation.specialists_assigned || [];
@@ -525,7 +525,7 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
 
     // Establish shared knowledge base
     await this.establishSharedKnowledgeBase(coordination);
-    
+
     // Setup communication channels
     await this.setupCommunicationChannels(coordination);
   }
@@ -533,32 +533,32 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
   async executeSequentialPhase(coordination, phaseResult) {
     // Execute departments in optimal sequence
     const sequence = await this.determineOptimalSequence(coordination);
-    
+
     for (let i = 0; i < sequence.length; i++) {
       const department = sequence[i];
       const deptState = coordination.department_states.get(department.name);
-      
+
       // Execute department task
       const deptResult = await department.executeCoordinatedTask(
-        coordination.task, 
+        coordination.task,
         coordination.shared_knowledge.get('current_state'),
         coordination.context
       );
-      
+
       phaseResult.department_activities[department.name] = {
         activity: 'sequential_execution',
         execution_order: i + 1,
         result: deptResult,
         knowledge_produced: deptResult.knowledge_artifacts || []
       };
-      
+
       // Update shared knowledge
       await this.updateSharedKnowledge(coordination, department.name, deptResult);
-      
+
       // Handoff to next department if not last
       if (i < sequence.length - 1) {
         const nextDepartment = sequence[i + 1];
-        
+
         // Use enhanced hook for agent handoff
         await this.runHooks('agent:handoff', {
           fromAgent: department.name,
@@ -570,7 +570,7 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
             coordination_id: coordination.id
           }
         });
-        
+
         const handoff = await this.executeHandoff(department, nextDepartment, coordination);
         phaseResult.synchronization_events.push(handoff);
       }
@@ -580,7 +580,7 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
   async executeDeepCollaborationPhase(coordination, phaseResult) {
     // Real-time collaborative execution
     const collaborationSession = await this.coordinationEngine.createCollaborationSession(coordination);
-    
+
     // Execute department coordination hook
     await this.runHooks('department:coordinate', {
       departments: coordination.departments.map(d => d.name),
@@ -588,7 +588,7 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
       session: collaborationSession.id,
       coordination_type: 'deep_collaboration'
     });
-    
+
     // Execute departments in parallel with constant communication
     const deptPromises = coordination.departments.map(async (department) => {
       const deptResult = await department.executeCollaborativeTask(
@@ -596,15 +596,15 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
         collaborationSession,
         coordination.context
       );
-      
+
       return {
         department: department.name,
         result: deptResult
       };
     });
-    
+
     const results = await Promise.all(deptPromises);
-    
+
     for (const result of results) {
       phaseResult.department_activities[result.department] = {
         activity: 'collaborative_execution',
@@ -612,14 +612,14 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
         collaboration_quality: result.result.collaboration_metrics || {}
       };
     }
-    
+
     // Knowledge synthesis during collaboration
     const knowledgeSynthesis = await this.knowledgeExchange.synthesizeCollaborativeKnowledge(results);
     phaseResult.knowledge_exchanges.push(knowledgeSynthesis);
   }
 
   async validateQualityGate(gateType, coordination) {
-    logger.info(`🏁 Validating quality gate: ${gateType}`);
+    logger.info(` Validating quality gate: ${gateType}`);
 
     const gateConfig = this.qualityGates[gateType];
     const validation = {
@@ -647,16 +647,16 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
       }
 
       validation.passed = validation.score >= gateConfig.threshold;
-      
+
       if (validation.passed) {
-        logger.info(`🏁 Quality gate ${gateType} passed (${validation.score})`);
+        logger.info(` Quality gate ${gateType} passed (${validation.score})`);
       } else {
-        logger.warn(`🏁 Quality gate ${gateType} failed (${validation.score} < ${gateConfig.threshold})`);
+        logger.warn(` Quality gate ${gateType} failed (${validation.score} < ${gateConfig.threshold})`);
       }
 
     } catch (error) {
       validation.error = error.message;
-      logger.error(`🏁 Quality gate ${gateType} validation error: ${error.message}`);
+      logger.error(` Quality gate ${gateType} validation error: ${error.message}`);
     }
 
     return validation;
@@ -667,7 +667,7 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
       description: `Coordination alignment check for ${coordination.task.description}`,
       coordination: coordination
     });
-    
+
     return alignment.alignment_score || 0;
   }
 
@@ -687,7 +687,7 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
 
   async establishSharedKnowledgeBase(coordination) {
     const sharedKnowledge = new Map();
-    
+
     // Initialize with task context
     sharedKnowledge.set('task_context', coordination.task);
     sharedKnowledge.set('coordination_type', coordination.coordination_type);
@@ -696,31 +696,31 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
       departments_active: coordination.departments.map(d => d.name),
       timestamp: Date.now()
     });
-    
+
     coordination.shared_knowledge = sharedKnowledge;
-    
+
     // Setup knowledge synchronization
     await this.synchronizationLayer.setupKnowledgeSync(coordination);
   }
 
   async updateSharedKnowledge(coordination, departmentName, departmentResult) {
     const currentState = coordination.shared_knowledge.get('current_state');
-    
+
     // Update with department contributions
     currentState[`${departmentName}_contribution`] = {
       result: departmentResult,
       timestamp: Date.now(),
       knowledge_artifacts: departmentResult.knowledge_artifacts || []
     };
-    
+
     coordination.shared_knowledge.set('current_state', currentState);
-    
+
     // Broadcast update to other departments
     await this.synchronizationLayer.broadcastKnowledgeUpdate(coordination, departmentName, departmentResult);
   }
 
   async executeHandoff(fromDepartment, toDepartment, coordination) {
-    logger.info(`🏁 Executing rich handoff: ${fromDepartment.name} → ${toDepartment.name}`);
+    logger.info(` Executing rich handoff: ${fromDepartment.name} → ${toDepartment.name}`);
 
     // Pre-handoff meeting
     await this.conductPreHandoffMeeting(fromDepartment, toDepartment, coordination);
@@ -741,12 +741,12 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
 
     // Transfer knowledge and artifacts with enhanced context
     const knowledgeTransfer = await this.knowledgeExchange.executeEnhancedHandoff(
-      fromDepartment, 
-      toDepartment, 
+      fromDepartment,
+      toDepartment,
       coordination,
       handoff.context_package
     );
-    
+
     handoff.knowledge_transferred = knowledgeTransfer;
 
     // Validate handoff quality
@@ -770,8 +770,8 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
   }
 
   async conductPreHandoffMeeting(fromDept, toDept, coordination) {
-    logger.info('🏁 Conducting 15-minute pre-handoff sync');
-    
+    logger.info(' Conducting 15-minute pre-handoff sync');
+
     const meeting = {
       participants: [fromDept.name, toDept.name],
       duration: '15_minutes',
@@ -809,14 +809,14 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
 
   async calculateHandoffSmoothness(handoff) {
     let smoothness = 10;
-    
+
     // Deduct for missing context
     if (!handoff.context_package.decision_rationale) {smoothness -= 2;}
     if (!handoff.context_package.success_criteria) {smoothness -= 2;}
-    
+
     // Add for quality validation
     if (handoff.quality_validation.quality_score > 0.9) {smoothness += 1;}
-    
+
     return Math.max(0, Math.min(10, smoothness));
   }
 
@@ -831,7 +831,7 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
 
     // Store feedback for continuous improvement
     await this.storeFeedback(feedback, handoff);
-    
+
     return feedback;
   }
 
@@ -856,7 +856,7 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
     // Remove from active coordinations
     this.activeCoordinations.delete(coordination.id);
 
-    logger.info(`🏁 Coordination ${coordination.id} results stored`);
+    logger.info(` Coordination ${coordination.id} results stored`);
   }
 
   generateCoordinationId() {
@@ -874,7 +874,7 @@ class DepartmentCoordinationProtocols extends UnifiedManagerBase {
   getCoordinationMetrics() {
     const total = this.coordinationHistory.length;
     const successful = this.coordinationHistory.filter(c => c.success).length;
-    
+
     return {
       total_coordinations: total,
       successful_coordinations: successful,
@@ -901,20 +901,20 @@ class CoordinationEngine {
 
 class SynchronizationLayer {
   async setupKnowledgeSync(coordination) {
-    logger.info(`🏁 Setting up knowledge synchronization for coordination ${coordination.id}`);
+    logger.info(` Setting up knowledge synchronization for coordination ${coordination.id}`);
     return true;
   }
 
   async broadcastKnowledgeUpdate(coordination, departmentName, update) {
-    logger.info(`🏁 Broadcasting knowledge update from ${departmentName}`);
+    logger.info(` Broadcasting knowledge update from ${departmentName}`);
     return true;
   }
 }
 
 class KnowledgeExchangeSystem {
   async executeHandoff(fromDept, toDept, coordination) {
-    logger.info(`🏁 Executing knowledge handoff: ${fromDept.name} → ${toDept.name}`);
-    
+    logger.info(` Executing knowledge handoff: ${fromDept.name} → ${toDept.name}`);
+
     return {
       artifacts_transferred: [],
       knowledge_summary: {},
@@ -935,8 +935,8 @@ class KnowledgeExchangeSystem {
 
 class ConflictResolutionSystem {
   async resolveCoordinationConflict(conflict, coordination) {
-    logger.info(`🏁 Resolving coordination conflict: ${conflict.type}`);
-    
+    logger.info(` Resolving coordination conflict: ${conflict.type}`);
+
     return {
       conflict_resolved: true,
       resolution_method: 'consciousness_mediation',
@@ -966,7 +966,7 @@ module.exports = {
   KnowledgeExchangeSystem,
   ConflictResolutionSystem,
   QualityOrchestrationSystem,
-  
+
   // Aliases for compatibility
   DepartmentProtocols: DepartmentCoordinationProtocols,
   CommunicationProtocol: KnowledgeExchangeSystem,

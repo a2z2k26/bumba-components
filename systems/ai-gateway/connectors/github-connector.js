@@ -8,7 +8,7 @@ const EventEmitter = require('events');
 class GitHubConnector extends EventEmitter {
   constructor(options = {}) {
     super();
-    
+
     this.options = {
       token: options.token || process.env.GITHUB_TOKEN,
       baseURL: options.baseURL || 'https://api.github.com',
@@ -18,23 +18,23 @@ class GitHubConnector extends EventEmitter {
       maxRetries: options.maxRetries || 3,
       ...options
     };
-    
+
     // Validate token
     if (!this.options.token) {
       throw new Error('GitHub token is required');
     }
-    
+
     // Rate limiting
     this.rateLimits = {
       core: { limit: 5000, remaining: 5000, reset: null },
       search: { limit: 30, remaining: 30, reset: null },
       graphql: { limit: 5000, remaining: 5000, reset: null }
     };
-    
+
     // Cache for common requests
     this.cache = new Map();
     this.cacheTimeout = 300000; // 5 minutes
-    
+
     // Current user info
     this.currentUser = null;
   }
@@ -44,14 +44,14 @@ class GitHubConnector extends EventEmitter {
    */
   async makeRequest(endpoint, options = {}) {
     const url = endpoint.startsWith('http') ? endpoint : `${this.options.baseURL}${endpoint}`;
-    
+
     const headers = {
       'Authorization': `token ${this.options.token}`,
       'Accept': 'application/vnd.github.v3+json',
       'User-Agent': this.options.userAgent,
       ...options.headers
     };
-    
+
     // Check cache
     const cacheKey = `${options.method || 'GET'}:${url}`;
     if (options.method === 'GET' && this.cache.has(cacheKey)) {
@@ -60,7 +60,7 @@ class GitHubConnector extends EventEmitter {
         return cached.data;
       }
     }
-    
+
     let lastError;
     for (let attempt = 0; attempt < this.options.maxRetries; attempt++) {
       try {
@@ -70,14 +70,14 @@ class GitHubConnector extends EventEmitter {
           body: options.body ? JSON.stringify(options.body) : undefined,
           signal: AbortSignal.timeout(this.options.timeout)
         });
-        
+
         // Update rate limits
         this.updateRateLimits(response.headers);
-        
+
         if (response.status === 404) {
           throw new Error('Resource not found');
         }
-        
+
         if (response.status === 403) {
           const remaining = response.headers.get('x-ratelimit-remaining');
           if (remaining === '0') {
@@ -90,30 +90,30 @@ class GitHubConnector extends EventEmitter {
           }
           throw new Error('Forbidden - check token permissions');
         }
-        
+
         if (!response.ok) {
           const error = await response.json().catch(() => ({}));
           throw new Error(error.message || `API error: ${response.status}`);
         }
-        
+
         const data = await response.json();
-        
+
         // Cache successful GET requests
         if (options.method === 'GET') {
           this.cache.set(cacheKey, { data, timestamp: Date.now() });
         }
-        
+
         return data;
-        
+
       } catch (error) {
         lastError = error;
-        
+
         if (attempt < this.options.maxRetries - 1) {
           await this.delay(Math.pow(2, attempt) * 1000);
         }
       }
     }
-    
+
     throw lastError;
   }
 
@@ -131,22 +131,22 @@ class GitHubConnector extends EventEmitter {
       body: JSON.stringify({ query, variables }),
       signal: AbortSignal.timeout(this.options.timeout)
     });
-    
+
     // Update GraphQL rate limits
     const rateLimit = response.headers.get('x-ratelimit-limit');
     const remaining = response.headers.get('x-ratelimit-remaining');
     const reset = response.headers.get('x-ratelimit-reset');
-    
+
     if (rateLimit) this.rateLimits.graphql.limit = parseInt(rateLimit);
     if (remaining) this.rateLimits.graphql.remaining = parseInt(remaining);
     if (reset) this.rateLimits.graphql.reset = parseInt(reset);
-    
+
     const data = await response.json();
-    
+
     if (data.errors) {
       throw new Error(data.errors[0].message);
     }
-    
+
     return data.data;
   }
 
@@ -157,7 +157,7 @@ class GitHubConnector extends EventEmitter {
     if (this.currentUser) {
       return this.currentUser;
     }
-    
+
     this.currentUser = await this.makeRequest('/user');
     this.emit('user', this.currentUser);
     return this.currentUser;
@@ -180,7 +180,7 @@ class GitHubConnector extends EventEmitter {
       license_template: options.licenseTemplate,
       ...options
     };
-    
+
     const endpoint = options.org ? `/orgs/${options.org}/repos` : '/user/repos';
     return this.makeRequest(endpoint, {
       method: 'POST',
@@ -209,7 +209,7 @@ class GitHubConnector extends EventEmitter {
       per_page: options.perPage || 30,
       page: options.page || 1
     });
-    
+
     return this.makeRequest(`/user/repos?${params}`);
   }
 
@@ -226,7 +226,7 @@ class GitHubConnector extends EventEmitter {
       per_page: options.perPage || 30,
       page: options.page || 1
     });
-    
+
     return this.makeRequest(`/repos/${owner}/${repo}/branches?${params}`);
   }
 
@@ -252,7 +252,7 @@ class GitHubConnector extends EventEmitter {
   async getFile(owner, repo, path, options = {}) {
     const params = new URLSearchParams();
     if (options.ref) params.append('ref', options.ref);
-    
+
     const url = `/repos/${owner}/${repo}/contents/${path}${params.toString() ? '?' + params : ''}`;
     return this.makeRequest(url);
   }
@@ -265,7 +265,7 @@ class GitHubConnector extends EventEmitter {
       committer: options.committer,
       author: options.author
     };
-    
+
     // Get current file to get SHA for updates
     if (options.sha) {
       body.sha = options.sha;
@@ -277,7 +277,7 @@ class GitHubConnector extends EventEmitter {
         // File doesn't exist, creating new
       }
     }
-    
+
     return this.makeRequest(`/repos/${owner}/${repo}/contents/${path}`, {
       method: 'PUT',
       body
@@ -313,7 +313,7 @@ class GitHubConnector extends EventEmitter {
     if (options.until) params.append('until', options.until);
     params.append('per_page', options.perPage || 30);
     params.append('page', options.page || 1);
-    
+
     return this.makeRequest(`/repos/${owner}/${repo}/commits?${params}`);
   }
 
@@ -361,7 +361,7 @@ class GitHubConnector extends EventEmitter {
       per_page: options.perPage || 30,
       page: options.page || 1
     });
-    
+
     return this.makeRequest(`/repos/${owner}/${repo}/pulls?${params}`);
   }
 
@@ -418,7 +418,7 @@ class GitHubConnector extends EventEmitter {
       per_page: options.perPage || 30,
       page: options.page || 1
     });
-    
+
     return this.makeRequest(`/repos/${owner}/${repo}/issues?${params}`);
   }
 
@@ -461,7 +461,7 @@ class GitHubConnector extends EventEmitter {
       per_page: options.perPage || 30,
       page: options.page || 1
     });
-    
+
     return this.makeRequest(`/repos/${owner}/${repo}/issues/${number}/comments?${params}`);
   }
 
@@ -490,7 +490,7 @@ class GitHubConnector extends EventEmitter {
     if (options.branch) params.append('branch', options.branch);
     params.append('per_page', options.perPage || 30);
     params.append('page', options.page || 1);
-    
+
     return this.makeRequest(`/repos/${owner}/${repo}/actions/runs?${params}`);
   }
 
@@ -534,7 +534,7 @@ class GitHubConnector extends EventEmitter {
       per_page: options.perPage || 30,
       page: options.page || 1
     });
-    
+
     return this.makeRequest(`/repos/${owner}/${repo}/releases?${params}`);
   }
 
@@ -575,7 +575,7 @@ class GitHubConnector extends EventEmitter {
       per_page: options.perPage || 30,
       page: options.page || 1
     });
-    
+
     return this.makeRequest(`/gists?${params}`);
   }
 
@@ -590,7 +590,7 @@ class GitHubConnector extends EventEmitter {
       per_page: options.perPage || 30,
       page: options.page || 1
     });
-    
+
     return this.makeRequest(`/search/repositories?${params}`);
   }
 
@@ -602,7 +602,7 @@ class GitHubConnector extends EventEmitter {
       per_page: options.perPage || 30,
       page: options.page || 1
     });
-    
+
     return this.makeRequest(`/search/code?${params}`);
   }
 
@@ -614,7 +614,7 @@ class GitHubConnector extends EventEmitter {
       per_page: options.perPage || 30,
       page: options.page || 1
     });
-    
+
     return this.makeRequest(`/search/issues?${params}`);
   }
 
@@ -626,7 +626,7 @@ class GitHubConnector extends EventEmitter {
       per_page: options.perPage || 30,
       page: options.page || 1
     });
-    
+
     return this.makeRequest(`/search/users?${params}`);
   }
 
@@ -645,7 +645,7 @@ class GitHubConnector extends EventEmitter {
       per_page: options.perPage || 30,
       page: options.page || 1
     });
-    
+
     return this.makeRequest(`/orgs/${org}/repos?${params}`);
   }
 
@@ -656,7 +656,7 @@ class GitHubConnector extends EventEmitter {
       per_page: options.perPage || 30,
       page: options.page || 1
     });
-    
+
     return this.makeRequest(`/orgs/${org}/members?${params}`);
   }
 
@@ -685,7 +685,7 @@ class GitHubConnector extends EventEmitter {
       per_page: options.perPage || 30,
       page: options.page || 1
     });
-    
+
     return this.makeRequest(`/orgs/${org}/teams?${params}`);
   }
 
@@ -721,7 +721,7 @@ class GitHubConnector extends EventEmitter {
     const remaining = headers.get('x-ratelimit-remaining');
     const reset = headers.get('x-ratelimit-reset');
     const resource = headers.get('x-ratelimit-resource');
-    
+
     if (resource === 'search') {
       if (limit) this.rateLimits.search.limit = parseInt(limit);
       if (remaining) this.rateLimits.search.remaining = parseInt(remaining);
@@ -731,7 +731,7 @@ class GitHubConnector extends EventEmitter {
       if (remaining) this.rateLimits.core.remaining = parseInt(remaining);
       if (reset) this.rateLimits.core.reset = parseInt(reset);
     }
-    
+
     this.emit('rateLimits', this.rateLimits);
   }
 
@@ -740,13 +740,13 @@ class GitHubConnector extends EventEmitter {
    */
   async getRateLimits() {
     const response = await this.makeRequest('/rate_limit');
-    
+
     this.rateLimits = {
       core: response.resources.core,
       search: response.resources.search,
       graphql: response.resources.graphql
     };
-    
+
     return this.rateLimits;
   }
 
@@ -774,7 +774,7 @@ class GitHubConnector extends EventEmitter {
         // Get scopes from response headers
         return this.lastScopes || [];
       });
-      
+
       return {
         valid: true,
         user: user.login,

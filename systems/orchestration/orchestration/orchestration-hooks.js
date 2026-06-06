@@ -9,26 +9,26 @@ const { EventEmitter } = require('events');
 class OrchestrationHookSystem extends EventEmitter {
   constructor() {
     super();
-    
+
     // Hook registry
     this.hooks = new Map();
-    
+
     // Product-Strategist Manager reference
     this.productStrategist = null;
-    
+
     // Statistics
     this.stats = {
       totalHooks: 0,
       mandatoryUpdates: 0,
       failedUpdates: 0
     };
-    
+
     // Define mandatory hooks
     this.defineMandatoryHooks();
-    
+
     // Initialization runs silently in background
   }
-  
+
   /**
    * Register a hook
    */
@@ -37,7 +37,7 @@ class OrchestrationHookSystem extends EventEmitter {
     this.stats.totalHooks++;
     return this;
   }
-  
+
   /**
    * Execute a hook
    */
@@ -56,7 +56,7 @@ class OrchestrationHookSystem extends EventEmitter {
     }
     return data;
   }
-  
+
   /**
    * Define all mandatory hooks for orchestration
    */
@@ -68,17 +68,17 @@ class OrchestrationHookSystem extends EventEmitter {
         await this.productStrategist?.updateNotionSprint(data);
       }
     });
-    
+
     this.register('sprint:started', {
       mandatory: true, handler: async (data) => {
         await this.productStrategist?.onSprintStarted(data);
         await this.productStrategist?.updateNotionProgress(data);
       }
     });
-    
+
     this.register('sprint:completed', {
       mandatory: true, handler: async (data) => {
-        logger.info(`🏁 MANDATORY: Sprint ${data.sprintId} completed - updating Notion`);
+        logger.info(` MANDATORY: Sprint ${data.sprintId} completed - updating Notion`);
         await this.productStrategist?.onSprintCompleted(data);
         await this.productStrategist?.updateNotionSprintCompletion(data);
         await this.productStrategist?.checkDependentTasks(data.sprintId);
@@ -86,7 +86,7 @@ class OrchestrationHookSystem extends EventEmitter {
         this.stats.mandatoryUpdates++;
       }
     });
-    
+
     this.register('sprint:failed', {
       mandatory: true, handler: async (data) => {
         await this.productStrategist?.onSprintFailed(data);
@@ -94,32 +94,32 @@ class OrchestrationHookSystem extends EventEmitter {
         await this.productStrategist?.planRecovery(data);
       }
     });
-    
+
     // Task management hooks
     this.register('task:claimed', {
       mandatory: true, handler: async (data) => {
-        logger.info(`🟢 MANDATORY: Task ${data.taskId} claimed by ${data.agentId}`);
+        logger.info(` MANDATORY: Task ${data.taskId} claimed by ${data.agentId}`);
         await this.productStrategist?.validateAllocation(data);
         await this.productStrategist?.updateNotionTaskAllocation(data);
         await this.productStrategist?.checkDependencyCompliance(data.taskId);
         this.stats.mandatoryUpdates++;
       }
     });
-    
+
     this.register('task:blocked', {
       mandatory: true, handler: async (data) => {
-        logger.warn(`🔴 MANDATORY: Task ${data.taskId} blocked - analyzing`);
+        logger.warn(` MANDATORY: Task ${data.taskId} blocked - analyzing`);
         await this.productStrategist?.analyzeBlocker(data);
         await this.productStrategist?.updateNotionBlocker(data);
         await this.productStrategist?.reallocateResources();
         await this.productStrategist?.updateTimeline();
       }
     });
-    
+
     // Milestone hooks
     this.register('milestone:reached', {
       mandatory: true, handler: async (data) => {
-        logger.info(`🟢 MANDATORY: Milestone reached - ${data.milestone}`);
+        logger.info(` MANDATORY: Milestone reached - ${data.milestone}`);
         await this.productStrategist?.onMilestoneReached(data);
         await this.productStrategist?.updateNotionMilestone(data);
         await this.productStrategist?.generateProgressReport();
@@ -127,7 +127,7 @@ class OrchestrationHookSystem extends EventEmitter {
         this.stats.mandatoryUpdates++;
       }
     });
-    
+
     // Dependency hooks
     this.register('dependency:resolved', {
       mandatory: true, handler: async (data) => {
@@ -136,17 +136,17 @@ class OrchestrationHookSystem extends EventEmitter {
         await this.productStrategist?.unlockDependentTasks(data);
       }
     });
-    
+
     this.register('dependency:violation', {
       mandatory: true, critical: true, handler: async (data) => {
-        logger.error('🔴 CRITICAL: Dependency violation detected!');
+        logger.error(' CRITICAL: Dependency violation detected!');
         await this.productStrategist?.handleDependencyViolation(data);
         await this.productStrategist?.stopAffectedTasks(data);
         await this.productStrategist?.updateNotionViolation(data);
         await this.productStrategist?.notifyHumanOperator(data);
       }
     });
-    
+
     // Agent coordination hooks
     this.register('agent:available', {
       mandatory: true, handler: async (data) => {
@@ -154,33 +154,33 @@ class OrchestrationHookSystem extends EventEmitter {
         await this.productStrategist?.allocateWaitingTasks(data.agentId);
       }
     });
-    
+
     this.register('agent:overloaded', {
       mandatory: true, handler: async (data) => {
         await this.productStrategist?.handleAgentOverload(data);
         await this.productStrategist?.redistributeTasks(data);
       }
     });
-    
+
     // Project lifecycle hooks
     this.register('project:started', {
       mandatory: true, handler: async (data) => {
-        logger.info('🟢 MANDATORY: Project started - initializing Notion workspace');
+        logger.info(' MANDATORY: Project started - initializing Notion workspace');
         await this.productStrategist?.initializeProjectWorkspace(data);
         await this.productStrategist?.setupProjectDashboard(data);
         await this.productStrategist?.allocateInitialTasks();
       }
     });
-    
+
     this.register('project:completed', {
       mandatory: true, handler: async (data) => {
-        logger.info('🏁 MANDATORY: Project completed - finalizing');
+        logger.info(' MANDATORY: Project completed - finalizing');
         await this.productStrategist?.finalizeProject(data);
         await this.productStrategist?.generateFinalReport(data);
         await this.productStrategist?.archiveProjectData(data);
       }
     });
-    
+
     // Knowledge management hooks
     this.register('knowledge:created', {
       mandatory: true, handler: async (data) => {
@@ -189,14 +189,14 @@ class OrchestrationHookSystem extends EventEmitter {
         await this.productStrategist?.updateNotionKnowledge(data);
       }
     });
-    
+
     this.register('knowledge:shared', {
       mandatory: true, handler: async (data) => {
         await this.productStrategist?.trackKnowledgeSharing(data);
         await this.productStrategist?.updateAgentContext(data);
       }
     });
-    
+
     // Quality assurance hooks
     this.register('quality:check:required', {
       mandatory: true, handler: async (data) => {
@@ -204,7 +204,7 @@ class OrchestrationHookSystem extends EventEmitter {
         await this.productStrategist?.assignReviewer(data);
       }
     });
-    
+
     this.register('quality:check:completed', {
       mandatory: true, handler: async (data) => {
         await this.productStrategist?.processQualityResults(data);
@@ -212,7 +212,7 @@ class OrchestrationHookSystem extends EventEmitter {
         await this.productStrategist?.determineNextSteps(data);
       }
     });
-    
+
     // Periodic update hooks (non-blocking with safe checks)
     this.register('interval:1min', {
       mandatory: false, handler: async () => {
@@ -224,7 +224,7 @@ class OrchestrationHookSystem extends EventEmitter {
         }
       }
     });
-    
+
     this.register('interval:5min', {
       mandatory: false, handler: async () => {
         if (this.productStrategist?.syncNotionDashboard) {
@@ -238,7 +238,7 @@ class OrchestrationHookSystem extends EventEmitter {
         }
       }
     });
-    
+
     this.register('interval:10min', {
       mandatory: false, handler: async () => {
         logger.info('⏰ 10-minute sync initiated');
@@ -254,11 +254,11 @@ class OrchestrationHookSystem extends EventEmitter {
         this.stats.mandatoryUpdates++;
       }
     });
-    
+
     // Error recovery hooks
     this.register('error:critical', {
       mandatory: false, critical: true, handler: async (data) => {
-        logger.error(`🔴 CRITICAL ERROR: ${data.error}`);
+        logger.error(` CRITICAL ERROR: ${data.error}`);
         if (this.productStrategist) {
           await this.productStrategist.handleCriticalError?.(data);
           await this.productStrategist.initiateRecoveryProtocol?.(data);
@@ -267,7 +267,7 @@ class OrchestrationHookSystem extends EventEmitter {
         }
       }
     });
-    
+
     this.register('recovery:initiated', {
       mandatory: false, handler: async (data) => {
         if (this.productStrategist) {
@@ -277,7 +277,7 @@ class OrchestrationHookSystem extends EventEmitter {
       }
     });
   }
-  
+
   /**
    * Connect Product-Strategist Manager
    */
@@ -288,7 +288,7 @@ class OrchestrationHookSystem extends EventEmitter {
     this.designEngineer = manager;
     // Connection runs silently
   }
-  
+
   /**
    * Connect Backend-Engineer Manager
    */
@@ -296,14 +296,14 @@ class OrchestrationHookSystem extends EventEmitter {
     this.backendEngineer = manager;
     // Connection runs silently
   }
-  
+
   /**
    * Connect Product-Strategist Manager (Supreme Orchestrator)
    */
   connectProductStrategist(manager) {
     this.productStrategist = manager;
     // Connection runs silently
-    
+
     // Verify manager has required methods
     const requiredMethods = [
       'updateNotionProgress',
@@ -312,14 +312,14 @@ class OrchestrationHookSystem extends EventEmitter {
       'analyzeBlocker',
       'handleDependencyViolation'
     ];
-    
+
     for (const method of requiredMethods) {
       if (!manager[method]) {
-        logger.warn(`🟡 Product-Strategist missing method: ${method}`);
+        logger.warn(` Product-Strategist missing method: ${method}`);
       }
     }
   }
-  
+
   /**
    * Register a hook
    */
@@ -331,83 +331,83 @@ class OrchestrationHookSystem extends EventEmitter {
       handler: config.handler,
       failureCount: 0
     });
-    
+
     this.stats.totalHooks++;
   }
-  
+
   /**
    * Trigger a hook (MANDATORY execution)
    */
   async trigger(event, data = {}) {
     const hook = this.hooks.get(event);
-    
+
     if (!hook) {
       logger.warn(`Hook not found: ${event}`);
       return false;
     }
-    
+
     if (!this.productStrategist && hook.mandatory) {
-      logger.error(`🔴 MANDATORY hook ${event} cannot execute - Product-Strategist not connected`);
+      logger.error(` MANDATORY hook ${event} cannot execute - Product-Strategist not connected`);
       this.stats.failedUpdates++;
       throw new Error(`Mandatory hook ${event} failed - Product-Strategist required`);
     }
-    
+
     try {
       // Add timestamp to data
       data.timestamp = new Date().toISOString();
       data.hookEvent = event;
-      
+
       // Execute handler
       await hook.handler(data);
-      
+
       // Emit event for other listeners
       this.emit(event, data);
-      
+
       return true;
-      
+
     } catch (error) {
       logger.error(`Hook ${event} failed:`, error);
       hook.failureCount++;
-      
+
       if (hook.critical) {
         // Critical hooks must not fail
         throw new Error(`CRITICAL HOOK FAILURE: ${event} - ${error.message}`);
       }
-      
+
       if (hook.mandatory) {
         // Retry mandatory hooks
         await this.retryMandatoryHook(event, data, hook);
       }
-      
+
       this.stats.failedUpdates++;
       return false;
     }
   }
-  
+
   /**
    * Retry mandatory hook
    */
   async retryMandatoryHook(event, data, hook, attempt = 1) {
     const maxRetries = 3;
-    
+
     if (attempt > maxRetries) {
-      logger.error(`🔴 Mandatory hook ${event} failed after ${maxRetries} attempts`);
+      logger.error(` Mandatory hook ${event} failed after ${maxRetries} attempts`);
       throw new Error(`Mandatory hook ${event} failed permanently`);
     }
-    
-    logger.warn(`🟢 Retrying mandatory hook ${event} (attempt ${attempt}/${maxRetries})`);
-    
+
+    logger.warn(` Retrying mandatory hook ${event} (attempt ${attempt}/${maxRetries})`);
+
     // Wait before retry
     await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
-    
+
     try {
       await hook.handler(data);
-      logger.info(`🏁 Mandatory hook ${event} succeeded on retry ${attempt}`);
+      logger.info(` Mandatory hook ${event} succeeded on retry ${attempt}`);
     } catch (error) {
       await this.retryMandatoryHook(event, data, hook, attempt + 1);
     }
   }
-  
+
   /**
    * Start periodic hooks
    */
@@ -416,20 +416,20 @@ class OrchestrationHookSystem extends EventEmitter {
     setInterval(() => {
       this.trigger('interval:1min');
     }, 60000);
-    
+
     // 5-minute interval
     setInterval(() => {
       this.trigger('interval:5min');
     }, 300000);
-    
+
     // 10-minute interval
     setInterval(() => {
       this.trigger('interval:10min');
     }, 600000);
-    
+
     logger.info('⏰ Periodic hooks started');
   }
-  
+
   /**
    * Stop periodic hooks
    */
@@ -438,10 +438,10 @@ class OrchestrationHookSystem extends EventEmitter {
     clearInterval(this.oneMinInterval);
     clearInterval(this.fiveMinInterval);
     clearInterval(this.tenMinInterval);
-    
+
     logger.info('⏰ Periodic hooks stopped');
   }
-  
+
   /**
    * Get hook statistics
    */
@@ -455,30 +455,30 @@ class OrchestrationHookSystem extends EventEmitter {
         .filter(h => h.critical).length
     };
   }
-  
+
   /**
    * Validate hook system health
    */
   validateHealth() {
     const issues = [];
-    
+
     if (!this.productStrategist) {
       issues.push('Product-Strategist Manager not connected');
     }
-    
+
     // Check for failed hooks
     for (const [event, hook] of this.hooks) {
       if (hook.failureCount > 5) {
         issues.push(`Hook ${event} has failed ${hook.failureCount} times`);
       }
     }
-    
+
     // Check mandatory update rate
     const updateRate = this.stats.mandatoryUpdates / (Date.now() / 60000); // per minute
     if (updateRate < 0.1) {
       issues.push('Low mandatory update rate');
     }
-    
+
     return {
       healthy: issues.length === 0,
       issues

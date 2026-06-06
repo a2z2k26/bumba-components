@@ -200,7 +200,7 @@ async function benchmarkEventEmissions() {
 }
 
 async function runBenchmarks() {
-  console.log('🏃 Running Agent Lifecycle Performance Benchmarks\n');
+  console.log(' Running Agent Lifecycle Performance Benchmarks\n');
   console.log('System:', process.platform, process.arch);
   console.log('Node:', process.version);
   console.log('Memory:', (require('os').totalmem() / 1024 / 1024 / 1024).toFixed(2), 'GB\n');
@@ -219,10 +219,10 @@ async function runBenchmarks() {
     process.stdout.write(`Running ${benchmark.name}...`);
     const result = await benchmark();
     results.push(result);
-    console.log(' ✓');
+    console.log(' ');
   }
 
-  console.log('\n📊 Benchmark Results\n');
+  console.log('\n Benchmark Results\n');
   console.log('═'.repeat(80));
 
   results.forEach(result => {
@@ -238,7 +238,7 @@ async function runBenchmarks() {
   });
 
   console.log('\n' + '═'.repeat(80));
-  console.log('\n✅ Benchmarks completed successfully\n');
+  console.log('\n Benchmarks completed successfully\n');
 }
 
 if (require.main === module) {

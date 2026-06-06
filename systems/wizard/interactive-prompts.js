@@ -10,7 +10,7 @@ class InteractivePrompts {
   constructor(options = {}) {
     this.cli = new CLIInterface(options);
     this.options = options;
-    
+
     // Prompt templates
     this.templates = {
       apiKeys: this.getAPIKeyTemplates(),
@@ -18,7 +18,7 @@ class InteractivePrompts {
       bridge: this.getBridgeTemplates(),
       confirmation: this.getConfirmationTemplates()
     };
-    
+
     // Validation rules
     this.validators = {
       apiKey: this.getAPIKeyValidators(),
@@ -255,45 +255,45 @@ class InteractivePrompts {
    */
   async promptAPIKeys(existing = {}) {
     const keys = {};
-    
+
     this.cli.showSection('API Key Configuration', 'Configure AI model API keys');
-    
+
     // Show which providers to configure
     const providers = await this.selectProviders(existing);
-    
+
     for (const provider of providers) {
       const template = this.templates.apiKeys[provider];
       if (!template) continue;
-      
+
       // Skip if already configured
       if (existing[provider]) {
         const reconfigure = await this.cli.askConfirm(
           `${provider} already configured. Reconfigure?`,
           { default: false }
         );
-        
+
         if (!reconfigure) {
           keys[provider] = existing[provider];
           continue;
         }
       }
-      
+
       // Show hint
       if (template.hint) {
         this.cli.info(template.hint);
       }
-      
+
       // Prompt for key
       const key = await this.cli.askPassword(template.message, {
         validate: template.validator
       });
-      
+
       if (key && key !== 'skip') {
         keys[provider] = key;
         this.cli.success(`${provider} configured`);
       }
     }
-    
+
     return keys;
   }
 
@@ -302,17 +302,17 @@ class InteractivePrompts {
    */
   async selectProviders(existing = {}) {
     const choices = [
-      { name: '🏁 Essential (OpenAI + Anthropic)', value: ['openai', 'anthropic'] },
-      { name: '🏁 Complete (All providers)', value: Object.keys(this.templates.apiKeys) },
-      { name: '🏁 Quick (OpenAI only)', value: ['openai'] },
-      { name: '🟡 Custom selection', value: 'custom' }
+      { name: ' Essential (OpenAI + Anthropic)', value: ['openai', 'anthropic'] },
+      { name: ' Complete (All providers)', value: Object.keys(this.templates.apiKeys) },
+      { name: ' Quick (OpenAI only)', value: ['openai'] },
+      { name: ' Custom selection', value: 'custom' }
     ];
-    
+
     const selection = await this.cli.askSelect(
       'Which API providers would you like to configure?',
       choices
     );
-    
+
     if (selection === 'custom') {
       // Custom selection
       const providers = [];
@@ -321,14 +321,14 @@ class InteractivePrompts {
           `Configure ${provider}?`,
           { default: !existing[provider] }
         );
-        
+
         if (configure) {
           providers.push(provider);
         }
       }
       return providers;
     }
-    
+
     return selection;
   }
 
@@ -337,32 +337,32 @@ class InteractivePrompts {
    */
   async promptMCPServers(existing = []) {
     const servers = [];
-    
+
     this.cli.showSection('MCP Server Configuration', 'Configure Model Context Protocol servers for Claude');
-    
+
     // Check if Claude is available
     const claudeAvailable = await this.checkClaudeAvailability();
     if (!claudeAvailable) {
       this.cli.warning('Claude desktop app not detected', 'MCP servers require Claude to be installed');
-      
+
       const proceed = await this.cli.askConfirm('Configure MCP servers anyway?');
       if (!proceed) return servers;
     }
-    
+
     // Select servers to configure
     for (const [id, template] of Object.entries(this.templates.mcpServers)) {
       const isConfigured = existing.some(s => s.name === id);
-      
+
       if (isConfigured) {
         this.cli.info(`${template.name} already configured`);
         continue;
       }
-      
+
       const configure = await this.cli.askConfirm(
         `Configure ${template.name}? ${template.description}`,
         { default: template.required }
       );
-      
+
       if (configure) {
         servers.push({
           name: id,
@@ -370,7 +370,7 @@ class InteractivePrompts {
         });
       }
     }
-    
+
     return servers;
   }
 
@@ -379,21 +379,21 @@ class InteractivePrompts {
    */
   async promptBridge(existing = {}) {
     this.cli.showSection('Universal Tool Bridge', 'Enable multi-model tool access');
-    
+
     const config = {};
-    
+
     // Enable bridge?
     config.enabled = await this.cli.askConfirm(
       this.templates.bridge.enable.message,
-      { 
-        default: existing.enabled !== false 
+      {
+        default: existing.enabled !== false
       }
     );
-    
+
     if (!config.enabled) {
       return config;
     }
-    
+
     // Configure port
     config.port = await this.cli.askInput(
       this.templates.bridge.port.message,
@@ -402,7 +402,7 @@ class InteractivePrompts {
         validate: this.templates.bridge.port.validator
       }
     );
-    
+
     // Auto-start?
     config.autoStart = await this.cli.askConfirm(
       this.templates.bridge.autoStart.message,
@@ -410,7 +410,7 @@ class InteractivePrompts {
         default: existing.autoStart !== false
       }
     );
-    
+
     return config;
   }
 
@@ -421,11 +421,11 @@ class InteractivePrompts {
     const { exec } = require('child_process');
     const { promisify } = require('util');
     const execAsync = promisify(exec);
-    
+
     try {
       const platform = process.platform;
       let command;
-      
+
       if (platform === 'darwin') {
         command = 'ls /Applications | grep -i claude';
       } else if (platform === 'win32') {
@@ -433,7 +433,7 @@ class InteractivePrompts {
       } else {
         command = 'which claude';
       }
-      
+
       const { stdout } = await execAsync(command);
       return stdout.trim().length > 0;
     } catch {
@@ -446,17 +446,17 @@ class InteractivePrompts {
    */
   showSummary(config) {
     this.cli.showSection('Configuration Summary', 'Review your settings');
-    
+
     // API Keys
     if (config.apiKeys && Object.keys(config.apiKeys).length > 0) {
       this.cli.showList('API Keys',
         Object.entries(config.apiKeys).map(([provider, key]) => ({
           name: provider,
-          description: key ? '✓ Configured' : '✗ Not configured'
+          description: key ? ' Configured' : ' Not configured'
         }))
       );
     }
-    
+
     // MCP Servers
     if (config.mcpServers && config.mcpServers.length > 0) {
       this.cli.showList('MCP Servers',
@@ -466,12 +466,12 @@ class InteractivePrompts {
         }))
       );
     }
-    
+
     // Bridge
     if (config.bridge) {
-      this.cli.info('Bridge Configuration', 
-        config.bridge.enabled ? 
-          `Enabled on port ${config.bridge.port}` : 
+      this.cli.info('Bridge Configuration',
+        config.bridge.enabled ?
+          `Enabled on port ${config.bridge.port}` :
           'Disabled'
       );
     }

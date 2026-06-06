@@ -47,7 +47,7 @@ steps:
               - som-projection
           - name: growth-trends
             timeframe: 5-years
-            
+
       - name: competitor-data
         agent: competitive-analyst
         tasks:
@@ -64,7 +64,7 @@ steps:
               - market-positioning
           - name: swot-analysis
             format: detailed
-            
+
       - name: customer-data
         agent: data-analyst
         tasks:

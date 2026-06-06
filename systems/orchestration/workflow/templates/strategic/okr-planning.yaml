@@ -59,7 +59,7 @@ steps:
           - technical-debt-reduction
           - innovation-quota
           - reliability-targets
-      
+
       - name: product-okrs
         agent: department-heads[product]
         template: product-okr-template
@@ -67,7 +67,7 @@ steps:
           - user-satisfaction
           - feature-delivery
           - market-fit
-      
+
       - name: sales-okrs
         agent: department-heads[sales]
         template: sales-okr-template
@@ -75,7 +75,7 @@ steps:
           - revenue-targets
           - pipeline-growth
           - customer-acquisition
-      
+
       - name: marketing-okrs
         agent: department-heads[marketing]
         template: marketing-okr-template
@@ -174,7 +174,7 @@ steps:
           - team-okr-derivation
           - individual-goal-setting
           - alignment-verification
-      
+
       - name: communication-rollout
         agent: okr-facilitator
         channels:
@@ -182,7 +182,7 @@ steps:
           - documentation-update
           - dashboard-creation
           - training-sessions
-      
+
       - name: tracking-setup
         agent: data-analyst
         setup:

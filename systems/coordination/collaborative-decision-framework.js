@@ -11,20 +11,20 @@ class CollaborativeDecisionFramework {
     this.decisionHistory = [];
     this.decisionPatterns = new Map();
     this.consensusEngine = new ConsensusEngine();
-    
+
     // Advanced consensus algorithms
     this.advancedConsensus = this.initializeAdvancedConsensus();
     this.mlOptimization = this.initializeMLOptimization();
     this.quantumVoting = this.initializeQuantumVoting();
     this.swarmIntelligence = this.initializeSwarmIntelligence();
     this.gameTheory = this.initializeGameTheory();
-    
+
     // ML-powered decision optimization
     this.decisionModels = new Map();
     this.outcomePredictor = this.initializeOutcomePredictor();
     this.biasDetector = this.initializeBiasDetector();
     this.confidenceCalibrator = this.initializeConfidenceCalibrator();
-    
+
     // Advanced metrics
     this.decisionMetrics = {
       consensusQuality: new Map(),
@@ -32,7 +32,7 @@ class CollaborativeDecisionFramework {
       outcomeAccuracy: new Map(),
       stakeholderSatisfaction: new Map()
     };
-    
+
     this.initializeDecisionPatterns();
     this.initializeAdvancedPatterns();
   }
@@ -76,7 +76,7 @@ class CollaborativeDecisionFramework {
     const hasTensorFlow = this.detectAPI('@tensorflow/tfjs-node');
     const hasBrain = this.detectAPI('brain.js');
     const hasMLJS = this.detectAPI('ml.js');
-    
+
     return {
       enabled: hasTensorFlow || hasBrain || hasMLJS,
       apis: {
@@ -252,10 +252,10 @@ class CollaborativeDecisionFramework {
   }
 
   async initiateCollaborativeDecision(decisionType, question, context) {
-    logger.info(`🏁 Initiating collaborative decision: ${question}`);
+    logger.info(` Initiating collaborative decision: ${question}`);
 
     const pattern = this.decisionPatterns.get(decisionType) || this.createAdHocPattern(question);
-    
+
     const decision = {
       id: this.generateDecisionId(),
       question: question,
@@ -286,7 +286,7 @@ class CollaborativeDecisionFramework {
   }
 
   async gatherParallelInputs(decision) {
-    logger.info(`🏁 Gathering parallel inputs from ${decision.pattern.participants.length} departments`);
+    logger.info(` Gathering parallel inputs from ${decision.pattern.participants.length} departments`);
 
     const inputPromises = decision.pattern.participants.map(async (department) => {
       const input = await this.gatherDepartmentInput(department, decision);
@@ -373,7 +373,7 @@ class CollaborativeDecisionFramework {
   }
 
   async synthesizeDecision(decision) {
-    logger.info(`🏁 Synthesizing decision from ${decision.department_inputs.size} inputs`);
+    logger.info(` Synthesizing decision from ${decision.department_inputs.size} inputs`);
 
     const synthesisMethod = decision.pattern.synthesis_method;
     let synthesis;
@@ -439,8 +439,8 @@ class CollaborativeDecisionFramework {
     synthesis.key_insights = await this.extractKeyInsights(decision);
 
     // Generate recommendation
-    synthesis.recommended_action = synthesis.weighted_score > 0.7 ? 'proceed' : 
-                                  synthesis.weighted_score > 0.5 ? 'proceed_with_caution' : 
+    synthesis.recommended_action = synthesis.weighted_score > 0.7 ? 'proceed' :
+                                  synthesis.weighted_score > 0.5 ? 'proceed_with_caution' :
                                   'reconsider';
 
     synthesis.rationale = await this.generateSynthesisRationale(synthesis, decision);
@@ -461,23 +461,23 @@ class CollaborativeDecisionFramework {
     try {
       // Extract features from inputs
       const features = this.extractDecisionFeatures(decision);
-      
+
       // Predict decision quality for different options
       const qualityPredictions = await this.predictDecisionQuality(features);
-      
+
       // Optimize for consensus and quality
       const optimizedDecision = await this.optimizeDecisionOutcome({
         inputs: decision.department_inputs,
         predictions: qualityPredictions,
         constraints: decision.context
       });
-      
+
       // Detect and mitigate biases
       const biasAnalysis = await this.detectDecisionBias(optimizedDecision);
       if (biasAnalysis.bias_detected) {
         optimizedDecision.adjustments = await this.mitigateBias(biasAnalysis);
       }
-      
+
       return {
         recommendation: optimizedDecision.optimal_choice,
         confidence: optimizedDecision.confidence,
@@ -497,23 +497,23 @@ class CollaborativeDecisionFramework {
    */
   async quantumCollapseSynthesis(decision) {
     const quantum = this.quantumVoting;
-    
+
     // Create superposition of all possible decisions
     const superposition = this.createDecisionSuperposition(decision.department_inputs);
-    
+
     // Apply quantum gates (transformations)
     const transformed = this.applyQuantumGates(superposition, {
       hadamard: true,
       cnot: true,
       phase: decision.context.phase_shift || 0
     });
-    
+
     // Measure and collapse to final state
     const collapsed = this.quantumMeasurement(transformed);
-    
+
     // Calculate probability amplitudes
     const probabilities = this.calculateQuantumProbabilities(collapsed);
-    
+
     return {
       recommendation: collapsed.final_state,
       confidence: collapsed.measurement_confidence,
@@ -529,15 +529,15 @@ class CollaborativeDecisionFramework {
    */
   async swarmConvergenceSynthesis(decision) {
     const swarm = this.swarmIntelligence;
-    
+
     // Initialize swarm agents
     const agents = this.initializeSwarmAgents(decision.department_inputs.size * 20);
-    
+
     // Run swarm optimization
     let bestSolution = null;
     let iteration = 0;
     const maxIterations = swarm.parameters.iterations;
-    
+
     while (iteration < maxIterations) {
       // Each agent explores solution space
       for (const agent of agents) {
@@ -545,21 +545,21 @@ class CollaborativeDecisionFramework {
         agent.evaluate(this.evaluateDecisionQuality);
         agent.updatePheromones();
       }
-      
+
       // Update global best
       const currentBest = this.findBestAgent(agents);
       if (!bestSolution || currentBest.fitness > bestSolution.fitness) {
         bestSolution = currentBest;
       }
-      
+
       // Check convergence
       if (this.checkSwarmConvergence(agents, swarm.parameters.convergence_threshold)) {
         break;
       }
-      
+
       iteration++;
     }
-    
+
     return {
       recommendation: bestSolution.solution,
       confidence: bestSolution.fitness,
@@ -575,22 +575,22 @@ class CollaborativeDecisionFramework {
    */
   async gameTheoreticSynthesis(decision) {
     const gameTheory = this.gameTheory;
-    
+
     // Model as game
     const game = this.modelAsGame(decision);
-    
+
     // Find Nash equilibrium
     const nashEquilibrium = await this.findNashEquilibrium(game);
-    
+
     // Calculate Shapley values for fair allocation
     const shapleyValues = this.calculateShapleyValues(game);
-    
+
     // Find Pareto optimal solutions
     const paretoOptimal = this.findParetoOptimal(game);
-    
+
     // Apply mechanism design for incentive compatibility
     const mechanism = this.designMechanism(game, decision.context);
-    
+
     return {
       recommendation: nashEquilibrium.strategy,
       confidence: nashEquilibrium.stability,
@@ -612,11 +612,11 @@ class CollaborativeDecisionFramework {
   async buildAdvancedConsensus(decision) {
     const consensusAlgorithm = decision.pattern.consensus_algorithm || 'byzantine_fault_tolerance';
     const algorithm = this.advancedConsensus.algorithms[consensusAlgorithm];
-    
+
     if (!algorithm) {
       return this.buildConsensus(decision);
     }
-    
+
     // Run advanced consensus algorithm
     const consensus = await algorithm.execute({
       participants: decision.department_inputs,
@@ -624,22 +624,22 @@ class CollaborativeDecisionFramework {
       rounds: algorithm.rounds || 3,
       timeout: algorithm.timeout || 5000
     });
-    
+
     // Apply conviction voting for time-weighted preferences
     if (consensusAlgorithm === 'conviction_voting') {
       consensus.conviction = await this.applyConvictionVoting(decision);
     }
-    
+
     // Apply quadratic voting for preference intensity
     if (consensusAlgorithm === 'quadratic_voting') {
       consensus.quadratic = await this.applyQuadraticVoting(decision);
     }
-    
+
     return consensus;
   }
 
   async buildConsensus(decision) {
-    logger.info(`🏁 Building consensus for decision: ${decision.question}`);
+    logger.info(` Building consensus for decision: ${decision.question}`);
 
     const consensus = await this.consensusEngine.buildConsensus(
       decision.department_inputs,
@@ -862,42 +862,42 @@ class CollaborativeDecisionFramework {
       execute: async (params) => this.executeByzantine(params)
     };
   }
-  
+
   initializeRaftConsensus() {
     return {
       type: 'raft',
       execute: async (params) => this.executeRaft(params)
     };
   }
-  
+
   initializePaxosAlgorithm() {
     return {
       type: 'paxos',
       execute: async (params) => this.executePaxos(params)
     };
   }
-  
+
   initializeProofOfStake() {
     return {
       type: 'proof_of_stake',
       execute: async (params) => this.executeProofOfStake(params)
     };
   }
-  
+
   initializeLiquidDemocracy() {
     return {
       type: 'liquid',
       execute: async (params) => this.executeLiquidDemocracy(params)
     };
   }
-  
+
   initializeQuadraticVoting() {
     return {
       type: 'quadratic',
       execute: async (params) => this.executeQuadraticVoting(params)
     };
   }
-  
+
   initializeConvictionVoting() {
     return {
       type: 'conviction',
@@ -911,31 +911,31 @@ class CollaborativeDecisionFramework {
   initializeQualityPredictor() {
     return { type: 'quality_prediction', ready: false };
   }
-  
+
   initializeOutcomeForecaster() {
     return { type: 'outcome_forecast', ready: false };
   }
-  
+
   initializeBiasDetectorModel() {
     return { type: 'bias_detection', ready: false };
   }
-  
+
   initializeConsensusOptimizer() {
     return { type: 'consensus_optimization', ready: false };
   }
-  
+
   initializeSatisfactionPredictor() {
     return { type: 'satisfaction_prediction', ready: false };
   }
-  
+
   initializeOutcomePredictor() {
     return { type: 'outcome_prediction', ready: false };
   }
-  
+
   initializeBiasDetector() {
     return { type: 'bias_detection', ready: false };
   }
-  
+
   initializeConfidenceCalibrator() {
     return { type: 'confidence_calibration', ready: false };
   }
@@ -946,15 +946,15 @@ class CollaborativeDecisionFramework {
   initializeAntColony() {
     return { type: 'ant_colony', pheromone_decay: 0.1 };
   }
-  
+
   initializeParticleSwarm() {
     return { type: 'particle_swarm', inertia: 0.7 };
   }
-  
+
   initializeBeeAlgorithm() {
     return { type: 'bee_algorithm', scout_ratio: 0.2 };
   }
-  
+
   initializeFireflyAlgorithm() {
     return { type: 'firefly', attraction: 0.8 };
   }
@@ -965,19 +965,19 @@ class CollaborativeDecisionFramework {
   initializeNashEquilibrium() {
     return { type: 'nash', iterations: 100 };
   }
-  
+
   initializePrisonersDilemma() {
     return { type: 'prisoner', cooperation_factor: 0.6 };
   }
-  
+
   initializeZeroSum() {
     return { type: 'zero_sum', minimax: true };
   }
-  
+
   initializeCooperativeGame() {
     return { type: 'cooperative', core_solution: true };
   }
-  
+
   initializeEvolutionaryGame() {
     return { type: 'evolutionary', generations: 50 };
   }
@@ -1006,12 +1006,12 @@ class CollaborativeDecisionFramework {
   async riskWeightedSynthesis(decision) {
     // Implementation that emphasizes risk factors
     const synthesis = await this.weightedConsensusSynthesis(decision);
-    
+
     // Adjust for risk factors
     const riskFactors = await this.identifyRiskFactors(decision);
     synthesis.risk_adjustment = riskFactors;
     synthesis.weighted_score *= (1 - riskFactors.total_risk);
-    
+
     return synthesis;
   }
 
@@ -1042,21 +1042,21 @@ class CollaborativeDecisionFramework {
 
   getAverageDecisionTime() {
     if (this.decisionHistory.length === 0) {return 0;}
-    
-    const totalTime = this.decisionHistory.reduce((sum, decision) => 
+
+    const totalTime = this.decisionHistory.reduce((sum, decision) =>
       sum + (decision.total_time || 0), 0
     );
-    
+
     return totalTime / this.decisionHistory.length;
   }
 
   getConsensusSuccessRate() {
     if (this.decisionHistory.length === 0) {return 0;}
-    
-    const highConsensus = this.decisionHistory.filter(d => 
+
+    const highConsensus = this.decisionHistory.filter(d =>
       d.consensus_level > 0.8
     ).length;
-    
+
     return highConsensus / this.decisionHistory.length;
   }
 }
@@ -1071,16 +1071,16 @@ class ConsensusEngine {
     };
 
     // Calculate consensus level based on department alignment
-    const scores = Array.from(departmentInputs.values()).map(input => 
+    const scores = Array.from(departmentInputs.values()).map(input =>
       this.calculateInputScore(input)
     );
-    
+
     const avgScore = scores.reduce((a, b) => a + b, 0) / scores.length;
     const variance = scores.reduce((sum, score) => sum + Math.pow(score - avgScore, 2), 0) / scores.length;
-    
+
     // High consensus when scores are similar (low variance) and positive
     consensus.level = Math.max(0, Math.min(1, avgScore * (1 - variance)));
-    
+
     // Generate recommendation based on synthesis
     if (synthesis.weighted_score > 0.7 && consensus.level > 0.7) {
       consensus.recommendation = 'strong_proceed';

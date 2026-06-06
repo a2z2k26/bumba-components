@@ -10,7 +10,7 @@
 # Command Routing
 
 ╔══════════════════════════════════════════════════════════════════╗
-║ 🟢 **Command Router** • Part of the BUMBA Platform               ║
+║  **Command Router** • Part of the Agent Primitives               ║
 ║ Building Unified Multi-agent Business Applications               ║
 ╚══════════════════════════════════════════════════════════════════╝
 
@@ -18,13 +18,13 @@
 
 Lightweight command routing primitive with pattern-matching, analytics, middleware support, and memory-safe operation.
 
-## 🏁 Installation
+##  Installation
 
 ```bash
 npm install @bumba/command-routing
 ```
 
-## 🟡 Quick Start
+##  Quick Start
 
 ```javascript
 const { CommandRouter } = require('@bumba/command-routing');
@@ -46,13 +46,13 @@ const result = await router.route('build', ['api-server']);
 
 ## Core Features
 
-### 🟢 Command Analysis Engine
+###  Command Analysis Engine
 **Backend Engineering Excellence**
 - **Intent Detection** - Automatic intent classification with confidence scoring
 - **Pattern Matching** - Recognizes common development patterns
 - **Complexity Estimation** - Evaluates command difficulty (0-1 scale)
 
-### 🟡 Middleware Pipeline
+###  Middleware Pipeline
 **Strategic Architecture Design**
 ```javascript
 router.use(async (context) => {
@@ -61,7 +61,7 @@ router.use(async (context) => {
 });
 ```
 
-### 🔴 Event System
+###  Event System
 **Real-time System Monitoring**
 ```javascript
 router.on('command:completed', (data) => {
@@ -97,7 +97,7 @@ router.on('command:error', (data) => {
 ║ → Clear history while preserving statistics                       ║
 ╚═══════════════════════════════════════════════════════════════════╝
 
-## 🟠 Advanced Features
+##  Advanced Features
 
 ### Memory Management
 **Professional Resource Optimization**
@@ -128,35 +128,35 @@ router.registerHandler('build', async (analysis: CommandAnalysis) => {
 });
 ```
 
-## 🏁 Production Ready
+##  Production Ready
 
 ╔══════════════════════════════════════════════════════════════════╗
 ║                    **Enterprise Features**                       ║
 ╠══════════════════════════════════════════════════════════════════╣
-║ 🟢 **Health Monitoring** - Built-in health checks               ║
-║ 🟢 **Memory Safe** - Rolling window statistics                  ║
-║ 🟡 **Error Context** - Full retry history                       ║
-║ 🟡 **Distributed Tracing** - OpenTelemetry hooks               ║
-║ 🔴 **TypeScript** - Full type definitions                       ║
-║ 🟠 **90%+ Test Coverage** - Comprehensive test suite            ║
+║  **Health Monitoring** - Built-in health checks               ║
+║  **Memory Safe** - Rolling window statistics                  ║
+║  **Error Context** - Full retry history                       ║
+║  **Distributed Tracing** - OpenTelemetry hooks               ║
+║  **TypeScript** - Full type definitions                       ║
+║  **90%+ Test Coverage** - Comprehensive test suite            ║
 ╚══════════════════════════════════════════════════════════════════╝
 
 ---
 
-## BUMBA Platform Integration
+## Agent Primitives Integration
 
 **Command Routing** seamlessly integrates with the BUMBA ecosystem:
 
-🟡 **CHATTA** - Voice interaction layer
-🟢 **KUMBUKA** - Memory and context management
-🔴 **JIBU** - Response generation
-🟠 **AKILI** - Intelligence layer
+ **CHATTA** - Voice interaction layer
+ **KUMBUKA** - Memory and context management
+ **JIBU** - Response generation
+ **AKILI** - Intelligence layer
 
 ---
 
 ## License
 
-MIT © BUMBA Platform
+MIT © Agent Primitives
 
 ---
 

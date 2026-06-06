@@ -35,7 +35,7 @@ class ProjectDashboardTemplate extends BaseNotionTemplate {
     const team = data.team || [];
 
     // Header
-    blocks.push(this.createHeading('📊 Project Dashboard', 1));
+    blocks.push(this.createHeading(' Project Dashboard', 1));
     blocks.push(this.createParagraph(project.description || 'Project overview dashboard'));
     blocks.push(this.createDivider());
 
@@ -57,7 +57,7 @@ class ProjectDashboardTemplate extends BaseNotionTemplate {
     blocks.push(this.createDivider());
 
     // Progress Metrics Section
-    blocks.push(this.createHeading('📈 Progress Metrics', 2));
+    blocks.push(this.createHeading(' Progress Metrics', 2));
 
     if (progress.totalTasks) {
       const completionRate = progress.completionPercentage || 0;
@@ -65,19 +65,19 @@ class ProjectDashboardTemplate extends BaseNotionTemplate {
 
       blocks.push(this.createCallout(
         `Overall Progress: ${completionRate}% Complete\n${progressBar}`,
-        '📊',
+        '',
         'blue_background'
       ));
 
       blocks.push(this.createParagraph(''));
       blocks.push(this.createBulletPoint(`Total Tasks: ${progress.totalTasks}`));
-      blocks.push(this.createBulletPoint(`✅ Completed: ${progress.completedTasks || 0}`));
-      blocks.push(this.createBulletPoint(`🔄 In Progress: ${progress.inProgressTasks || 0}`));
-      blocks.push(this.createBulletPoint(`⏸️ Pending: ${progress.pendingTasks || 0}`));
+      blocks.push(this.createBulletPoint(` Completed: ${progress.completedTasks || 0}`));
+      blocks.push(this.createBulletPoint(` In Progress: ${progress.inProgressTasks || 0}`));
+      blocks.push(this.createBulletPoint(`⏸ Pending: ${progress.pendingTasks || 0}`));
     } else {
       blocks.push(this.createCallout(
         'No progress data available. Start adding tasks to see metrics!',
-        '💡',
+        '',
         'gray_background'
       ));
     }
@@ -85,7 +85,7 @@ class ProjectDashboardTemplate extends BaseNotionTemplate {
     blocks.push(this.createDivider());
 
     // Sprint Summary Section
-    blocks.push(this.createHeading('🏃 Sprint Summary', 2));
+    blocks.push(this.createHeading(' Sprint Summary', 2));
 
     if (sprints && sprints.length > 0) {
       blocks.push(this.createParagraph(`Total Sprints: ${sprints.length}`));
@@ -114,7 +114,7 @@ class ProjectDashboardTemplate extends BaseNotionTemplate {
     blocks.push(this.createDivider());
 
     // Team Section
-    blocks.push(this.createHeading('👥 Team', 2));
+    blocks.push(this.createHeading(' Team', 2));
 
     if (team && team.length > 0) {
       team.forEach(member => {
@@ -127,7 +127,7 @@ class ProjectDashboardTemplate extends BaseNotionTemplate {
     blocks.push(this.createDivider());
 
     // Recent Activity Section
-    blocks.push(this.createHeading('📝 Recent Activity', 2));
+    blocks.push(this.createHeading(' Recent Activity', 2));
     blocks.push(this.createParagraph('Latest updates and changes will appear here.'));
 
     if (data.recentActivity && data.recentActivity.length > 0) {
@@ -139,7 +139,7 @@ class ProjectDashboardTemplate extends BaseNotionTemplate {
     blocks.push(this.createDivider());
 
     // Quick Links Section
-    blocks.push(this.createHeading('🔗 Quick Links', 2));
+    blocks.push(this.createHeading(' Quick Links', 2));
     blocks.push(this.createBulletPoint('View All Sprints'));
     blocks.push(this.createBulletPoint('View All Tasks'));
     blocks.push(this.createBulletPoint('View Analytics Dashboard'));
@@ -165,9 +165,9 @@ class ProjectDashboardTemplate extends BaseNotionTemplate {
    * @returns {string} Emoji icon
    */
   getSprintIcon(completion) {
-    if (completion === 100) return '✅';
-    if (completion > 0) return '🔄';
-    return '⏸️';
+    if (completion === 100) return '';
+    if (completion > 0) return '';
+    return '⏸';
   }
 
   /**

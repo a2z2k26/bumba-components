@@ -122,7 +122,7 @@ class UnifiedMemorySystem extends UnifiedManagerBase {
   }
 
   async onInitialize() {
-    logger.info('🧠 Initializing Unified Memory System with Enhanced Optimizations...');
+    logger.info(' Initializing Unified Memory System with Enhanced Optimizations...');
 
     // Initialize SQLite storage (Sprint 1.2)
     if (this.useSQLite) {
@@ -157,7 +157,7 @@ class UnifiedMemorySystem extends UnifiedManagerBase {
       optimizations: this.enhancedOptimizations.getPerformanceMetrics()
     });
 
-    logger.info('🧠 Unified Memory System initialized with enhanced performance');
+    logger.info(' Unified Memory System initialized with enhanced performance');
   }
 
   async initializeSQLiteStorage() {
@@ -183,7 +183,7 @@ class UnifiedMemorySystem extends UnifiedManagerBase {
 
       await Promise.race([initPromise, timeoutPromise]);
 
-      logger.info('📦 SQLite storage adapter initialized');
+      logger.info(' SQLite storage adapter initialized');
     } catch (error) {
       logger.warn(`SQLite initialization failed: ${error.message}, using in-memory storage`);
       this.useSQLite = false;
@@ -262,7 +262,7 @@ class UnifiedMemorySystem extends UnifiedManagerBase {
       }
     };
 
-    logger.info('🧠 Context memory subsystem initialized');
+    logger.info(' Context memory subsystem initialized');
   }
 
   async initializeAgentMemory() {
@@ -309,7 +309,7 @@ class UnifiedMemorySystem extends UnifiedManagerBase {
       }
     };
 
-    logger.info('🧠 Agent memory subsystem initialized');
+    logger.info(' Agent memory subsystem initialized');
   }
 
   async initializeKnowledgeMemory() {
@@ -390,7 +390,7 @@ class UnifiedMemorySystem extends UnifiedManagerBase {
       }
     };
 
-    logger.info('🧠 Knowledge memory subsystem initialized');
+    logger.info(' Knowledge memory subsystem initialized');
   }
 
   async initializeConversationMemory() {
@@ -479,7 +479,7 @@ class UnifiedMemorySystem extends UnifiedManagerBase {
       }
     };
 
-    logger.info('🧠 Conversation memory subsystem initialized');
+    logger.info(' Conversation memory subsystem initialized');
   }
 
   async initializePerformanceMemory() {
@@ -546,7 +546,7 @@ class UnifiedMemorySystem extends UnifiedManagerBase {
       }
     };
 
-    logger.info('🧠 Performance memory subsystem initialized');
+    logger.info(' Performance memory subsystem initialized');
   }
 
   async initializeAIIntegration() {
@@ -583,7 +583,7 @@ class UnifiedMemorySystem extends UnifiedManagerBase {
     // Set up semantic search capabilities
     this.setupSemanticSearch();
 
-    logger.info('🧠 AI integration initialized for memory system');
+    logger.info(' AI integration initialized for memory system');
   }
 
   setupAIEnhancedOperations() {
@@ -771,7 +771,7 @@ class UnifiedMemorySystem extends UnifiedManagerBase {
       );
     }
 
-    logger.info('🧠 Enhanced optimizations applied to all subsystems');
+    logger.info(' Enhanced optimizations applied to all subsystems');
   }
 
   setupMemoryOptimization() {
@@ -788,18 +788,18 @@ class UnifiedMemorySystem extends UnifiedManagerBase {
     // Set up performance monitoring
     this.addTimer(setInterval(() => {
       const metrics = this.enhancedOptimizations.getPerformanceMetrics();
-      logger.info('🧠 Memory Performance:', {
+      logger.info(' Memory Performance:', {
         cacheHitRate: `${(metrics.cacheHitRate * 100).toFixed(2)}%`,
         compressionSaved: `${metrics.compressionSaved} bytes`,
         batchOptimizations: metrics.batchOptimizations
       });
     }, 120000)); // Every 2 minutes
 
-    logger.info('🧠 Memory optimization and monitoring scheduled');
+    logger.info(' Memory optimization and monitoring scheduled');
   }
 
   async performMemoryCleanup() {
-    logger.info('🧠 Performing memory cleanup...');
+    logger.info(' Performing memory cleanup...');
 
     let totalCleaned = 0;
 
@@ -824,7 +824,7 @@ class UnifiedMemorySystem extends UnifiedManagerBase {
     this.memoryMetrics.lastCleanupTime = Date.now();
     this.updateMetrics();
 
-    logger.info(`🧠 Memory cleanup completed, cleaned ${totalCleaned} entries`);
+    logger.info(` Memory cleanup completed, cleaned ${totalCleaned} entries`);
   }
 
   optimizeCache() {
@@ -1115,7 +1115,7 @@ class UnifiedMemorySystem extends UnifiedManagerBase {
   }
 
   async onShutdown() {
-    logger.info('🧠 Shutting down Unified Memory System...');
+    logger.info(' Shutting down Unified Memory System...');
 
     // Perform final cleanup
     await this.performMemoryCleanup();
@@ -1130,7 +1130,7 @@ class UnifiedMemorySystem extends UnifiedManagerBase {
       this.contextMemory.activeContexts.clear();
     }
 
-    logger.info('🧠 Unified Memory System shutdown complete');
+    logger.info(' Unified Memory System shutdown complete');
   }
 
   // Integration test compatibility wrappers

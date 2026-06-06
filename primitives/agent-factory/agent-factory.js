@@ -97,7 +97,7 @@ class AgentFactory extends EventEmitter {
    */
   async initializeMemory(config = {}) {
     if (!MemoryManager) {
-      console.log(chalk.yellow('⚠️  Memory system not available'));
+      console.log(chalk.yellow('  Memory system not available'));
       return false;
     }
 
@@ -105,7 +105,7 @@ class AgentFactory extends EventEmitter {
       this.memoryManager = new MemoryManager(config);
       await this.memoryManager.initialize();
       this.memoryEnabled = true;
-      console.log(chalk.green('✓ Memory system initialized'));
+      console.log(chalk.green(' Memory system initialized'));
       return true;
     } catch (error) {
       console.error(chalk.red('Failed to initialize memory:'), error.message);
@@ -178,7 +178,7 @@ class AgentFactory extends EventEmitter {
       this.stats.totalSpawned++;
       this.stats.currentActive++;
 
-      console.log(chalk.green(`✨ Spawned from pool: ${pooledAgent.role} [${pooledAgent.id}]`));
+      console.log(chalk.green(` Spawned from pool: ${pooledAgent.role} [${pooledAgent.id}]`));
       return pooledAgent;
     }
 
@@ -327,7 +327,7 @@ class AgentFactory extends EventEmitter {
 
     // Log creation
     const depthIndicator = '  '.repeat(agent.metadata.depth);
-    console.log(chalk.green(`${depthIndicator}✨ Spawned ${type} agent: ${role} [${agentId}]`));
+    console.log(chalk.green(`${depthIndicator} Spawned ${type} agent: ${role} [${agentId}]`));
 
     if (parent) {
       const parentAgent = this.agents.get(parent);
@@ -379,7 +379,7 @@ class AgentFactory extends EventEmitter {
    */
   enableMockMode() {
     this.config.mockMode = true;
-    console.log(chalk.yellow('🧪 Mock mode enabled - no API calls will be made'));
+    console.log(chalk.yellow(' Mock mode enabled - no API calls will be made'));
   }
 
   /**
@@ -528,7 +528,7 @@ class AgentFactory extends EventEmitter {
       id: spawnerId
     });
 
-    console.log(chalk.green(`✅ Registered external spawner: ${config.name}`));
+    console.log(chalk.green(` Registered external spawner: ${config.name}`));
 
     this.emit('spawner:registered', config);
 
@@ -576,7 +576,7 @@ class AgentFactory extends EventEmitter {
 
     // Log termination
     const depthIndicator = '  '.repeat(agent.metadata.depth);
-    console.log(chalk.red(`${depthIndicator}🔚 Terminated ${agent.type}: ${agent.role} [${agentId}]`));
+    console.log(chalk.red(`${depthIndicator} Terminated ${agent.type}: ${agent.role} [${agentId}]`));
 
     this.emit('agent:terminated', {
       id: agentId,
@@ -834,7 +834,7 @@ class AgentFactory extends EventEmitter {
       if (!agent) return;
 
       const prefix = '  '.repeat(indent) + (indent > 0 ? '└─ ' : '');
-      const status = agent.status === 'executing' ? '🔄' : '✅';
+      const status = agent.status === 'executing' ? '' : '';
       lines.push(`${prefix}${status} ${agent.role} [${agent.type}] - ${agent.id}`);
 
       for (const childId of agent.children) {
@@ -884,7 +884,7 @@ class AgentFactory extends EventEmitter {
       return this;
     }
 
-    console.log(chalk.blue('🏭 Initializing Agent Factory'));
+    console.log(chalk.blue(' Initializing Agent Factory'));
 
     // Initialize pool if configured
     if (this.poolConfig && this.poolConfig.enabled) {
@@ -898,7 +898,7 @@ class AgentFactory extends EventEmitter {
 
     this.isInitialized = true;
 
-    console.log(chalk.green('✅ Agent Factory initialized'));
+    console.log(chalk.green(' Agent Factory initialized'));
     return this;
   }
 
@@ -1092,7 +1092,7 @@ class AgentFactory extends EventEmitter {
    * Terminate all agents
    */
   async terminateAll() {
-    console.log(chalk.yellow('\n🔚 Terminating all agents...'));
+    console.log(chalk.yellow('\n Terminating all agents...'));
 
     // Get root agents
     const rootAgents = [];
@@ -1107,7 +1107,7 @@ class AgentFactory extends EventEmitter {
       await this.terminateAgent(id, true);
     }
 
-    console.log(chalk.red(`✅ All agents terminated. Total spawned: ${this.stats.totalSpawned}`));
+    console.log(chalk.red(` All agents terminated. Total spawned: ${this.stats.totalSpawned}`));
   }
 }
 

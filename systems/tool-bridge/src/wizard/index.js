@@ -1,7 +1,7 @@
 /**
  * Setup Wizard for Tool Bridge
  * Interactive configuration wizard with flexible skip options
- * Part of the BUMBA Platform Suite
+ * Part of the Agent Primitives Suite
  */
 
 const inquirer = require('inquirer').default || require('inquirer');
@@ -28,7 +28,7 @@ class SetupWizard {
     console.log();
     console.log(this.branding.chalk.gradient.yellowGreen('Tool Bridge Configuration Wizard'));
     console.log(this.branding.chalk.accent.wheat('Configure your Universal AI Development Gateway'));
-    console.log(this.branding.chalk.gray('Part of the BUMBA Platform Suite\n'));
+    console.log(this.branding.chalk.gray('Part of the Agent Primitives Suite\n'));
 
     try {
       // Load existing partial configuration if it exists
@@ -61,13 +61,13 @@ class SetupWizard {
       if (this.skippedSteps.length > 0) {
         this.showSkippedStepsMessage();
       } else {
-        console.log(this.branding.formatStatus('success', '\n🏁 Tool Bridge setup complete!\n'));
+        console.log(this.branding.formatStatus('success', '\n Tool Bridge setup complete!\n'));
       }
 
       return true;
 
     } catch (error) {
-      console.error(chalk.red('\n❌ Setup failed:', error.message));
+      console.error(chalk.red('\n Setup failed:', error.message));
       return false;
     }
   }
@@ -86,7 +86,7 @@ class SetupWizard {
   }
 
   async handleSkipAll() {
-    console.log(this.branding.chalk.semantic.warning('\n⚠️  Setup wizard skipped.\n'));
+    console.log(this.branding.chalk.semantic.warning('\n  Setup wizard skipped.\n'));
     console.log(this.branding.chalk.gradient.yellowGreen('You can run the setup wizard at any time using:'));
     console.log(this.branding.chalk.white.bold('  tool-bridge setup\n'));
     console.log(this.branding.chalk.gray('Tool Bridge will use default settings until configured.'));
@@ -99,15 +99,15 @@ class SetupWizard {
   async showSetupMenu() {
     const choices = [
       {
-        name: '🟢 Quick Setup (Essential configs only)',
+        name: ' Quick Setup (Essential configs only)',
         value: 'quick'
       },
       {
-        name: '🟡 Complete Setup (All configurations)',
+        name: ' Complete Setup (All configurations)',
         value: 'complete'
       },
       {
-        name: '✏️  Selective Setup (Choose what to configure)',
+        name: '  Selective Setup (Choose what to configure)',
         value: 'selective'
       }
     ];
@@ -115,7 +115,7 @@ class SetupWizard {
     // Add resume option if partial config exists
     if (this.partialConfig && this.partialConfig.incompleteSections) {
       choices.unshift({
-        name: '▶️  Resume Previous Setup',
+        name: '▶  Resume Previous Setup',
         value: 'resume'
       });
     }
@@ -133,18 +133,18 @@ class SetupWizard {
   }
 
   async runQuickSetup() {
-    console.log(chalk.cyan('\n⚡ Quick Setup - Essential Configuration Only\n'));
+    console.log(chalk.cyan('\n Quick Setup - Essential Configuration Only\n'));
 
     // Only configure essentials
     await this.configureEssentialAPIs();
     await this.configureBasicSecurity();
 
-    console.log(chalk.green('\n✅ Quick setup complete!'));
+    console.log(chalk.green('\n Quick setup complete!'));
     console.log(chalk.gray('Run "tool-bridge setup" later to configure additional options.'));
   }
 
   async runCompleteSetup() {
-    console.log(chalk.cyan('\n📋 Complete Setup - All Configurations\n'));
+    console.log(chalk.cyan('\n Complete Setup - All Configurations\n'));
 
     // Step 1: Welcome and overview
     await this.showWelcome();
@@ -190,7 +190,7 @@ class SetupWizard {
   }
 
   async runSelectiveSetup() {
-    console.log(chalk.cyan('\n✏️  Selective Setup - Choose Your Configurations\n'));
+    console.log(chalk.cyan('\n  Selective Setup - Choose Your Configurations\n'));
 
     const { sections } = await inquirer.prompt([
       {
@@ -215,7 +215,7 @@ class SetupWizard {
   }
 
   async resumePartialSetup() {
-    console.log(chalk.cyan('\n▶️  Resuming Previous Setup\n'));
+    console.log(chalk.cyan('\n▶  Resuming Previous Setup\n'));
 
     const incomplete = this.partialConfig.incompleteSections || [];
     console.log(chalk.yellow('Incomplete sections:'), incomplete.join(', '));
@@ -239,7 +239,7 @@ class SetupWizard {
     ]);
 
     if (!proceed) {
-      console.log(chalk.gray(`  ⏭️  Skipping ${stepName}...`));
+      console.log(chalk.gray(`  ⏭  Skipping ${stepName}...`));
     }
 
     return proceed;
@@ -278,7 +278,7 @@ class SetupWizard {
   }
 
   async configureEssentialAPIs() {
-    console.log(chalk.yellow('\n🔑 Essential API Configuration\n'));
+    console.log(chalk.yellow('\n Essential API Configuration\n'));
 
     const { wantOpenAI } = await inquirer.prompt([
       {
@@ -311,7 +311,7 @@ class SetupWizard {
   }
 
   async configureAPIs() {
-    console.log(chalk.yellow('\n🔌 AI Provider Configuration\n'));
+    console.log(chalk.yellow('\n AI Provider Configuration\n'));
     console.log(chalk.gray('Configure API keys for AI providers. Press Enter to skip any provider.\n'));
 
     // Show available providers
@@ -339,7 +339,7 @@ class SetupWizard {
   }
 
   async configureMCPServers() {
-    console.log(chalk.yellow('\n🔗 MCP Server Configuration\n'));
+    console.log(chalk.yellow('\n MCP Server Configuration\n'));
     console.log(chalk.gray('Tool Bridge can connect to any MCP server.\n'));
 
     // Show common MCP servers
@@ -385,7 +385,7 @@ class SetupWizard {
   }
 
   async configureServer() {
-    console.log(chalk.yellow('\n⚙️  Server Configuration\n'));
+    console.log(chalk.yellow('\n  Server Configuration\n'));
 
     const answers = await inquirer.prompt([
       {
@@ -410,7 +410,7 @@ class SetupWizard {
   }
 
   async configureSecurity() {
-    console.log(chalk.yellow('\n🔒 Security Configuration\n'));
+    console.log(chalk.yellow('\n Security Configuration\n'));
 
     const { autoGenerate } = await inquirer.prompt([
       {
@@ -427,7 +427,7 @@ class SetupWizard {
         jwtSecret: crypto.randomBytes(32).toString('hex'),
         masterKey: crypto.randomBytes(32).toString('hex')
       };
-      console.log(chalk.green('  ✓ Secure keys generated'));
+      console.log(chalk.green('   Secure keys generated'));
     } else {
       const answers = await inquirer.prompt([
         {
@@ -449,7 +449,7 @@ class SetupWizard {
   }
 
   async configurePerformance() {
-    console.log(chalk.yellow('\n⚡ Performance & Rate Limiting\n'));
+    console.log(chalk.yellow('\n Performance & Rate Limiting\n'));
 
     const answers = await inquirer.prompt([
       {
@@ -470,7 +470,7 @@ class SetupWizard {
   }
 
   async configureIntegrations() {
-    console.log(chalk.yellow('\n🔌 Additional Integrations\n'));
+    console.log(chalk.yellow('\n Additional Integrations\n'));
 
     const { integrations } = await inquirer.prompt([
       {
@@ -491,7 +491,7 @@ class SetupWizard {
   }
 
   async testConnections() {
-    console.log(chalk.yellow('\n🧪 Testing Connections...\n'));
+    console.log(chalk.yellow('\n Testing Connections...\n'));
 
     const spinner = ora('Testing configured APIs...').start();
 
@@ -545,7 +545,7 @@ class SetupWizard {
   }
 
   showSkippedStepsMessage() {
-    console.log(chalk.yellow('\n⚠️  Some configuration steps were skipped.\n'));
+    console.log(chalk.yellow('\n  Some configuration steps were skipped.\n'));
     console.log('You can complete the setup at any time by running:');
     console.log(chalk.white.bold('  tool-bridge setup\n'));
     console.log(chalk.gray('Skipped sections: ' + this.skippedSteps.join(', ')));

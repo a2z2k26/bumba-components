@@ -10,7 +10,7 @@ const { PipelineManager, getInstance: getPipelineManager } = require('./pipeline
 class TaskAutomation extends EventEmitter {
   constructor(config = {}) {
     super();
-    
+
     // Configuration
     this.config = {
       maxConcurrentTasks: config.maxConcurrentTasks || 20,
@@ -23,28 +23,28 @@ class TaskAutomation extends EventEmitter {
       enablePredictiveScheduling: config.enablePredictiveScheduling !== false,
       ...config
     };
-    
+
     // Task management
     this.tasks = new Map();
     this.taskQueue = [];
     this.runningTasks = new Map();
     this.completedTasks = new Map();
-    
+
     // Automation components
     this.automations = new Map();
     this.schedules = new Map();
     this.triggers = new Map();
     this.rules = new Map();
     this.conditions = new Map();
-    
+
     // Event handlers
     this.eventHandlers = new Map();
     this.webhooks = new Map();
-    
+
     // Scheduling
     this.scheduledJobs = new Map();
     this.cronJobs = new Map();
-    
+
     // ML and Predictive components
     this.apiConnected = false;
     this.developmentMode = process.env.NODE_ENV !== 'production';
@@ -53,7 +53,7 @@ class TaskAutomation extends EventEmitter {
     this.performanceData = new Map();
     this.resourceUtilization = new Map();
     this.predictiveScheduler = null;
-    
+
     // Metrics
     this.metrics = {
       tasksCreated: 0,
@@ -67,11 +67,11 @@ class TaskAutomation extends EventEmitter {
       predictiveSchedules: 0,
       accuracyScore: 0
     };
-    
+
     // Integration with workflow and pipeline
     this.workflowEngine = null;
     this.pipelineManager = null;
-    
+
     this.initializeApiFallbacks();
     this.initializeMLFramework();
     this.initialize();
@@ -82,7 +82,7 @@ class TaskAutomation extends EventEmitter {
       optimizeTaskExecution: (taskHistory, systemMetrics) => {
         const optimizations = this.calculateExecutionOptimizations(taskHistory, systemMetrics);
         const priorities = this.optimizeTaskPriorities(taskHistory);
-        
+
         return {
           optimal_priorities: priorities,
           resource_allocation: this.suggestResourceAllocation(systemMetrics),
@@ -94,7 +94,7 @@ class TaskAutomation extends EventEmitter {
       predictTaskScheduling: (taskPatterns, resourceAvailability) => {
         const predictions = this.generateSchedulingPredictions(taskPatterns, resourceAvailability);
         const recommendations = this.generateSchedulingRecommendations(predictions);
-        
+
         return {
           predicted_schedules: predictions,
           optimal_windows: this.identifyOptimalExecutionWindows(taskPatterns),
@@ -106,7 +106,7 @@ class TaskAutomation extends EventEmitter {
       analyzeTaskPerformance: (executionData) => {
         const patterns = this.extractPerformancePatterns(executionData);
         const bottlenecks = this.identifyPerformanceBottlenecks(executionData);
-        
+
         return {
           performance_patterns: patterns,
           bottlenecks: bottlenecks,
@@ -118,7 +118,7 @@ class TaskAutomation extends EventEmitter {
       generateMLInsights: (taskData, systemData) => {
         const insights = this.synthesizeMLInsights(taskData, systemData);
         const predictions = this.generatePerformancePredictions(taskData);
-        
+
         return {
           insights: insights,
           predictions: predictions,
@@ -134,7 +134,7 @@ class TaskAutomation extends EventEmitter {
       optimization_algorithms: [
         'priority_optimization', 'resource_allocation', 'load_balancing', 'predictive_scaling'
       ],
-      
+
       prediction_models: {
         execution_time: { accuracy: 0.85, features: ['task_type', 'complexity', 'history'] },
         resource_usage: { accuracy: 0.78, features: ['task_size', 'concurrent_tasks', 'system_load'] },
@@ -150,27 +150,27 @@ class TaskAutomation extends EventEmitter {
 
   async safeApiCall(operation, fallbackFn, ...args) {
     if (this.developmentMode && !this.apiConnected) {
-      logger.debug(`🔄 Using fallback for ${operation} (API disconnected)`);
+      logger.debug(` Using fallback for ${operation} (API disconnected)`);
       return fallbackFn(...args);
     }
-    
+
     if (this.apiConnected && this.realApiMethods && this.realApiMethods[operation]) {
       try {
-        logger.debug(`🟢 Using real API for ${operation}`);
+        logger.debug(` Using real API for ${operation}`);
         const result = await this.realApiMethods[operation](...args);
-        logger.debug(`🏁 Real API call successful for ${operation}`);
+        logger.debug(` Real API call successful for ${operation}`);
         return result;
       } catch (error) {
-        logger.warn(`🟠️ Real API failed for ${operation}, falling back: ${error.message}`);
+        logger.warn(` Real API failed for ${operation}, falling back: ${error.message}`);
       }
     }
-    
+
     try {
       return fallbackFn(...args);
     } catch (error) {
-      if (error.message.includes('invalid_request_error') || 
+      if (error.message.includes('invalid_request_error') ||
           error.message.includes('JSON')) {
-        logger.warn(`🟠️ API error in ${operation}, using basic fallback: ${error.message}`);
+        logger.warn(` API error in ${operation}, using basic fallback: ${error.message}`);
         return fallbackFn(...args);
       }
       throw error;
@@ -180,15 +180,15 @@ class TaskAutomation extends EventEmitter {
   registerRealApiMethods(apiMethods) {
     this.realApiMethods = apiMethods;
     this.apiConnected = true;
-    logger.info(`🔗 Real ML automation API methods registered: ${Object.keys(apiMethods).join(', ')}`);
+    logger.info(` Real ML automation API methods registered: ${Object.keys(apiMethods).join(', ')}`);
   }
 
   unregisterRealApiMethods() {
     this.realApiMethods = null;
     this.apiConnected = false;
-    logger.info('📴 Real ML automation API methods unregistered');
+    logger.info(' Real ML automation API methods unregistered');
   }
-  
+
   /**
    * Initialize task automation
    */
@@ -197,42 +197,42 @@ class TaskAutomation extends EventEmitter {
       // Get instances
       this.workflowEngine = getWorkflowEngine();
       this.pipelineManager = getPipelineManager();
-      
+
       // Register default automations
       this.registerDefaultAutomations();
-      
+
       // Register default triggers
       this.registerDefaultTriggers();
-      
+
       // Register default rules
       this.registerDefaultRules();
-      
+
       // Initialize ML components
       if (this.config.enableMLOptimization) {
         await this.initializeMLOptimization();
       }
-      
+
       // Initialize predictive scheduling
       if (this.config.enablePredictiveScheduling) {
         await this.initializePredictiveScheduling();
       }
-      
+
       // Start task processor
       this.startTaskProcessor();
-      
+
       // Start scheduler
       if (this.config.enableScheduling) {
         this.startScheduler();
       }
-      
+
       // Start ML monitoring
       if (this.config.enableMLOptimization) {
         this.startMLMonitoring();
       }
-      
-      logger.info('🤖 Task Automation initialized with ML capabilities');
+
+      logger.info(' Task Automation initialized with ML capabilities');
       this.emit('initialized');
-      
+
     } catch (error) {
       logger.error('Failed to initialize Task Automation:', error);
       this.emit('error', error);
@@ -260,7 +260,7 @@ class TaskAutomation extends EventEmitter {
         patterns: new Map()
       };
 
-      logger.info('🧠 ML Optimization initialized');
+      logger.info(' ML Optimization initialized');
       return true;
     } catch (error) {
       logger.error('Failed to initialize ML optimization:', error);
@@ -284,7 +284,7 @@ class TaskAutomation extends EventEmitter {
       // Start predictive analysis loop
       this.startPredictiveAnalysis();
 
-      logger.info('🔮 Predictive Scheduling initialized');
+      logger.info(' Predictive Scheduling initialized');
       return true;
     } catch (error) {
       logger.error('Failed to initialize predictive scheduling:', error);
@@ -354,7 +354,7 @@ class TaskAutomation extends EventEmitter {
       // Apply optimizations
       await this.applyOptimizations(task, optimizationResult);
 
-      logger.debug(`🧠 Applied ML optimization to task ${task.name}`);
+      logger.debug(` Applied ML optimization to task ${task.name}`);
       return optimizationResult;
     } catch (error) {
       logger.error('Failed to apply ML optimization:', error);
@@ -377,7 +377,7 @@ class TaskAutomation extends EventEmitter {
         resourceAvailability
       );
 
-      const optimalWindow = predictionResult.optimal_windows.find(w => 
+      const optimalWindow = predictionResult.optimal_windows.find(w =>
         w.task_type === task.type
       );
 
@@ -407,7 +407,7 @@ class TaskAutomation extends EventEmitter {
       await this.updateMLModels();
     }, 300000);
 
-    logger.info('🔬 ML monitoring started');
+    logger.info(' ML monitoring started');
   }
 
   /**
@@ -424,9 +424,9 @@ class TaskAutomation extends EventEmitter {
       await this.updatePredictions();
     }, 600000);
 
-    logger.info('🔮 Predictive analysis started');
+    logger.info(' Predictive analysis started');
   }
-  
+
   /**
    * Create an automated task
    */
@@ -437,12 +437,12 @@ class TaskAutomation extends EventEmitter {
         name: definition.name || 'Unnamed Task',
         description: definition.description,
         type: definition.type || 'standard',
-        
+
         // Task configuration
         action: definition.action,
         params: definition.params || {},
         priority: definition.priority || this.config.defaultPriority,
-        
+
         // Automation configuration
         automation: {
           enabled: definition.automation?.enabled !== false,
@@ -451,7 +451,7 @@ class TaskAutomation extends EventEmitter {
           schedule: definition.automation?.schedule,
           rules: definition.automation?.rules || []
         },
-        
+
         // Execution configuration
         execution: {
           timeout: definition.timeout || 300000, // 5 minutes
@@ -460,7 +460,7 @@ class TaskAutomation extends EventEmitter {
           parallel: definition.parallel || false,
           dependencies: definition.dependencies || []
         },
-        
+
         // State
         state: {
           status: 'created',
@@ -469,7 +469,7 @@ class TaskAutomation extends EventEmitter {
           lastResult: null,
           errors: []
         },
-        
+
         // Metadata
         metadata: {
           created: new Date().toISOString(),
@@ -478,48 +478,48 @@ class TaskAutomation extends EventEmitter {
           tags: definition.tags || []
         }
       };
-      
+
       // Validate task
       this.validateTask(task);
-      
+
       // Store task
       this.tasks.set(task.id, task);
-      
+
       // Setup automation if enabled
       if (task.automation.enabled) {
         await this.setupTaskAutomation(task);
       }
-      
+
       this.metrics.tasksCreated++;
-      
+
       this.emit('task:created', task);
-      logger.info(`🤖 Created task: ${task.name}`);
-      
+      logger.info(` Created task: ${task.name}`);
+
       return task;
-      
+
     } catch (error) {
       logger.error('Failed to create task:', error);
       throw error;
     }
   }
-  
+
   /**
    * Execute a task
    */
   async executeTask(taskId, context = {}) {
     try {
       const task = this.tasks.get(taskId);
-      
+
       if (!task) {
         throw new Error(`Task not found: ${taskId}`);
       }
-      
+
       // Check if task can run
       if (!this.canExecuteTask(task)) {
         this.queueTask(task, context);
         return { queued: true, position: this.taskQueue.length };
       }
-      
+
       // Create execution context
       const execution = {
         id: this.generateExecutionId(),
@@ -529,38 +529,38 @@ class TaskAutomation extends EventEmitter {
         startTime: Date.now(),
         status: 'running'
       };
-      
+
       // Store running task
       this.runningTasks.set(execution.id, execution);
-      
+
       // Update task state
       task.state.status = 'running';
       task.state.executions++;
       task.state.lastExecution = execution.id;
-      
+
       // Execute task
       const result = await this.runTask(execution);
-      
+
       // Complete execution
       this.completeTaskExecution(execution, result);
-      
+
       return result;
-      
+
     } catch (error) {
       logger.error(`Failed to execute task ${taskId}:`, error);
       throw error;
     }
   }
-  
+
   /**
    * Run task execution
    */
   async runTask(execution) {
     const { task, context } = execution;
-    
+
     try {
       this.emit('task:started', execution);
-      
+
       // Check conditions
       if (!await this.checkTaskConditions(task, context)) {
         return {
@@ -569,52 +569,52 @@ class TaskAutomation extends EventEmitter {
           reason: 'Conditions not met'
         };
       }
-      
+
       // Execute based on action type
       let result;
-      
+
       switch (task.action.type) {
         case 'workflow':
           result = await this.executeWorkflowTask(task, context);
           break;
-          
+
         case 'pipeline':
           result = await this.executePipelineTask(task, context);
           break;
-          
+
         case 'function':
           result = await this.executeFunctionTask(task, context);
           break;
-          
+
         case 'webhook':
           result = await this.executeWebhookTask(task, context);
           break;
-          
+
         case 'script':
           result = await this.executeScriptTask(task, context);
           break;
-          
+
         case 'composite':
           result = await this.executeCompositeTask(task, context);
           break;
-          
+
         default:
           result = await this.executeDefaultTask(task, context);
       }
-      
+
       // Apply post-processing
       if (task.action.postProcess) {
         result = await this.applyPostProcessing(result, task.action.postProcess);
       }
-      
+
       // Apply rules
       if (task.automation.rules.length > 0) {
         await this.applyTaskRules(task, result, context);
       }
-      
+
       task.state.status = 'completed';
       task.state.lastResult = result;
-      
+
       return {
         success: true,
         taskId: task.id,
@@ -622,7 +622,7 @@ class TaskAutomation extends EventEmitter {
         result,
         duration: Date.now() - execution.startTime
       };
-      
+
     } catch (error) {
       task.state.status = 'failed';
       task.state.errors.push({
@@ -630,64 +630,64 @@ class TaskAutomation extends EventEmitter {
         error: error.message,
         timestamp: new Date().toISOString()
       });
-      
+
       // Attempt retry if configured
       if (task.execution.retries > 0) {
         return await this.retryTask(execution, error);
       }
-      
+
       throw error;
     }
   }
-  
+
   /**
    * Execute workflow task
    */
   async executeWorkflowTask(task, context) {
     const { workflowId, input } = task.action;
-    
+
     const result = await this.workflowEngine.executeWorkflow(
       workflowId,
       { ...input, ...context }
     );
-    
+
     return result;
   }
-  
+
   /**
    * Execute pipeline task
    */
   async executePipelineTask(task, context) {
     const { pipelineId, input } = task.action;
-    
+
     const result = await this.pipelineManager.executePipeline(
       pipelineId,
       { ...input, ...context }
     );
-    
+
     return result;
   }
-  
+
   /**
    * Execute function task
    */
   async executeFunctionTask(task, context) {
     const { function: fn, params } = task.action;
-    
+
     // Get function from registry or evaluate
     const func = typeof fn === 'function' ? fn : this.evaluateFunction(fn);
-    
+
     const result = await func({ ...params, ...context });
-    
+
     return result;
   }
-  
+
   /**
    * Execute webhook task
    */
   async executeWebhookTask(task, context) {
     const { url, method, headers, body } = task.action;
-    
+
     const response = await fetch(url, {
       method: method || 'POST',
       headers: {
@@ -696,38 +696,38 @@ class TaskAutomation extends EventEmitter {
       },
       body: JSON.stringify({ ...body, ...context })
     });
-    
+
     const data = await response.json();
-    
+
     return {
       status: response.status,
       data
     };
   }
-  
+
   /**
    * Execute composite task
    */
   async executeCompositeTask(task, context) {
     const { tasks } = task.action;
     const results = [];
-    
+
     for (const subtask of tasks) {
       const result = await this.executeTask(subtask.id || subtask, context);
       results.push(result);
-      
+
       // Update context with result if specified
       if (subtask.updateContext) {
         context = { ...context, ...result };
       }
     }
-    
+
     return {
       composite: true,
       results
     };
   }
-  
+
   /**
    * Setup task automation
    */
@@ -736,18 +736,18 @@ class TaskAutomation extends EventEmitter {
     for (const trigger of task.automation.triggers) {
       await this.setupTrigger(task, trigger);
     }
-    
+
     // Setup schedule
     if (task.automation.schedule) {
       await this.setupSchedule(task, task.automation.schedule);
     }
-    
+
     // Setup rules
     for (const rule of task.automation.rules) {
       await this.setupRule(task, rule);
     }
   }
-  
+
   /**
    * Setup trigger for task
    */
@@ -759,27 +759,27 @@ class TaskAutomation extends EventEmitter {
       config: triggerConfig,
       active: true
     };
-    
+
     this.triggers.set(trigger.id, trigger);
-    
+
     // Setup event listener
     if (triggerConfig.type === 'event') {
       this.setupEventTrigger(trigger);
     }
-    
+
     // Setup webhook
     if (triggerConfig.type === 'webhook') {
       this.setupWebhookTrigger(trigger);
     }
-    
+
     // Setup file watcher
     if (triggerConfig.type === 'file') {
       this.setupFileTrigger(trigger);
     }
-    
-    logger.info(`🔔 Setup trigger for task ${task.name}: ${triggerConfig.type}`);
+
+    logger.info(` Setup trigger for task ${task.name}: ${triggerConfig.type}`);
   }
-  
+
   /**
    * Setup schedule for task
    */
@@ -792,27 +792,27 @@ class TaskAutomation extends EventEmitter {
       active: true,
       nextRun: null
     };
-    
+
     this.schedules.set(schedule.id, schedule);
-    
+
     // Setup cron job
     if (scheduleConfig.type === 'cron') {
       this.setupCronSchedule(schedule);
     }
-    
+
     // Setup interval
     if (scheduleConfig.type === 'interval') {
       this.setupIntervalSchedule(schedule);
     }
-    
+
     // Setup one-time
     if (scheduleConfig.type === 'once') {
       this.setupOnceSchedule(schedule);
     }
-    
+
     logger.info(`⏰ Setup schedule for task ${task.name}: ${scheduleConfig.type}`);
   }
-  
+
   /**
    * Register default automations
    */
@@ -827,7 +827,7 @@ class TaskAutomation extends EventEmitter {
         pipelineId: 'etl'
       }
     });
-    
+
     // Backup automation
     this.registerAutomation('backup', {
       name: 'Backup',
@@ -838,7 +838,7 @@ class TaskAutomation extends EventEmitter {
         function: 'performBackup'
       }
     });
-    
+
     // Health check automation
     this.registerAutomation('health-check', {
       name: 'Health Check',
@@ -849,7 +849,7 @@ class TaskAutomation extends EventEmitter {
         function: 'checkSystemHealth'
       }
     });
-    
+
     // Alert automation
     this.registerAutomation('alert', {
       name: 'Alert',
@@ -861,7 +861,7 @@ class TaskAutomation extends EventEmitter {
       }
     });
   }
-  
+
   /**
    * Register default triggers
    */
@@ -871,32 +871,32 @@ class TaskAutomation extends EventEmitter {
       setup: (trigger) => this.setupEventTrigger(trigger),
       teardown: (trigger) => this.teardownEventTrigger(trigger)
     });
-    
+
     // Webhook trigger
     this.registerTriggerType('webhook', {
       setup: (trigger) => this.setupWebhookTrigger(trigger),
       teardown: (trigger) => this.teardownWebhookTrigger(trigger)
     });
-    
+
     // File trigger
     this.registerTriggerType('file', {
       setup: (trigger) => this.setupFileTrigger(trigger),
       teardown: (trigger) => this.teardownFileTrigger(trigger)
     });
-    
+
     // Time trigger
     this.registerTriggerType('time', {
       setup: (trigger) => this.setupTimeTrigger(trigger),
       teardown: (trigger) => this.teardownTimeTrigger(trigger)
     });
-    
+
     // Condition trigger
     this.registerTriggerType('condition', {
       setup: (trigger) => this.setupConditionTrigger(trigger),
       teardown: (trigger) => this.teardownConditionTrigger(trigger)
     });
   }
-  
+
   /**
    * Register default rules
    */
@@ -908,7 +908,7 @@ class TaskAutomation extends EventEmitter {
         logger.info(`Task ${task.name} completed successfully`);
       }
     });
-    
+
     // Failure rule
     this.registerRule('on-failure', {
       condition: (result) => !result.success,
@@ -918,7 +918,7 @@ class TaskAutomation extends EventEmitter {
         this.emit('task:failed', { task, result });
       }
     });
-    
+
     // Threshold rule
     this.registerRule('threshold', {
       condition: (result, params) => {
@@ -930,7 +930,7 @@ class TaskAutomation extends EventEmitter {
         this.emit('threshold:exceeded', { task, result, params });
       }
     });
-    
+
     // Chain rule
     this.registerRule('chain', {
       condition: (result) => result.chain,
@@ -940,7 +940,7 @@ class TaskAutomation extends EventEmitter {
       }
     });
   }
-  
+
   /**
    * Check task conditions
    */
@@ -948,31 +948,31 @@ class TaskAutomation extends EventEmitter {
     for (const condition of task.automation.conditions) {
       const evaluator = this.conditions.get(condition.type) ||
                        this.evaluateCondition;
-      
+
       if (!await evaluator(condition, context)) {
         return false;
       }
     }
-    
+
     return true;
   }
-  
+
   /**
    * Apply task rules
    */
   async applyTaskRules(task, result, context) {
     for (const ruleConfig of task.automation.rules) {
       const rule = this.rules.get(ruleConfig.type);
-      
+
       if (!rule) continue;
-      
+
       if (await rule.condition(result, ruleConfig.params)) {
         await rule.action(task, result, ruleConfig.params);
         this.metrics.rulesEvaluated++;
       }
     }
   }
-  
+
   /**
    * Start task processor
    */
@@ -981,7 +981,7 @@ class TaskAutomation extends EventEmitter {
       this.processTaskQueue();
     }, 1000);
   }
-  
+
   /**
    * Process task queue
    */
@@ -991,7 +991,7 @@ class TaskAutomation extends EventEmitter {
       await this.executeTask(task.id, context);
     }
   }
-  
+
   /**
    * Start scheduler
    */
@@ -1000,16 +1000,16 @@ class TaskAutomation extends EventEmitter {
       this.checkScheduledTasks();
     }, 1000);
   }
-  
+
   /**
    * Check scheduled tasks
    */
   async checkScheduledTasks() {
     const now = Date.now();
-    
+
     for (const [scheduleId, schedule] of this.schedules) {
       if (!schedule.active) continue;
-      
+
       if (schedule.nextRun && schedule.nextRun <= now) {
         const task = this.tasks.get(schedule.taskId);
         if (task) {
@@ -1019,69 +1019,69 @@ class TaskAutomation extends EventEmitter {
       }
     }
   }
-  
+
   /**
    * Helper methods
    */
-  
+
   canExecuteTask(task) {
     return this.runningTasks.size < this.config.maxConcurrentTasks &&
            task.state.status !== 'running';
   }
-  
+
   canExecuteMoreTasks() {
     return this.runningTasks.size < this.config.maxConcurrentTasks;
   }
-  
+
   queueTask(task, context) {
     this.taskQueue.push({ task, context });
     this.taskQueue.sort((a, b) => b.task.priority - a.task.priority);
   }
-  
+
   validateTask(task) {
     if (!task.action || !task.action.type) {
       throw new Error('Task must have an action type');
     }
-    
+
     return true;
   }
-  
+
   generateTaskId() {
     return `task_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
   }
-  
+
   generateExecutionId() {
     return `exec_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
   }
-  
+
   generateTriggerId() {
     return `trigger_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
   }
-  
+
   generateScheduleId() {
     return `schedule_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
   }
-  
+
   completeTaskExecution(execution, result) {
     const duration = Date.now() - execution.startTime;
-    
+
     // Update metrics
     this.metrics.tasksExecuted++;
-    
+
     if (result.success) {
       this.metrics.tasksCompleted++;
     } else {
       this.metrics.tasksFailed++;
     }
-    
+
     // Update average execution time
-    this.metrics.averageExecutionTime = 
+    this.metrics.averageExecutionTime =
       (this.metrics.averageExecutionTime * (this.metrics.tasksExecuted - 1) + duration) /
       this.metrics.tasksExecuted;
-    
+
     // Clean up
     this.runningTasks.delete(execution.id);
-    
+
     // Store completed
     this.completedTasks.set(execution.id, {
       ...execution,
@@ -1089,45 +1089,45 @@ class TaskAutomation extends EventEmitter {
       duration,
       completedAt: new Date().toISOString()
     });
-    
+
     this.emit('task:completed', { execution, result, duration });
   }
-  
+
   /**
    * Register an automation
    */
   registerAutomation(name, automation) {
     this.automations.set(name, automation);
   }
-  
+
   /**
    * Register a trigger type
    */
   registerTriggerType(type, handler) {
     this.triggers.set(type, handler);
   }
-  
+
   /**
    * Register a rule
    */
   registerRule(name, rule) {
     this.rules.set(name, rule);
   }
-  
+
   /**
    * Get task by ID
    */
   getTask(taskId) {
     return this.tasks.get(taskId);
   }
-  
+
   /**
    * List all tasks
    */
   listTasks() {
     return Array.from(this.tasks.values());
   }
-  
+
   /**
    * Get metrics
    */
@@ -1142,23 +1142,23 @@ class TaskAutomation extends EventEmitter {
       schedules: this.schedules.size
     };
   }
-  
+
   /**
    * Destroy the automation system
    */
   destroy() {
     this.removeAllListeners();
-    
+
     // Clear all intervals
     for (const job of this.scheduledJobs.values()) {
       clearInterval(job);
     }
-    
+
     this.tasks.clear();
     this.runningTasks.clear();
     this.completedTasks.clear();
-    
-    logger.info('💥 Task Automation destroyed');
+
+    logger.info(' Task Automation destroyed');
   }
 
   // ML Optimization Implementation Methods
@@ -1199,11 +1199,11 @@ class TaskAutomation extends EventEmitter {
 
       // Update model accuracy
       this.metrics.accuracyScore = insightsResult.confidence_scores.average || 0.75;
-      
+
       // Store insights for future use
       this.storeMLInsights(insightsResult);
 
-      logger.debug('🧠 ML models updated');
+      logger.debug(' ML models updated');
     } catch (error) {
       logger.error('Failed to update ML models:', error);
     }
@@ -1213,7 +1213,7 @@ class TaskAutomation extends EventEmitter {
     try {
       // Analyze task execution patterns
       const patterns = this.extractTaskPatterns();
-      
+
       // Update predictive scheduler patterns
       for (const [taskType, pattern] of Object.entries(patterns)) {
         this.predictiveScheduler.patterns.set(taskType, pattern);
@@ -1242,7 +1242,7 @@ class TaskAutomation extends EventEmitter {
       // Update predictions
       this.updatePredictionStore(predictionResult);
 
-      logger.debug('🔮 Predictions updated');
+      logger.debug(' Predictions updated');
     } catch (error) {
       logger.error('Failed to update predictions:', error);
     }
@@ -1286,7 +1286,7 @@ class TaskAutomation extends EventEmitter {
 
       // Calculate priority score based on execution time and impact
       const priorityScore = impact / Math.log(executionTime + 1);
-      
+
       priorities[taskType] = {
         priority: Math.min(10, Math.max(1, Math.floor(priorityScore * 2))),
         confidence: 0.8,
@@ -1310,12 +1310,12 @@ class TaskAutomation extends EventEmitter {
   optimizeExecutionOrder(taskHistory) {
     // Simple dependency-aware ordering
     const taskTypes = [...new Set(taskHistory.map(h => h.task_type))];
-    
+
     // Sort by average execution time and dependencies
     return taskTypes.sort((a, b) => {
       const aAvgTime = this.calculateAverageExecutionTime(taskHistory, a);
       const bAvgTime = this.calculateAverageExecutionTime(taskHistory, b);
-      
+
       // Shorter tasks first for better throughput
       return aAvgTime - bAvgTime;
     });
@@ -1373,14 +1373,14 @@ class TaskAutomation extends EventEmitter {
 
     // Aggregate resource needs by time
     const timeSlots = {};
-    
+
     for (const prediction of predictions) {
       const timeSlot = Math.floor(prediction.optimal_start_time / (15 * 60 * 1000)); // 15-minute slots
-      
+
       if (!timeSlots[timeSlot]) {
         timeSlots[timeSlot] = { cpu: 0, memory: 0, tasks: 0 };
       }
-      
+
       timeSlots[timeSlot].cpu += prediction.resource_requirements.cpu || 0.5;
       timeSlots[timeSlot].memory += prediction.resource_requirements.memory || 256;
       timeSlots[timeSlot].tasks += 1;
@@ -1389,7 +1389,7 @@ class TaskAutomation extends EventEmitter {
     // Convert to forecast arrays
     for (const [slot, resources] of Object.entries(timeSlots)) {
       const timestamp = parseInt(slot) * 15 * 60 * 1000;
-      
+
       forecast.cpu_forecast.push({ timestamp, value: resources.cpu });
       forecast.memory_forecast.push({ timestamp, value: resources.memory });
       forecast.concurrency_forecast.push({ timestamp, value: resources.tasks });
@@ -1528,27 +1528,27 @@ class TaskAutomation extends EventEmitter {
     if (executionData.length === 0) return 0;
 
     let totalScore = 0;
-    
+
     for (const execution of executionData) {
       let score = 1.0;
-      
+
       // Success rate factor
       if (!execution.success) score *= 0.5;
-      
+
       // Duration factor (shorter is better, up to a point)
       const idealDuration = 60000; // 1 minute ideal
       const durationFactor = Math.min(1.0, idealDuration / (execution.duration || idealDuration));
       score *= (0.7 + 0.3 * durationFactor);
-      
+
       // Resource utilization factor
       const cpuUtilization = execution.cpu_usage || 50;
       const memoryUtilization = execution.memory_usage || 50;
       const optimalUtilization = 70;
-      
+
       const cpuFactor = 1 - Math.abs(cpuUtilization - optimalUtilization) / 100;
       const memoryFactor = 1 - Math.abs(memoryUtilization - optimalUtilization) / 100;
       score *= (0.8 + 0.1 * cpuFactor + 0.1 * memoryFactor);
-      
+
       totalScore += score;
     }
 
@@ -1624,7 +1624,7 @@ class TaskAutomation extends EventEmitter {
       if (!insight.actionable) continue;
 
       let recommendation;
-      
+
       switch (insight.category) {
         case 'execution_pattern':
           recommendation = {
@@ -1737,11 +1737,11 @@ class TaskAutomation extends EventEmitter {
 
   getTaskPatterns(taskId) {
     const executions = this.getTaskExecutionHistory(taskId);
-    
+
     return {
       task_id: taskId,
       execution_count: executions.length,
-      average_duration: executions.length > 0 ? 
+      average_duration: executions.length > 0 ?
         executions.reduce((sum, e) => sum + e.duration, 0) / executions.length : 0,
       success_rate: executions.length > 0 ?
         executions.filter(e => e.success).length / executions.length : 0,
@@ -1752,7 +1752,7 @@ class TaskAutomation extends EventEmitter {
 
   async predictResourceAvailability() {
     const currentUsage = await this.collectSystemMetrics();
-    
+
     return {
       cpu_availability: Math.max(0, 100 - currentUsage.cpu_usage),
       memory_availability: Math.max(0, 100 - currentUsage.memory_usage),
@@ -1765,17 +1765,17 @@ class TaskAutomation extends EventEmitter {
     // Simple load prediction based on current queue and running tasks
     const currentLoad = this.runningTasks.size + this.taskQueue.length;
     const maxCapacity = this.config.maxConcurrentTasks;
-    
+
     return Math.min(1.0, currentLoad / maxCapacity);
   }
 
   async scheduleTaskForOptimalTime(task, context, optimalTime) {
     // Schedule task for optimal execution time
     const delay = optimalTime - Date.now();
-    
+
     if (delay > 0) {
-      logger.info(`🔮 Scheduling task ${task.name} for optimal time in ${Math.round(delay / 1000)}s`);
-      
+      logger.info(` Scheduling task ${task.name} for optimal time in ${Math.round(delay / 1000)}s`);
+
       setTimeout(async () => {
         await this.executeTask(task.id, context);
       }, delay);
@@ -1837,11 +1837,11 @@ class TaskAutomation extends EventEmitter {
     // Simple model retraining simulation
     const recentData = this.executionHistory.slice(-100);
     const accuracy = this.calculateModelAccuracy(recentData);
-    
+
     this.mlModel.accuracy = accuracy;
     this.metrics.accuracyScore = accuracy;
 
-    logger.debug(`🧠 ML model retrained, accuracy: ${(accuracy * 100).toFixed(1)}%`);
+    logger.debug(` ML model retrained, accuracy: ${(accuracy * 100).toFixed(1)}%`);
   }
 
   calculateModelAccuracy(data) {
@@ -1855,13 +1855,13 @@ class TaskAutomation extends EventEmitter {
   optimizePriorityAlgorithm(taskHistory) {
     // Analyze historical performance vs priority
     const priorityPerformance = {};
-    
+
     for (const execution of taskHistory) {
       const priority = execution.priority || 5;
       if (!priorityPerformance[priority]) {
         priorityPerformance[priority] = { total: 0, success: 0, duration: 0 };
       }
-      
+
       priorityPerformance[priority].total++;
       if (execution.success) priorityPerformance[priority].success++;
       priorityPerformance[priority].duration += execution.duration;
@@ -1875,10 +1875,10 @@ class TaskAutomation extends EventEmitter {
     for (let i = 0; i < priorities.length - 1; i++) {
       const highPri = priorityPerformance[priorities[i]];
       const lowPri = priorityPerformance[priorities[i + 1]];
-      
+
       const highSuccessRate = highPri.success / highPri.total;
       const lowSuccessRate = lowPri.success / lowPri.total;
-      
+
       if (lowSuccessRate > highSuccessRate) {
         improvement = Math.max(improvement, lowSuccessRate - highSuccessRate);
         recommendation = `Consider elevating priority of high-performing low-priority tasks`;
@@ -1907,7 +1907,7 @@ class TaskAutomation extends EventEmitter {
   optimizeCPUAllocation(systemMetrics) {
     const currentUsage = systemMetrics.cpu_usage;
     const optimal = currentUsage > 80 ? 'increase' : currentUsage < 40 ? 'decrease' : 'maintain';
-    
+
     return {
       current: currentUsage,
       recommendation: optimal,
@@ -1918,7 +1918,7 @@ class TaskAutomation extends EventEmitter {
   optimizeMemoryAllocation(systemMetrics) {
     const currentUsage = systemMetrics.memory_usage;
     const optimal = currentUsage > 85 ? 'increase' : currentUsage < 50 ? 'decrease' : 'maintain';
-    
+
     return {
       current: currentUsage,
       recommendation: optimal,
@@ -1930,9 +1930,9 @@ class TaskAutomation extends EventEmitter {
     const currentTasks = systemMetrics.active_tasks;
     const maxConcurrent = this.config.maxConcurrentTasks;
     const utilization = currentTasks / maxConcurrent;
-    
+
     let recommendation = maxConcurrent;
-    
+
     if (utilization > 0.9 && systemMetrics.cpu_usage < 70) {
       recommendation = Math.min(maxConcurrent * 1.2, 30);
     } else if (utilization < 0.5 && systemMetrics.cpu_usage > 80) {
@@ -1949,7 +1949,7 @@ class TaskAutomation extends EventEmitter {
   calculateAverageExecutionTime(taskHistory, taskType) {
     const executions = taskHistory.filter(h => !taskType || h.task_type === taskType);
     if (executions.length === 0) return 0;
-    
+
     return executions.reduce((sum, e) => sum + e.duration, 0) / executions.length;
   }
 
@@ -1964,17 +1964,17 @@ class TaskAutomation extends EventEmitter {
     // Find optimal start time based on resource availability
     const now = Date.now();
     const windowSize = 15 * 60 * 1000; // 15 minutes
-    
+
     // Check next few time windows
     for (let i = 0; i < 24; i++) { // Check next 6 hours
       const windowStart = now + (i * windowSize);
       const expectedLoad = this.predictLoadAtTime(windowStart);
-      
+
       if (expectedLoad < 0.7) { // Less than 70% load
         return windowStart;
       }
     }
-    
+
     return now; // Default to immediate execution
   }
 
@@ -1997,18 +1997,18 @@ class TaskAutomation extends EventEmitter {
     const executionCount = pattern.historical_executions?.length || 0;
     const baseConfidence = Math.min(0.9, executionCount / 20); // Max confidence at 20 executions
     const varianceConfidence = 1 - (pattern.duration_variance || 0.3);
-    
+
     return (baseConfidence + varianceConfidence) / 2;
   }
 
   extractTaskPatterns() {
     const patterns = {};
     const taskTypes = [...new Set(this.executionHistory.map(h => h.task_type))];
-    
+
     for (const taskType of taskTypes) {
       const executions = this.executionHistory.filter(h => h.task_type === taskType);
       const durations = executions.map(e => e.execution_time);
-      
+
       patterns[taskType] = {
         task_type: taskType,
         execution_count: executions.length,
@@ -2018,36 +2018,36 @@ class TaskAutomation extends EventEmitter {
         historical_executions: executions
       };
     }
-    
+
     return patterns;
   }
 
   calculateOverallEfficiency() {
     if (this.executionHistory.length === 0) return 0.7; // Default
-    
+
     const recentExecutions = this.executionHistory.slice(-50); // Last 50 executions
     const successRate = recentExecutions.filter(e => e.success).length / recentExecutions.length;
     const avgDuration = recentExecutions.reduce((sum, e) => sum + e.execution_time, 0) / recentExecutions.length;
     const idealDuration = 60000; // 1 minute ideal
-    
+
     const durationEfficiency = Math.min(1.0, idealDuration / avgDuration);
-    
+
     return (successRate * 0.7) + (durationEfficiency * 0.3);
   }
 
   calculateVariance(values) {
     if (values.length === 0) return 0;
-    
+
     const mean = values.reduce((sum, v) => sum + v, 0) / values.length;
     const squaredDiffs = values.map(v => Math.pow(v - mean, 2));
-    
+
     return squaredDiffs.reduce((sum, d) => sum + d, 0) / values.length;
   }
 
   // Testing and Development Methods
   async testTaskAutomation() {
-    logger.info('🧪 Testing Task Automation System...');
-    
+    logger.info(' Testing Task Automation System...');
+
     try {
       // Test basic task creation
       const testTask = await this.createTask({
@@ -2059,25 +2059,25 @@ class TaskAutomation extends EventEmitter {
           params: {}
         }
       });
-      
-      logger.info('🏁 Task creation test passed');
-      
+
+      logger.info(' Task creation test passed');
+
       // Test ML optimization if enabled
       if (this.config.enableMLOptimization) {
         const optimization = await this.applyMLOptimization(testTask, {});
-        logger.info('🏁 ML optimization test passed');
+        logger.info(' ML optimization test passed');
       }
-      
+
       // Test predictive scheduling if enabled
       if (this.config.enablePredictiveScheduling) {
         const optimalTime = await this.predictOptimalExecutionTime(testTask, {});
-        logger.info('🏁 Predictive scheduling test passed');
+        logger.info(' Predictive scheduling test passed');
       }
-      
+
       // Test task execution
       const result = await this.executeTask(testTask.id, {});
-      logger.info('🏁 Task execution test passed');
-      
+      logger.info(' Task execution test passed');
+
       return {
         success: true,
         task_created: !!testTask,
@@ -2088,7 +2088,7 @@ class TaskAutomation extends EventEmitter {
         developmentMode: this.developmentMode
       };
     } catch (error) {
-      logger.error('🔴 Task automation test failed:', error.message);
+      logger.error(' Task automation test failed:', error.message);
       return {
         success: false,
         error: error.message,

@@ -20,10 +20,10 @@ const branding = new ToolBridgeBranding({ enableColors: true });
 const showBanner = () => {
   branding.displayLogo('main', { gradient: true, padding: false });
   console.log(branding.chalk.accent.gold('▄'.repeat(62)));
-  console.log(branding.chalk.accent.gold.bold('🏁 Tool Bridge - Universal AI Development Gateway 🏁'));
+  console.log(branding.chalk.accent.gold.bold(' Tool Bridge - Universal AI Development Gateway '));
   console.log(branding.chalk.accent.gold('▀'.repeat(62)));
   console.log();
-  console.log(branding.chalk.accent.wheat('Part of the BUMBA Platform Suite'));
+  console.log(branding.chalk.accent.wheat('Part of the Agent Primitives Suite'));
   console.log(branding.chalk.accent.wheat('Professional • Intelligent • Secure • Enterprise-Ready'));
   console.log();
 };
@@ -114,21 +114,21 @@ program
       await toolBridge.initialize({ setupOnly: true });
       const status = toolBridge.getStatus();
 
-      console.log(branding.chalk.gradient.yellow('\n🟡 Tool Bridge Status\n'));
+      console.log(branding.chalk.gradient.yellow('\n Tool Bridge Status\n'));
 
       // Configuration status
       console.log(chalk.white('Configuration:'),
-        status.configured ? chalk.green('✓ Valid') : chalk.red('✗ Invalid'));
+        status.configured ? chalk.green(' Valid') : chalk.red(' Invalid'));
 
       // Bridge status
       console.log(chalk.white('Bridge Server:'),
-        status.bridgeRunning ? chalk.green('✓ Running') : chalk.gray('○ Stopped'));
+        status.bridgeRunning ? chalk.green(' Running') : chalk.gray('○ Stopped'));
 
       // Show configured APIs
       if (status.config && status.config.apis) {
-        console.log(branding.chalk.gradient.yellowGreen('\n🟢 Configured APIs:'));
+        console.log(branding.chalk.gradient.yellowGreen('\n Configured APIs:'));
         Object.entries(status.config.apis).forEach(([name, config]) => {
-          const icon = config.enabled ? '✓' : '✗';
+          const icon = config.enabled ? '' : '';
           const color = config.enabled ? chalk.green : chalk.gray;
           console.log(color(`  ${icon} ${name}`));
         });
@@ -136,7 +136,7 @@ program
 
       // Show bridge details if running
       if (status.bridge) {
-        console.log(branding.chalk.gradient.orangeYellow('\n🟠 Bridge Metrics:'));
+        console.log(branding.chalk.gradient.orangeYellow('\n Bridge Metrics:'));
         console.log(chalk.gray(`  • Uptime: ${Math.floor(status.bridge.uptime / 1000)}s`));
         console.log(chalk.gray(`  • Requests: ${status.bridge.metrics.requests}`));
         console.log(chalk.gray(`  • Errors: ${status.bridge.metrics.errors}`));
@@ -170,7 +170,7 @@ program
 
       // Display results
       results.forEach((result) => {
-        const icon = result.success ? '✓' : '✗';
+        const icon = result.success ? '' : '';
         const color = result.success ? chalk.green : chalk.red;
         console.log(color(`${icon} ${result.name}: ${result.message}`));
         if (result.latency) {
@@ -180,9 +180,9 @@ program
 
       const allPassed = results.every((r) => r.success);
       if (allPassed) {
-        console.log(chalk.green('\n✅ All tests passed!'));
+        console.log(chalk.green('\n All tests passed!'));
       } else {
-        console.log(chalk.yellow('\n⚠️ Some tests failed. Run "tool-bridge setup" to reconfigure.'));
+        console.log(chalk.yellow('\n Some tests failed. Run "tool-bridge setup" to reconfigure.'));
       }
 
     } catch (error) {
@@ -221,7 +221,7 @@ program
         }
         config.set(key, value);
         await config.save();
-        console.log(chalk.green(`✓ Set ${key} = ${value}`));
+        console.log(chalk.green(` Set ${key} = ${value}`));
         break;
 
       case 'list': {
@@ -263,7 +263,7 @@ program
 
     try {
       await toolBridge.stop();
-      console.log(chalk.green('✓ Tool Bridge stopped'));
+      console.log(chalk.green(' Tool Bridge stopped'));
     } catch (error) {
       console.error(chalk.red('Failed to stop:', error.message));
       process.exit(1);

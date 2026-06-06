@@ -13,7 +13,7 @@ class ConfigDetector {
       projectRoot: options.projectRoot || process.cwd(),
       ...options
     };
-    
+
     // Detection results
     this.detected = {
       envFile: null,
@@ -25,7 +25,7 @@ class ConfigDetector {
       existingKeys: [],
       bumbaConfig: null
     };
-    
+
     // Platform-specific paths
     this.paths = this.getPlatformPaths();
   }
@@ -36,7 +36,7 @@ class ConfigDetector {
   getPlatformPaths() {
     const homeDir = os.homedir();
     const platform = process.platform;
-    
+
     const paths = {
       homeDir,
       platform,
@@ -49,7 +49,7 @@ class ConfigDetector {
       packageJson: path.join(this.options.projectRoot, 'package.json'),
       bumbaConfig: path.join(this.options.projectRoot, '.bumba', 'config.json')
     };
-    
+
     // MCP config path based on platform
     switch (platform) {
       case 'darwin': // macOS
@@ -81,7 +81,7 @@ class ConfigDetector {
       default:
         paths.mcpConfig = null;
     }
-    
+
     return paths;
   }
 
@@ -96,12 +96,12 @@ class ConfigDetector {
       this.detectPackageJson(),
       this.detectBumbaConfig()
     ]);
-    
+
     // Analyze detection results
     const summary = this.analyzeDete
 
 ction();
-    
+
     return {
       detected: this.detected,
       summary,
@@ -118,16 +118,16 @@ ction();
         const content = await fs.readFile(envPath, 'utf8');
         this.detected.envFile = envPath;
         this.detected.envContent = this.parseEnv(content);
-        
+
         // Detect existing API keys
         this.detectAPIKeys(this.detected.envContent);
-        
+
         return true;
       } catch (error) {
         // File doesn't exist, continue checking
       }
     }
-    
+
     return false;
   }
 
@@ -137,18 +137,18 @@ ction();
   parseEnv(content) {
     const env = {};
     const lines = content.split('\n');
-    
+
     for (const line of lines) {
       // Skip comments and empty lines
       if (line.startsWith('#') || !line.trim()) continue;
-      
+
       const [key, ...valueParts] = line.split('=');
       if (key && valueParts.length > 0) {
         const value = valueParts.join('=').trim();
         env[key.trim()] = value.replace(/^["']|["']$/g, '');
       }
     }
-    
+
     return env;
   }
 
@@ -168,9 +168,9 @@ ction();
       qwen: /^(QWEN_API_KEY|QWEN_KEY)$/,
       kimi: /^(KIMI_API_KEY|KIMI_KEY)$/
     };
-    
+
     this.detected.existingKeys = [];
-    
+
     for (const [provider, pattern] of Object.entries(keyPatterns)) {
       for (const envKey of Object.keys(env)) {
         if (pattern.test(envKey) && env[envKey]) {
@@ -182,7 +182,7 @@ ction();
         }
       }
     }
-    
+
     return this.detected.existingKeys;
   }
 
@@ -191,11 +191,11 @@ ction();
    */
   maskKey(key) {
     if (!key || key.length < 8) return '***';
-    
+
     const visibleChars = 4;
     const start = key.substring(0, visibleChars);
     const masked = '*'.repeat(Math.min(key.length - visibleChars, 20));
-    
+
     return `${start}${masked}`;
   }
 
@@ -206,14 +206,14 @@ ction();
     if (!this.paths.mcpConfig) {
       return false;
     }
-    
+
     try {
       const content = await fs.readFile(this.paths.mcpConfig, 'utf8');
       const config = JSON.parse(content);
-      
+
       this.detected.mcpConfig = this.paths.mcpConfig;
       this.detected.mcpServers = [];
-      
+
       // Extract configured MCP servers
       if (config.mcpServers) {
         for (const [name, serverConfig] of Object.entries(config.mcpServers)) {
@@ -225,7 +225,7 @@ ction();
           });
         }
       }
-      
+
       return true;
     } catch (error) {
       // MCP config doesn't exist or is invalid
@@ -245,7 +245,7 @@ ction();
         hasBumba: content.includes('.bumba'),
         content
       };
-      
+
       return true;
     } catch (error) {
       return false;
@@ -259,16 +259,16 @@ ction();
     try {
       const content = await fs.readFile(this.paths.packageJson, 'utf8');
       const packageJson = JSON.parse(content);
-      
+
       this.detected.packageJson = {
         path: this.paths.packageJson,
         name: packageJson.name,
         version: packageJson.version,
-        hasBumba: !!(packageJson.dependencies?.['bumba-cli'] || 
+        hasBumba: !!(packageJson.dependencies?.['bumba-cli'] ||
                      packageJson.devDependencies?.['bumba-cli']),
         dependencies: packageJson.dependencies || {}
       };
-      
+
       return true;
     } catch (error) {
       return false;
@@ -282,7 +282,7 @@ ction();
     try {
       const content = await fs.readFile(this.paths.bumbaConfig, 'utf8');
       const config = JSON.parse(content);
-      
+
       this.detected.bumbaConfig = {
         path: this.paths.bumbaConfig,
         version: config.version,
@@ -290,7 +290,7 @@ ction();
         lastUpdated: config.metadata?.lastUpdated,
         config
       };
-      
+
       return true;
     } catch (error) {
       return false;
@@ -312,36 +312,36 @@ ction();
       isBumbaProject: this.detected.packageJson?.hasBumba || false,
       hasBumbaConfig: !!this.detected.bumbaConfig,
       isSetupComplete: this.detected.bumbaConfig?.setupCompleted || false,
-      
+
       // Counts
       apiKeyCount: this.detected.existingKeys.length,
       mcpServerCount: this.detected.mcpServers.length,
-      
+
       // Recommendations
       recommendations: []
     };
-    
+
     // Generate recommendations
     if (!summary.hasEnvFile) {
       summary.recommendations.push('Create .env file for API keys');
     }
-    
+
     if (!summary.hasAPIKeys) {
       summary.recommendations.push('Configure at least one AI API key');
     }
-    
+
     if (!summary.hasMCPConfig && this.paths.mcpConfig) {
       summary.recommendations.push('Configure MCP servers for Claude');
     }
-    
+
     if (!summary.isGitignoreConfigured) {
       summary.recommendations.push('Add .env to .gitignore for security');
     }
-    
+
     if (summary.hasAPIKeys && !summary.hasMCPServers) {
       summary.recommendations.push('Set up MCP servers to enable tool access');
     }
-    
+
     return summary;
   }
 
@@ -350,7 +350,7 @@ ction();
    */
   getReport() {
     const summary = this.analyzeDetection();
-    
+
     return {
       platform: this.paths.platform,
       projectRoot: this.options.projectRoot,

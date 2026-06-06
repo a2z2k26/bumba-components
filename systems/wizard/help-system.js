@@ -14,7 +14,7 @@ class HelpSystem {
       verboseHelp: options.verboseHelp || false,
       ...options
     };
-    
+
     // Help topics
     this.topics = {
       general: this.getGeneralHelp(),
@@ -25,10 +25,10 @@ class HelpSystem {
       examples: this.getExamples(),
       commands: this.getCommands()
     };
-    
+
     // Context-sensitive help
     this.contextHelp = this.getContextHelp();
-    
+
     // Quick tips
     this.tips = this.getQuickTips();
   }
@@ -73,8 +73,8 @@ The wizard will guide you through each step with validation and error recovery.
         }
       ],
       links: {
-        documentation: 'https://github.com/a2z2k26/bumba-features/wiki',
-        issues: 'https://github.com/a2z2k26/bumba-features/issues'
+        documentation: 'https://github.com/a2z2k26/agent-primitives/wiki',
+        issues: 'https://github.com/a2z2k26/agent-primitives/issues'
       }
     };
   }
@@ -193,7 +193,7 @@ The wizard will guide you through each step with validation and error recovery.
       overview: `
 MCP servers extend Claude's capabilities with tools for:
 • File system access
-• GitHub operations  
+• GitHub operations
 • Web fetching
 • Database connections
 • And more...
@@ -548,16 +548,16 @@ const response = await fetch('http://localhost:3456/bridge/execute', {
    */
   getQuickTips() {
     return [
-      '💡 Your API keys are never sent to external servers',
-      '💡 Setup progress is auto-saved every 5 seconds',
-      '💡 Press Ctrl+C to safely exit and resume later',
-      '💡 Use "bumba doctor" to diagnose issues',
-      '💡 MCP servers require Claude Desktop restart',
-      '💡 Bridge allows GPT/Gemini to use Claude tools',
-      '💡 Check .bumba/logs for detailed error info',
-      '💡 Run "bumba help [topic]" for specific help',
-      '💡 Your configs are backed up before changes',
-      '💡 Use --verbose flag for detailed output'
+      ' Your API keys are never sent to external servers',
+      ' Setup progress is auto-saved every 5 seconds',
+      ' Press Ctrl+C to safely exit and resume later',
+      ' Use "bumba doctor" to diagnose issues',
+      ' MCP servers require Claude Desktop restart',
+      ' Bridge allows GPT/Gemini to use Claude tools',
+      ' Check .bumba/logs for detailed error info',
+      ' Run "bumba help [topic]" for specific help',
+      ' Your configs are backed up before changes',
+      ' Use --verbose flag for detailed output'
     ];
   }
 
@@ -566,13 +566,13 @@ const response = await fetch('http://localhost:3456/bridge/execute', {
    */
   displayHelp(topic = 'general') {
     const help = this.topics[topic];
-    
+
     if (!help) {
       console.log(chalk.yellow(`Unknown help topic: ${topic}`));
       console.log(chalk.cyan('Available topics:'), Object.keys(this.topics).join(', '));
       return;
     }
-    
+
     // Display title
     console.log(boxen(
       chalk.bold.cyan(help.title),
@@ -582,7 +582,7 @@ const response = await fetch('http://localhost:3456/bridge/execute', {
         borderColor: 'cyan'
       }
     ));
-    
+
     // Display content based on structure
     if (help.sections) {
       help.sections.forEach(section => {
@@ -590,14 +590,14 @@ const response = await fetch('http://localhost:3456/bridge/execute', {
         console.log(section.content);
       });
     }
-    
+
     if (help.overview) {
       console.log(chalk.white(help.overview));
     }
-    
+
     // Display additional information
     if (help.links) {
-      console.log(chalk.yellow.bold('\n📚 Resources:'));
+      console.log(chalk.yellow.bold('\n Resources:'));
       Object.entries(help.links).forEach(([name, url]) => {
         console.log(chalk.cyan(`  ${name}: ${url}`));
       });
@@ -609,13 +609,13 @@ const response = await fetch('http://localhost:3456/bridge/execute', {
    */
   displayContextHelp(context) {
     const help = this.contextHelp[context];
-    
+
     if (!help) {
       return this.displayQuickTip();
     }
-    
+
     console.log(chalk.dim('─'.repeat(50)));
-    console.log(chalk.cyan.bold(`ℹ️  ${help.title}`));
+    console.log(chalk.cyan.bold(`ℹ  ${help.title}`));
     help.tips.forEach(tip => {
       console.log(chalk.dim(`  • ${tip}`));
     });
@@ -638,10 +638,10 @@ const response = await fetch('http://localhost:3456/bridge/execute', {
     const issueKey = Object.keys(troubleshooting.common_issues).find(key =>
       error.message.toLowerCase().includes(key.toLowerCase())
     );
-    
+
     if (issueKey) {
       const issue = troubleshooting.common_issues[issueKey];
-      console.log(chalk.yellow.bold('\n🔧 Troubleshooting:'));
+      console.log(chalk.yellow.bold('\n Troubleshooting:'));
       console.log(chalk.white(`Issue: ${issueKey}`));
       console.log(chalk.dim('Possible causes:'));
       issue.causes.forEach(cause => {
@@ -649,7 +649,7 @@ const response = await fetch('http://localhost:3456/bridge/execute', {
       });
       console.log(chalk.green('Solutions:'));
       issue.solutions.forEach(solution => {
-        console.log(chalk.green(`  ✓ ${solution}`));
+        console.log(chalk.green(`   ${solution}`));
       });
     }
   }
@@ -659,7 +659,7 @@ const response = await fetch('http://localhost:3456/bridge/execute', {
    */
   getFormattedExample(type) {
     const examples = this.topics.examples;
-    
+
     switch (type) {
       case 'env':
         return examples.env_file;
@@ -678,7 +678,7 @@ const response = await fetch('http://localhost:3456/bridge/execute', {
   searchHelp(query) {
     const results = [];
     const searchTerm = query.toLowerCase();
-    
+
     // Search through all topics
     Object.entries(this.topics).forEach(([topicName, topic]) => {
       const content = JSON.stringify(topic).toLowerCase();
@@ -690,10 +690,10 @@ const response = await fetch('http://localhost:3456/bridge/execute', {
         });
       }
     });
-    
+
     // Sort by relevance
     results.sort((a, b) => b.relevance - a.relevance);
-    
+
     return results;
   }
 
@@ -702,24 +702,24 @@ const response = await fetch('http://localhost:3456/bridge/execute', {
    */
   exportAsMarkdown() {
     let markdown = '# BUMBA Setup Wizard Help Documentation\n\n';
-    
+
     Object.entries(this.topics).forEach(([topicName, topic]) => {
       markdown += `## ${topic.title}\n\n`;
-      
+
       if (topic.sections) {
         topic.sections.forEach(section => {
           markdown += `### ${section.name}\n\n`;
           markdown += `${section.content.trim()}\n\n`;
         });
       }
-      
+
       if (topic.overview) {
         markdown += `${topic.overview.trim()}\n\n`;
       }
-      
+
       markdown += '---\n\n';
     });
-    
+
     return markdown;
   }
 }

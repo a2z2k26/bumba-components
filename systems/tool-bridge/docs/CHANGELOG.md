@@ -1,4 +1,4 @@
-# 🟢 Changelog
+#  Changelog
 
 **Building Unified Multi-agent Business Applications**
 
@@ -7,9 +7,9 @@ All notable changes to Tool Bridge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 🏁 [1.0.0] - 2024-01-XX
+##  [1.0.0] - 2024-01-XX
 
-### 🟡 Added
+###  Added
 - Initial release of Tool Bridge
 - Universal AI gateway supporting multiple providers:
   - OpenAI (GPT-4, GPT-3.5-turbo)
@@ -36,22 +36,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Health check endpoints
 - Environment-based configuration
 
-### 🔴 Security
+###  Security
 - All API keys stored as environment variables
 - No hardcoded credentials
 - Secure token generation
 - Rate limiting to prevent abuse
 
-### 🔴 Documentation
+###  Documentation
 - Comprehensive README
 - API documentation
 - Setup guides
 - Docker deployment instructions
 - Contributing guidelines
 
-## 🟠 [Unreleased]
+##  [Unreleased]
 
-### 🟡 Planned
+###  Planned
 - Support for additional AI providers
 - Advanced caching mechanisms
 - Plugin system for custom providers

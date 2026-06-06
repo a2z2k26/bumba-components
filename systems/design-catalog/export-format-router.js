@@ -505,7 +505,7 @@ class ExportFormatRouter extends EventEmitter {
    * Test format routing
    */
   async testRouting() {
-    console.log('🧪 Testing export format routing...\n');
+    console.log(' Testing export format routing...\n');
 
     const testContent = {
       button: {
@@ -523,12 +523,12 @@ class ExportFormatRouter extends EventEmitter {
       const detected = this.detectFormat(null, `test.${format}`);
       const result = await this.route(testContent, detected.type, format);
 
-      console.log(`  ✓ Format: ${result.format}`);
-      console.log(`  ✓ Extension: ${result.extension}`);
-      console.log(`  ✓ Size: ${result.content.length} bytes\n`);
+      console.log(`   Format: ${result.format}`);
+      console.log(`   Extension: ${result.extension}`);
+      console.log(`   Size: ${result.content.length} bytes\n`);
     }
 
-    console.log('✅ Format routing test complete!\n');
+    console.log(' Format routing test complete!\n');
   }
 }
 

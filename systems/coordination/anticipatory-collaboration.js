@@ -14,7 +14,7 @@ class AnticipatoryCollaborationSystem {
     this.apiConnected = false;
     this.developmentMode = process.env.NODE_ENV !== 'production';
     this.predictiveModel = null;
-    
+
     this.initializeAnticipationPatterns();
     this.initializeDepartmentWatchers();
     this.initializeApiFallbacks();
@@ -26,7 +26,7 @@ class AnticipatoryCollaborationSystem {
       predictCollaborationNeeds: (departmentActivity, historicalData) => {
         const predictions = this.generateCollaborationPredictions(departmentActivity, historicalData);
         const confidence = this.calculatePredictionConfidence(predictions);
-        
+
         return {
           predictions: predictions,
           confidence: confidence,
@@ -38,7 +38,7 @@ class AnticipatoryCollaborationSystem {
       optimizeCoordinationTiming: (preparations, departmentCapacities) => {
         const timeline = this.generateOptimalTimeline(preparations, departmentCapacities);
         const bottlenecks = this.identifyCoordinationBottlenecks(preparations, departmentCapacities);
-        
+
         return {
           optimal_timeline: timeline,
           coordination_sequence: this.calculateOptimalSequence(preparations),
@@ -50,7 +50,7 @@ class AnticipatoryCollaborationSystem {
       analyzeCollaborationPatterns: (historicalData) => {
         const patterns = this.extractCollaborationPatterns(historicalData);
         const trends = this.identifyCollaborationTrends(historicalData);
-        
+
         return {
           discovered_patterns: patterns,
           trend_analysis: trends,
@@ -62,7 +62,7 @@ class AnticipatoryCollaborationSystem {
       generateProactiveInsights: (currentContext, patterns) => {
         const insights = this.synthesizeProactiveInsights(currentContext, patterns);
         const recommendations = this.generateActionableRecommendations(insights);
-        
+
         return {
           strategic_insights: insights.filter(i => i.type === 'strategic'),
           tactical_insights: insights.filter(i => i.type === 'tactical'),
@@ -79,7 +79,7 @@ class AnticipatoryCollaborationSystem {
         'workload_increase', 'skill_gap_detected', 'deadline_pressure',
         'quality_threshold_risk', 'cross_department_dependency', 'innovation_opportunity'
       ],
-      
+
       prediction_models: {
         workload_prediction: { accuracy: 0.85, lookAhead: '2_weeks' },
         collaboration_need_prediction: { accuracy: 0.78, lookAhead: '1_week' },
@@ -96,27 +96,27 @@ class AnticipatoryCollaborationSystem {
 
   async safeApiCall(operation, fallbackFn, ...args) {
     if (this.developmentMode && !this.apiConnected) {
-      logger.debug(`🔄 Using fallback for ${operation} (API disconnected)`);
+      logger.debug(` Using fallback for ${operation} (API disconnected)`);
       return fallbackFn(...args);
     }
-    
+
     if (this.apiConnected && this.realApiMethods && this.realApiMethods[operation]) {
       try {
-        logger.debug(`🟢 Using real API for ${operation}`);
+        logger.debug(` Using real API for ${operation}`);
         const result = await this.realApiMethods[operation](...args);
-        logger.debug(`🏁 Real API call successful for ${operation}`);
+        logger.debug(` Real API call successful for ${operation}`);
         return result;
       } catch (error) {
-        logger.warn(`🟠️ Real API failed for ${operation}, falling back: ${error.message}`);
+        logger.warn(` Real API failed for ${operation}, falling back: ${error.message}`);
       }
     }
-    
+
     try {
       return fallbackFn(...args);
     } catch (error) {
-      if (error.message.includes('invalid_request_error') || 
+      if (error.message.includes('invalid_request_error') ||
           error.message.includes('JSON')) {
-        logger.warn(`🟠️ API error in ${operation}, using basic fallback: ${error.message}`);
+        logger.warn(` API error in ${operation}, using basic fallback: ${error.message}`);
         return fallbackFn(...args);
       }
       throw error;
@@ -126,13 +126,13 @@ class AnticipatoryCollaborationSystem {
   registerRealApiMethods(apiMethods) {
     this.realApiMethods = apiMethods;
     this.apiConnected = true;
-    logger.info(`🔗 Real anticipatory API methods registered: ${Object.keys(apiMethods).join(', ')}`);
+    logger.info(` Real anticipatory API methods registered: ${Object.keys(apiMethods).join(', ')}`);
   }
 
   unregisterRealApiMethods() {
     this.realApiMethods = null;
     this.apiConnected = false;
-    logger.info('📴 Real anticipatory API methods unregistered');
+    logger.info(' Real anticipatory API methods unregistered');
   }
 
   initializeAnticipationPatterns() {
@@ -205,7 +205,7 @@ class AnticipatoryCollaborationSystem {
   }
 
   async monitorDepartmentActivity(department, activity) {
-    logger.info(`🏁 Monitoring ${department} activity: ${activity.type}`);
+    logger.info(` Monitoring ${department} activity: ${activity.type}`);
 
     // Enhanced prediction-based monitoring
     const predictionResult = await this.safeApiCall(
@@ -217,7 +217,7 @@ class AnticipatoryCollaborationSystem {
 
     // Check traditional triggers
     const triggers = await this.identifyTriggers(department, activity);
-    
+
     // Add predictive triggers
     const predictiveTriggers = await this.identifyPredictiveTriggers(department, activity, predictionResult);
     const allTriggers = [...triggers, ...predictiveTriggers];
@@ -316,18 +316,18 @@ class AnticipatoryCollaborationSystem {
     const keywordMatch = this.activityMatchesSignal(activity, signal) ? 0.5 : 0;
     const contextMatch = activity.context && activity.context.importance === 'high' ? 0.3 : 0.1;
     const historicalMatch = this.hasHistoricalPrecedent(activity, signal) ? 0.2 : 0;
-    
+
     return keywordMatch + contextMatch + historicalMatch;
   }
 
   hasHistoricalPrecedent(activity, signal) {
-    return this.anticipationHistory.some(h => 
+    return this.anticipationHistory.some(h =>
       h.trigger_signal === signal && h.success_rate > 0.8
     );
   }
 
   async initiateAnticipatoryPreparations(triggers, triggerDepartment, activity) {
-    logger.info(`🏁 Initiating anticipatory preparations for ${triggers.length} triggers`);
+    logger.info(` Initiating anticipatory preparations for ${triggers.length} triggers`);
 
     for (const trigger of triggers) {
       const pattern = this.anticipationPatterns.get(trigger.pattern);
@@ -368,7 +368,7 @@ class AnticipatoryCollaborationSystem {
   }
 
   async notifyDepartmentToPrep(department, prepInfo, trigger, triggerActivity) {
-    logger.info(`🏁 Notifying ${department} to begin preparations: ${prepInfo.readiness_level}`);
+    logger.info(` Notifying ${department} to begin preparations: ${prepInfo.readiness_level}`);
 
     const notification = {
       department: department,
@@ -389,7 +389,7 @@ class AnticipatoryCollaborationSystem {
   }
 
   async checkReadiness(department, taskType) {
-    logger.info(`🏁 Checking ${department} readiness for ${taskType}`);
+    logger.info(` Checking ${department} readiness for ${taskType}`);
 
     const readiness = {
       department: department,
@@ -418,7 +418,7 @@ class AnticipatoryCollaborationSystem {
     }
 
     readiness.readiness_score = Math.min(1.0, readiness.readiness_score);
-    
+
     return readiness;
   }
 
@@ -450,7 +450,7 @@ class AnticipatoryCollaborationSystem {
     if (allReady) {
       preparation.status = 'ready';
       preparation.ready_at = Date.now();
-      
+
       // Record in history for learning
       this.recordAnticipationSuccess(preparation);
     }
@@ -468,7 +468,7 @@ class AnticipatoryCollaborationSystem {
     };
 
     this.anticipationHistory.push(record);
-    
+
     // Update pattern effectiveness
     this.updatePatternEffectiveness(preparation.trigger.pattern, record.success_rate);
   }
@@ -476,7 +476,7 @@ class AnticipatoryCollaborationSystem {
   updatePatternEffectiveness(patternName, successRate) {
     const pattern = this.anticipationPatterns.get(patternName);
     if (pattern) {
-      pattern.effectiveness = pattern.effectiveness 
+      pattern.effectiveness = pattern.effectiveness
         ? (pattern.effectiveness * 0.8 + successRate * 0.2)
         : successRate;
     }
@@ -512,11 +512,11 @@ class AnticipatoryCollaborationSystem {
 
   getPatternEffectiveness() {
     const effectiveness = {};
-    
+
     for (const [patternName, pattern] of this.anticipationPatterns) {
       effectiveness[patternName] = pattern.effectiveness || 0.5;
     }
-    
+
     return effectiveness;
   }
 
@@ -546,14 +546,14 @@ class AnticipatoryCollaborationSystem {
 
   predictWorkloadCollaborations(department, activity, historicalData) {
     const predictions = [];
-    
+
     // Analyze activity intensity
     const activityIntensity = this.calculateActivityIntensity(activity);
-    
+
     if (activityIntensity > 0.7) {
       // High workload likely to require collaboration
       const collaboratingDepartments = this.getFrequentCollaborators(department, historicalData);
-      
+
       for (const collaboratorDept of collaboratingDepartments) {
         predictions.push({
           type: 'workload_collaboration',
@@ -572,13 +572,13 @@ class AnticipatoryCollaborationSystem {
 
   predictSkillGapCollaborations(department, activity) {
     const predictions = [];
-    
+
     // Analyze skill requirements vs department capabilities
     const skillGaps = this.identifySkillGaps(department, activity);
-    
+
     for (const gap of skillGaps) {
       const expertDepartments = this.findExpertDepartments(gap.skill);
-      
+
       for (const expertDept of expertDepartments) {
         predictions.push({
           type: 'skill_gap_collaboration',
@@ -597,10 +597,10 @@ class AnticipatoryCollaborationSystem {
 
   predictOpportunityCollaborations(department, activity, historicalData) {
     const predictions = [];
-    
+
     // Look for innovation opportunities
     const innovationScore = this.calculateInnovationPotential(activity);
-    
+
     if (innovationScore > 0.6) {
       predictions.push({
         type: 'innovation_collaboration',
@@ -615,7 +615,7 @@ class AnticipatoryCollaborationSystem {
 
     // Look for efficiency opportunities
     const efficiencyOpportunities = this.identifyEfficiencyOpportunities(activity, historicalData);
-    
+
     for (const opportunity of efficiencyOpportunities) {
       predictions.push({
         type: 'efficiency_collaboration',
@@ -633,13 +633,13 @@ class AnticipatoryCollaborationSystem {
 
   predictBottleneckCollaborations(department, activity) {
     const predictions = [];
-    
+
     // Identify potential bottlenecks
     const bottleneckRisk = this.assessBottleneckRisk(department, activity);
-    
+
     if (bottleneckRisk.risk_level > 0.6) {
       const mitigatingDepartments = this.identifyBottleneckMitigators(bottleneckRisk);
-      
+
       for (const mitigatorDept of mitigatingDepartments) {
         predictions.push({
           type: 'bottleneck_mitigation',
@@ -658,7 +658,7 @@ class AnticipatoryCollaborationSystem {
 
   calculatePredictionConfidence(predictions) {
     if (predictions.length === 0) return 0;
-    
+
     const totalConfidence = predictions.reduce((sum, pred) => sum + pred.confidence, 0);
     return totalConfidence / predictions.length;
   }
@@ -666,7 +666,7 @@ class AnticipatoryCollaborationSystem {
   estimateTimeHorizon(predictions) {
     const horizons = predictions.map(p => p.time_horizon);
     const counts = horizons.reduce((acc, h) => ({ ...acc, [h]: (acc[h] || 0) + 1 }), {});
-    
+
     return Object.entries(counts).sort(([,a], [,b]) => b - a)[0]?.[0] || '1_week';
   }
 
@@ -675,7 +675,7 @@ class AnticipatoryCollaborationSystem {
       acc[p.urgency] = (acc[p.urgency] || 0) + 1;
       return acc;
     }, {});
-    
+
     return urgencyCounts;
   }
 
@@ -683,12 +683,12 @@ class AnticipatoryCollaborationSystem {
   generateOptimalTimeline(preparations, departmentCapacities) {
     const timeline = [];
     const sortedPreparations = this.prioritizePreparations(preparations);
-    
+
     let currentTime = Date.now();
-    
+
     for (const prep of sortedPreparations) {
       const estimatedDuration = this.estimatePreparationDuration(prep, departmentCapacities);
-      
+
       timeline.push({
         preparation_id: prep.id,
         start_time: currentTime,
@@ -697,10 +697,10 @@ class AnticipatoryCollaborationSystem {
         departments_involved: Array.from(prep.preparations.keys()),
         priority: prep.priority || 'medium'
       });
-      
+
       currentTime += estimatedDuration;
     }
-    
+
     return timeline;
   }
 
@@ -709,7 +709,7 @@ class AnticipatoryCollaborationSystem {
     return preparations.sort((a, b) => {
       const urgencyWeight = this.getUrgencyWeight(a) - this.getUrgencyWeight(b);
       const dependencyWeight = this.getDependencyWeight(a) - this.getDependencyWeight(b);
-      
+
       return urgencyWeight + dependencyWeight;
     });
   }
@@ -717,7 +717,7 @@ class AnticipatoryCollaborationSystem {
   identifyCoordinationBottlenecks(preparations, departmentCapacities) {
     const bottlenecks = [];
     const departmentWorkload = new Map();
-    
+
     // Calculate workload per department
     for (const prep of preparations) {
       for (const dept of prep.preparations.keys()) {
@@ -726,11 +726,11 @@ class AnticipatoryCollaborationSystem {
         departmentWorkload.set(dept, currentLoad + prepWorkload);
       }
     }
-    
+
     // Identify overloaded departments
     for (const [dept, workload] of departmentWorkload) {
       const capacity = departmentCapacities[dept] || 1.0;
-      
+
       if (workload > capacity) {
         bottlenecks.push({
           department: dept,
@@ -740,20 +740,20 @@ class AnticipatoryCollaborationSystem {
         });
       }
     }
-    
+
     return bottlenecks;
   }
 
   suggestResourceAllocation(preparations, departmentCapacities) {
     const allocation = {};
-    
+
     for (const prep of preparations) {
       allocation[prep.id] = {};
-      
+
       for (const [dept, prepInfo] of prep.preparations) {
         const capacity = departmentCapacities[dept] || 1.0;
         const workload = this.estimatePreparationWorkload(prep, dept);
-        
+
         allocation[prep.id][dept] = {
           required_capacity: workload,
           available_capacity: capacity,
@@ -762,55 +762,55 @@ class AnticipatoryCollaborationSystem {
         };
       }
     }
-    
+
     return allocation;
   }
 
   // Pattern Analysis
   extractCollaborationPatterns(historicalData) {
     const patterns = [];
-    
+
     // Frequency patterns
     const departmentPairs = this.analyzeDepartmentPairFrequency(historicalData);
     patterns.push(...this.createFrequencyPatterns(departmentPairs));
-    
+
     // Timing patterns
     const timingPatterns = this.analyzeCollaborationTiming(historicalData);
     patterns.push(...timingPatterns);
-    
+
     // Success patterns
     const successPatterns = this.analyzeSuccessPatterns(historicalData);
     patterns.push(...successPatterns);
-    
+
     return patterns;
   }
 
   identifyCollaborationTrends(historicalData) {
     const trends = [];
-    
+
     // Volume trends
     const volumeTrend = this.calculateCollaborationVolumeTrend(historicalData);
     trends.push(volumeTrend);
-    
+
     // Efficiency trends
     const efficiencyTrend = this.calculateEfficiencyTrend(historicalData);
     trends.push(efficiencyTrend);
-    
+
     // Success rate trends
     const successTrend = this.calculateSuccessRateTrend(historicalData);
     trends.push(successTrend);
-    
+
     return trends;
   }
 
   identifySuccessFactors(historicalData) {
     const successFactors = [];
-    
+
     const successfulCollaborations = historicalData.filter(h => h.success_rate > 0.8);
-    
+
     // Analyze common characteristics
     const characteristics = this.extractCommonCharacteristics(successfulCollaborations);
-    
+
     for (const [characteristic, frequency] of Object.entries(characteristics)) {
       if (frequency > 0.7) {
         successFactors.push({
@@ -820,13 +820,13 @@ class AnticipatoryCollaborationSystem {
         });
       }
     }
-    
+
     return successFactors;
   }
 
   findImprovementOpportunities(patterns, trends) {
     const opportunities = [];
-    
+
     // Identify underperforming patterns
     for (const pattern of patterns) {
       if (pattern.success_rate < 0.6) {
@@ -839,7 +839,7 @@ class AnticipatoryCollaborationSystem {
         });
       }
     }
-    
+
     // Identify negative trends
     for (const trend of trends) {
       if (trend.direction === 'declining' && trend.severity > 0.3) {
@@ -852,24 +852,24 @@ class AnticipatoryCollaborationSystem {
         });
       }
     }
-    
+
     return opportunities;
   }
 
   // Helper Methods for Predictions
   calculateActivityIntensity(activity) {
     let intensity = 0.3; // Base intensity
-    
+
     if (activity.priority === 'high') intensity += 0.3;
     if (activity.complexity === 'high') intensity += 0.2;
     if (activity.deadline && this.isUrgentDeadline(activity.deadline)) intensity += 0.2;
-    
+
     return Math.min(1.0, intensity);
   }
 
   getFrequentCollaborators(department, historicalData) {
     const collaborators = {};
-    
+
     for (const record of historicalData) {
       if (record.departments_involved.includes(department)) {
         for (const dept of record.departments_involved) {
@@ -879,7 +879,7 @@ class AnticipatoryCollaborationSystem {
         }
       }
     }
-    
+
     return Object.entries(collaborators)
       .sort(([,a], [,b]) => b - a)
       .slice(0, 2)
@@ -888,11 +888,11 @@ class AnticipatoryCollaborationSystem {
 
   identifySkillGaps(department, activity) {
     const gaps = [];
-    
+
     // Simple skill gap identification
     const requiredSkills = this.extractRequiredSkills(activity);
     const departmentSkills = this.getDepartmentSkills(department);
-    
+
     for (const skill of requiredSkills) {
       if (!departmentSkills.includes(skill)) {
         gaps.push({
@@ -901,7 +901,7 @@ class AnticipatoryCollaborationSystem {
         });
       }
     }
-    
+
     return gaps;
   }
 
@@ -914,31 +914,31 @@ class AnticipatoryCollaborationSystem {
       'user_research': ['experience'],
       'business_analysis': ['strategic']
     };
-    
+
     return skillMapping[skill] || ['technical'];
   }
 
   calculateInnovationPotential(activity) {
     let potential = 0.2; // Base potential
-    
+
     if (activity.type?.includes('research')) potential += 0.3;
     if (activity.type?.includes('new') || activity.type?.includes('innovative')) potential += 0.4;
     if (activity.description?.includes('breakthrough')) potential += 0.1;
-    
+
     return Math.min(1.0, potential);
   }
 
   identifyEfficiencyOpportunities(activity, historicalData) {
     const opportunities = [];
-    
+
     // Look for repeated activities that could be optimized
-    const similarActivities = historicalData.filter(h => 
+    const similarActivities = historicalData.filter(h =>
       h.activity_type === activity.type
     );
-    
+
     if (similarActivities.length > 3) {
       const avgDuration = similarActivities.reduce((sum, a) => sum + (a.duration || 0), 0) / similarActivities.length;
-      
+
       if (avgDuration > 0) {
         opportunities.push({
           type: 'process_standardization',
@@ -947,17 +947,17 @@ class AnticipatoryCollaborationSystem {
         });
       }
     }
-    
+
     return opportunities;
   }
 
   assessBottleneckRisk(department, activity) {
     let riskLevel = 0.3; // Base risk
-    
+
     if (activity.complexity === 'high') riskLevel += 0.3;
     if (activity.dependencies?.length > 2) riskLevel += 0.2;
     if (this.isDepartmentOverloaded(department)) riskLevel += 0.2;
-    
+
     return {
       risk_level: Math.min(1.0, riskLevel),
       type: 'capacity_bottleneck'
@@ -985,16 +985,16 @@ class AnticipatoryCollaborationSystem {
       'research': ['user_research'],
       'market': ['market_analysis']
     };
-    
+
     const skills = [];
     const activityText = `${activity.type} ${activity.description}`.toLowerCase();
-    
+
     for (const [keyword, skillList] of Object.entries(skillKeywords)) {
       if (activityText.includes(keyword)) {
         skills.push(...skillList);
       }
     }
-    
+
     return skills;
   }
 
@@ -1004,7 +1004,7 @@ class AnticipatoryCollaborationSystem {
       'experience': ['ui_design', 'user_research', 'accessibility'],
       'strategic': ['market_analysis', 'business_analysis', 'product_strategy']
     };
-    
+
     return departmentSkills[department] || [];
   }
 
@@ -1012,7 +1012,7 @@ class AnticipatoryCollaborationSystem {
     const deadlineTime = new Date(deadline).getTime();
     const now = Date.now();
     const daysUntilDeadline = (deadlineTime - now) / (24 * 60 * 60 * 1000);
-    
+
     return daysUntilDeadline < 3; // Less than 3 days is urgent
   }
 
@@ -1030,14 +1030,14 @@ class AnticipatoryCollaborationSystem {
   }
 
   async implementCoordinationOptimizations(optimizationResult) {
-    logger.info('🔧 Implementing coordination optimizations');
+    logger.info(' Implementing coordination optimizations');
     // Implementation would adjust timing and resource allocation
   }
 
   async actOnProactiveInsights(insightResult) {
     for (const insight of insightResult.strategic_insights) {
       if (insight.confidence > 0.8) {
-        logger.info(`🟡 Acting on strategic insight: ${insight.description}`);
+        logger.info(` Acting on strategic insight: ${insight.description}`);
         // Implementation would trigger specific actions
       }
     }
@@ -1065,7 +1065,7 @@ class AnticipatoryCollaborationSystem {
     const baseDuration = 24 * 60 * 60 * 1000; // 1 day in milliseconds
     const complexityMultiplier = preparation.complexity === 'high' ? 1.5 : 1.0;
     const capacityAdjustment = this.calculateCapacityAdjustment(preparation, capacities);
-    
+
     return baseDuration * complexityMultiplier * capacityAdjustment;
   }
 
@@ -1076,15 +1076,15 @@ class AnticipatoryCollaborationSystem {
 
   calculateCapacityAdjustment(preparation, capacities) {
     const involvedDepartments = Array.from(preparation.preparations.keys());
-    const avgCapacity = involvedDepartments.reduce((sum, dept) => 
+    const avgCapacity = involvedDepartments.reduce((sum, dept) =>
       sum + (capacities[dept] || 1.0), 0) / involvedDepartments.length;
-    
+
     return 1.0 / avgCapacity; // Lower capacity = longer duration
   }
 
   suggestBottleneckMitigation(department, workload, capacity) {
     const overloadFactor = workload / capacity;
-    
+
     if (overloadFactor > 2.0) return 'add_external_resources';
     if (overloadFactor > 1.5) return 'redistribute_workload';
     return 'optimize_processes';
@@ -1093,7 +1093,7 @@ class AnticipatoryCollaborationSystem {
   // Pattern Analysis Support Methods
   analyzeDepartmentPairFrequency(historicalData) {
     const pairCounts = new Map();
-    
+
     for (const record of historicalData) {
       const departments = record.departments_involved.sort();
       for (let i = 0; i < departments.length; i++) {
@@ -1103,13 +1103,13 @@ class AnticipatoryCollaborationSystem {
         }
       }
     }
-    
+
     return pairCounts;
   }
 
   createFrequencyPatterns(departmentPairs) {
     const patterns = [];
-    
+
     for (const [pair, count] of departmentPairs) {
       if (count > 5) { // Frequent collaboration threshold
         patterns.push({
@@ -1121,7 +1121,7 @@ class AnticipatoryCollaborationSystem {
         });
       }
     }
-    
+
     return patterns;
   }
 
@@ -1137,7 +1137,7 @@ class AnticipatoryCollaborationSystem {
 
   analyzeSuccessPatterns(historicalData) {
     const successfulCollaborations = historicalData.filter(h => h.success_rate > 0.8);
-    
+
     return [{
       name: 'cross_department_success',
       type: 'success_factor',
@@ -1151,7 +1151,7 @@ class AnticipatoryCollaborationSystem {
     // Simple trend calculation
     const recentVolume = historicalData.slice(-5).length;
     const olderVolume = historicalData.slice(-10, -5).length;
-    
+
     return {
       metric: 'collaboration_volume',
       direction: recentVolume > olderVolume ? 'increasing' : 'declining',
@@ -1180,7 +1180,7 @@ class AnticipatoryCollaborationSystem {
 
   extractCommonCharacteristics(collaborations) {
     const characteristics = {};
-    
+
     for (const collab of collaborations) {
       if (collab.duration < 7) {
         characteristics['short_duration'] = (characteristics['short_duration'] || 0) + 1;
@@ -1189,13 +1189,13 @@ class AnticipatoryCollaborationSystem {
         characteristics['limited_departments'] = (characteristics['limited_departments'] || 0) + 1;
       }
     }
-    
+
     // Convert to frequencies
     const total = collaborations.length;
     for (const key of Object.keys(characteristics)) {
       characteristics[key] = characteristics[key] / total;
     }
-    
+
     return characteristics;
   }
 
@@ -1209,7 +1209,7 @@ class AnticipatoryCollaborationSystem {
 
   synthesizeProactiveInsights(currentContext, patterns) {
     const insights = [];
-    
+
     // Strategic insights
     insights.push({
       type: 'strategic',
@@ -1217,7 +1217,7 @@ class AnticipatoryCollaborationSystem {
       confidence: 0.8,
       recommended_action: 'Initiate proactive preparation'
     });
-    
+
     // Tactical insights
     insights.push({
       type: 'tactical',
@@ -1225,7 +1225,7 @@ class AnticipatoryCollaborationSystem {
       confidence: 0.75,
       recommended_action: 'Redistribute workload early'
     });
-    
+
     return insights;
   }
 
@@ -1240,15 +1240,15 @@ class AnticipatoryCollaborationSystem {
 
   calculateInsightConfidence(insights) {
     if (insights.length === 0) return 0;
-    
+
     const totalConfidence = insights.reduce((sum, insight) => sum + insight.confidence, 0);
     return totalConfidence / insights.length;
   }
 
   // Testing and Development Methods
   async testAnticipatorySystem() {
-    logger.info('🧪 Testing Anticipatory Collaboration System...');
-    
+    logger.info(' Testing Anticipatory Collaboration System...');
+
     try {
       // Test activity monitoring
       const testActivity = {
@@ -1257,10 +1257,10 @@ class AnticipatoryCollaborationSystem {
         priority: 'high',
         complexity: 'medium'
       };
-      
+
       await this.monitorDepartmentActivity('strategic', testActivity);
-      logger.info('🏁 Activity monitoring test passed');
-      
+      logger.info(' Activity monitoring test passed');
+
       // Test prediction
       const predictionResult = await this.safeApiCall(
         'predictCollaborationNeeds',
@@ -1268,12 +1268,12 @@ class AnticipatoryCollaborationSystem {
         { department: 'strategic', activity: testActivity },
         this.anticipationHistory
       );
-      logger.info('🏁 Prediction test passed');
-      
+      logger.info(' Prediction test passed');
+
       // Test readiness check
       const readiness = await this.checkReadiness('technical', 'api_development');
-      logger.info('🏁 Readiness check test passed');
-      
+      logger.info(' Readiness check test passed');
+
       return {
         success: true,
         predictions_generated: predictionResult.predictions.length,
@@ -1282,7 +1282,7 @@ class AnticipatoryCollaborationSystem {
         developmentMode: this.developmentMode
       };
     } catch (error) {
-      logger.error('🔴 Anticipatory system test failed:', error.message);
+      logger.error(' Anticipatory system test failed:', error.message);
       return {
         success: false,
         error: error.message,
@@ -1307,7 +1307,7 @@ class AnticipatoryCollaborationSystem {
 
   calculateOverallPredictionAccuracy() {
     if (this.anticipationHistory.length === 0) return 0;
-    
+
     const accuratePredictons = this.anticipationHistory.filter(h => h.success_rate > 0.8).length;
     return accuratePredictons / this.anticipationHistory.length;
   }
@@ -1336,7 +1336,7 @@ class DepartmentWatcher {
   async analyzeActivityPatterns(predictionResult = null) {
     // Look for repeated patterns that might indicate upcoming work
     const recentActivities = this.activityLog.slice(-10);
-    
+
     // Enhanced pattern detection with predictions
     const activityTypes = recentActivities.map(a => a.type);
     const frequencies = activityTypes.reduce((acc, type) => {
@@ -1351,7 +1351,7 @@ class DepartmentWatcher {
           frequency: count,
           last_seen: Date.now(),
           intensity: 'high',
-          predictions: predictionResult?.predictions?.filter(p => 
+          predictions: predictionResult?.predictions?.filter(p =>
             p.signal.includes(type.toLowerCase())
           ) || []
         });
@@ -1375,7 +1375,7 @@ class DepartmentWatcher {
   }
 
   async startProactivePreparation(notification) {
-    logger.info(`🏁 ${this.department} starting proactive preparation`);
+    logger.info(` ${this.department} starting proactive preparation`);
 
     const preparation = {
       id: `${this.department}-prep-${Date.now()}`,
@@ -1398,7 +1398,7 @@ class DepartmentWatcher {
   async completePreparation(preparation) {
     preparation.status = 'complete';
     preparation.completed_at = Date.now();
-    
+
     // Simulate completed preparation items
     preparation.completed_items = preparation.notification.requested_preparations.map(item => ({
       item: item,
@@ -1415,7 +1415,7 @@ class DepartmentWatcher {
       preparation
     );
 
-    logger.info(`🏁 ${this.department} completed proactive preparation`);
+    logger.info(` ${this.department} completed proactive preparation`);
   }
 
   getActivePreparations() {

@@ -83,10 +83,10 @@ class PluginSystem extends EventEmitter {
 
       this.initialized = true;
       this.emit('system-initialized');
-      console.log(`✅ Plugin System initialized with ${this.plugins.size} plugins`);
+      console.log(` Plugin System initialized with ${this.plugins.size} plugins`);
 
     } catch (error) {
-      console.error('❌ Plugin System initialization failed:', error);
+      console.error(' Plugin System initialization failed:', error);
       throw error;
     }
   }
@@ -109,7 +109,7 @@ class PluginSystem extends EventEmitter {
         try {
           await this.loadPlugin(dirent.name);
         } catch (error) {
-          console.warn(`⚠️ Failed to load plugin ${dirent.name}:`, error.message);
+          console.warn(` Failed to load plugin ${dirent.name}:`, error.message);
         }
       }
     }
@@ -164,11 +164,11 @@ class PluginSystem extends EventEmitter {
       this.plugins.set(pluginName, plugin);
       this.emit('plugin-loaded', plugin);
 
-      console.log(`✅ Loaded plugin: ${pluginName} v${manifest.version}`);
+      console.log(` Loaded plugin: ${pluginName} v${manifest.version}`);
       return plugin;
 
     } catch (error) {
-      console.error(`❌ Failed to load plugin ${pluginName}:`, error);
+      console.error(` Failed to load plugin ${pluginName}:`, error);
       throw error;
     }
   }
@@ -341,11 +341,11 @@ class PluginSystem extends EventEmitter {
       // Load plugin
       await this.loadPlugin(pluginName);
 
-      console.log(`✅ Plugin ${pluginName} installed successfully`);
+      console.log(` Plugin ${pluginName} installed successfully`);
       this.emit('plugin-installed', { name: pluginName, source });
 
     } catch (error) {
-      console.error(`❌ Failed to install plugin ${pluginName}:`, error);
+      console.error(` Failed to install plugin ${pluginName}:`, error);
       throw error;
     }
   }
@@ -376,11 +376,11 @@ class PluginSystem extends EventEmitter {
       // Remove from plugins
       this.plugins.delete(pluginName);
 
-      console.log(`✅ Plugin ${pluginName} unloaded`);
+      console.log(` Plugin ${pluginName} unloaded`);
       this.emit('plugin-unloaded', { name: pluginName });
 
     } catch (error) {
-      console.error(`❌ Failed to unload plugin ${pluginName}:`, error);
+      console.error(` Failed to unload plugin ${pluginName}:`, error);
       throw error;
     }
   }
@@ -398,11 +398,11 @@ class PluginSystem extends EventEmitter {
       const pluginPath = path.join(this.config.pluginsDirectory, pluginName);
       await fs.rm(pluginPath, { recursive: true, force: true });
 
-      console.log(`✅ Plugin ${pluginName} uninstalled`);
+      console.log(` Plugin ${pluginName} uninstalled`);
       this.emit('plugin-uninstalled', { name: pluginName });
 
     } catch (error) {
-      console.error(`❌ Failed to uninstall plugin ${pluginName}:`, error);
+      console.error(` Failed to uninstall plugin ${pluginName}:`, error);
       throw error;
     }
   }
@@ -416,7 +416,7 @@ class PluginSystem extends EventEmitter {
           try {
             require.resolve(depName);
           } catch (error) {
-            console.warn(`⚠️ Plugin ${pluginName} missing dependency: ${depName}@${depVersion}`);
+            console.warn(` Plugin ${pluginName} missing dependency: ${depName}@${depVersion}`);
           }
         }
       }
@@ -478,7 +478,7 @@ class PluginSystem extends EventEmitter {
     }
 
     this.emit('system-shutdown');
-    console.log('✅ Plugin System shutdown complete');
+    console.log(' Plugin System shutdown complete');
   }
 }
 
@@ -502,7 +502,7 @@ class PluginSecurityManager {
 
     // Validate publisher
     if (manifest.publisher && !this.config.trustedPublishers.includes(manifest.publisher)) {
-      console.warn(`⚠️ Plugin from untrusted publisher: ${manifest.publisher}`);
+      console.warn(` Plugin from untrusted publisher: ${manifest.publisher}`);
     }
 
     // Hash verification for trusted plugins
@@ -526,7 +526,7 @@ class PluginSecurityManager {
 
     for (const permission of permissions) {
       if (dangerousPermissions.includes(permission)) {
-        console.warn(`⚠️ Plugin requests dangerous permission: ${permission}`);
+        console.warn(` Plugin requests dangerous permission: ${permission}`);
       }
     }
   }

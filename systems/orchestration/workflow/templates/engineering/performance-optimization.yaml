@@ -64,7 +64,7 @@ steps:
           - thread-contention
           - lock-analysis
         depth: method-level
-      
+
       - name: database-profiling
         agent: performance-analyst
         analysis:
@@ -78,7 +78,7 @@ steps:
           - query-analyzer
           - explain-plans
           - index-advisor
-      
+
       - name: network-profiling
         agent: profiler-agent
         analysis:
@@ -91,7 +91,7 @@ steps:
           - packet-capture
           - trace-route
           - cdn-analytics
-      
+
       - name: infrastructure-profiling
         agent: monitoring-agent
         analysis:
@@ -261,7 +261,7 @@ steps:
             - environment: production
               traffic: gradual
               duration: 24h
-        
+
         - name: monitoring-setup
           agent: monitoring-agent
           setup:

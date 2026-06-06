@@ -52,7 +52,7 @@ class MCPEnvConfigLoader {
       // Process MCP-specific configuration
       this.processMCPConfiguration();
 
-      console.log(`✓ MCP configuration loaded from: ${loadedFrom}`);
+      console.log(` MCP configuration loaded from: ${loadedFrom}`);
       this.loaded = true;
 
       return this.config;

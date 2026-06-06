@@ -33,7 +33,7 @@ class SpecialistCoordinator extends EventEmitter {
       enableCollaboration: true,
       ...options
     };
-    
+
     this.activeTasks = new Map();
     this.completedTasks = new Map();
     this.metrics = {
@@ -43,20 +43,20 @@ class SpecialistCoordinator extends EventEmitter {
       averageResponseTime: 0,
       successRate: 0
     };
-    
-    logger.info(`🟡 Specialist Coordinator initialized for ${department}`);
+
+    logger.info(` Specialist Coordinator initialized for ${department}`);
   }
-  
+
   /**
    * Coordinate task execution across multiple specialists
    */
   async coordinateTask(task, specialists, strategy = CoordinationStrategy.PARALLEL) {
     const taskId = this.generateTaskId();
     const startTime = Date.now();
-    
-    logger.info(`🟢 Coordinating task ${taskId} with ${specialists.length} specialists`);
+
+    logger.info(` Coordinating task ${taskId} with ${specialists.length} specialists`);
     logger.info(`   Strategy: ${strategy}`);
-    
+
     this.activeTasks.set(taskId, {
       task,
       specialists,
@@ -64,40 +64,40 @@ class SpecialistCoordinator extends EventEmitter {
       startTime,
       status: 'active'
     });
-    
+
     try {
       let result;
-      
+
       switch (strategy) {
         case CoordinationStrategy.SEQUENTIAL:
           result = await this.executeSequential(task, specialists);
           break;
-          
+
         case CoordinationStrategy.PARALLEL:
           result = await this.executeParallel(task, specialists);
           break;
-          
+
         case CoordinationStrategy.PIPELINE:
           result = await this.executePipeline(task, specialists);
           break;
-          
+
         case CoordinationStrategy.CONSENSUS:
           result = await this.executeConsensus(task, specialists);
           break;
-          
+
         case CoordinationStrategy.HIERARCHICAL:
           result = await this.executeHierarchical(task, specialists);
           break;
-          
+
         default:
           result = await this.executeParallel(task, specialists);
       }
-      
+
       const responseTime = Date.now() - startTime;
-      
+
       // Update metrics
       this.updateMetrics(responseTime, specialists.length, true);
-      
+
       // Store completed task
       this.completedTasks.set(taskId, {
         ...this.activeTasks.get(taskId),
@@ -106,11 +106,11 @@ class SpecialistCoordinator extends EventEmitter {
         completedAt: Date.now(),
         status: 'completed'
       });
-      
+
       this.activeTasks.delete(taskId);
-      
-      logger.info(`🏁 Task ${taskId} completed in ${responseTime}ms`);
-      
+
+      logger.info(` Task ${taskId} completed in ${responseTime}ms`);
+
       return {
         success: true,
         taskId,
@@ -118,14 +118,14 @@ class SpecialistCoordinator extends EventEmitter {
         responseTime,
         result
       };
-      
+
     } catch (error) {
-      logger.error(`🔴 Task ${taskId} failed: ${error.message}`);
-      
+      logger.error(` Task ${taskId} failed: ${error.message}`);
+
       this.updateMetrics(Date.now() - startTime, specialists.length, false);
-      
+
       this.activeTasks.delete(taskId);
-      
+
       return {
         success: false,
         taskId,
@@ -133,20 +133,20 @@ class SpecialistCoordinator extends EventEmitter {
       };
     }
   }
-  
+
   /**
    * Execute specialists sequentially
    */
   async executeSequential(task, specialists) {
     const results = [];
     let currentInput = task;
-    
+
     for (const specialist of specialists) {
       logger.info(`   Sequential: ${specialist.name || specialist.id} processing...`);
-      
+
       const result = await this.executeSpecialist(specialist, currentInput);
       results.push(result);
-      
+
       // Use output as input for next specialist
       if (result.output) {
         currentInput = {
@@ -155,38 +155,38 @@ class SpecialistCoordinator extends EventEmitter {
         };
       }
     }
-    
+
     return this.aggregateResults(results);
   }
-  
+
   /**
    * Execute specialists in parallel
    */
   async executeParallel(task, specialists) {
     logger.info(`   Parallel: Executing ${specialists.length} specialists simultaneously`);
-    
-    const promises = specialists.map(specialist => 
+
+    const promises = specialists.map(specialist =>
       this.executeSpecialist(specialist, task)
     );
-    
+
     const results = await Promise.all(promises);
-    
+
     return this.aggregateResults(results);
   }
-  
+
   /**
    * Execute specialists in pipeline mode
    */
   async executePipeline(task, specialists) {
     let pipelineData = task;
     const results = [];
-    
+
     for (const specialist of specialists) {
       logger.info(`   Pipeline: ${specialist.name || specialist.id} processing stage...`);
-      
+
       const result = await this.executeSpecialist(specialist, pipelineData);
       results.push(result);
-      
+
       // Transform data for next stage
       pipelineData = {
         ...pipelineData,
@@ -194,21 +194,21 @@ class SpecialistCoordinator extends EventEmitter {
         previousStage: specialist.name || specialist.id
       };
     }
-    
+
     return {
       pipeline: results,
       finalOutput: results[results.length - 1].output
     };
   }
-  
+
   /**
    * Execute specialists with consensus voting
    */
   async executeConsensus(task, specialists) {
     logger.info(`   Consensus: Gathering opinions from ${specialists.length} specialists`);
-    
+
     const results = await this.executeParallel(task, specialists);
-    
+
     // Analyze consensus
     const votes = new Map();
     results.forEach(result => {
@@ -217,7 +217,7 @@ class SpecialistCoordinator extends EventEmitter {
         votes.set(vote, (votes.get(vote) || 0) + 1);
       }
     });
-    
+
     // Find majority opinion
     let maxVotes = 0;
     let consensus = null;
@@ -227,62 +227,62 @@ class SpecialistCoordinator extends EventEmitter {
         consensus = JSON.parse(vote);
       }
     });
-    
+
     return {
       individualResults: results,
       consensus,
       agreement: maxVotes / specialists.length
     };
   }
-  
+
   /**
    * Execute with hierarchical coordination
    */
   async executeHierarchical(task, specialists) {
     if (specialists.length === 0) return null;
-    
+
     const [lead, ...subordinates] = specialists;
-    
+
     logger.info(`   Hierarchical: ${lead.name || lead.id} leading ${subordinates.length} specialists`);
-    
+
     // Lead specialist analyzes and delegates
     const leadAnalysis = await this.executeSpecialist(lead, {
       ...task,
       role: 'lead',
       subordinates: subordinates.map(s => s.name || s.id)
     });
-    
+
     // Subordinates execute based on lead's direction
     const subordinateResults = await Promise.all(
-      subordinates.map(specialist => 
+      subordinates.map(specialist =>
         this.executeSpecialist(specialist, {
           ...task,
           leadGuidance: leadAnalysis.output
         })
       )
     );
-    
+
     // Lead synthesizes results
     const synthesis = await this.executeSpecialist(lead, {
       ...task,
       role: 'synthesize',
       subordinateResults
     });
-    
+
     return {
       leadAnalysis,
       subordinateResults,
       synthesis: synthesis.output
     };
   }
-  
+
   /**
    * Execute a single specialist
    */
   async executeSpecialist(specialist, task) {
     try {
       const startTime = Date.now();
-      
+
       // Execute specialist
       let result;
       if (specialist.execute) {
@@ -292,9 +292,9 @@ class SpecialistCoordinator extends EventEmitter {
       } else {
         result = { success: false, error: 'No execution method available' };
       }
-      
+
       const responseTime = Date.now() - startTime;
-      
+
       return {
         specialist: specialist.name || specialist.id,
         success: result.success !== false,
@@ -303,7 +303,7 @@ class SpecialistCoordinator extends EventEmitter {
         confidence: result.confidence,
         responseTime
       };
-      
+
     } catch (error) {
       logger.error(`Specialist execution failed: ${error.message}`);
       return {
@@ -313,14 +313,14 @@ class SpecialistCoordinator extends EventEmitter {
       };
     }
   }
-  
+
   /**
    * Aggregate results from multiple specialists
    */
   aggregateResults(results) {
     const successful = results.filter(r => r.success);
     const failed = results.filter(r => !r.success);
-    
+
     return {
       totalSpecialists: results.length,
       successful: successful.length,
@@ -330,37 +330,37 @@ class SpecialistCoordinator extends EventEmitter {
       errors: failed.map(r => ({ specialist: r.specialist, error: r.error }))
     };
   }
-  
+
   /**
    * Generate summary from successful results
    */
   generateSummary(results) {
     if (results.length === 0) return null;
-    
+
     // Combine outputs
     const outputs = results.map(r => r.output).filter(Boolean);
-    
+
     // Calculate average confidence
     const confidences = results.map(r => r.confidence).filter(Boolean);
-    const avgConfidence = confidences.length > 0 
-      ? confidences.reduce((a, b) => a + b, 0) / confidences.length 
+    const avgConfidence = confidences.length > 0
+      ? confidences.reduce((a, b) => a + b, 0) / confidences.length
       : 0;
-    
+
     return {
       combinedOutput: outputs.join('\n---\n'),
       averageConfidence: avgConfidence,
       specialistsInvolved: results.map(r => r.specialist)
     };
   }
-  
+
   /**
    * Enable collaboration between specialists
    */
   async enableCollaboration(specialist1, specialist2, task) {
     if (!this.options.enableCollaboration) return null;
-    
-    logger.info(`🤝 Enabling collaboration: ${specialist1.name} <-> ${specialist2.name}`);
-    
+
+    logger.info(` Enabling collaboration: ${specialist1.name} <-> ${specialist2.name}`);
+
     // Allow specialists to share context
     const sharedContext = {
       task,
@@ -368,32 +368,32 @@ class SpecialistCoordinator extends EventEmitter {
       specialist2: specialist2.name,
       timestamp: Date.now()
     };
-    
+
     // Execute collaborative task
     const result1 = await specialist1.collaborate?.(specialist2, sharedContext);
     const result2 = await specialist2.collaborate?.(specialist1, sharedContext);
-    
+
     this.metrics.collaborations++;
-    
+
     return {
       collaboration: true,
       participants: [specialist1.name, specialist2.name],
       results: [result1, result2]
     };
   }
-  
+
   /**
    * Update coordination metrics
    */
   updateMetrics(responseTime, specialistCount, success) {
     this.metrics.tasksCoordinated++;
     this.metrics.specialistsUsed += specialistCount;
-    
+
     // Update average response time
     const count = this.metrics.tasksCoordinated;
     const oldAvg = this.metrics.averageResponseTime;
     this.metrics.averageResponseTime = (oldAvg * (count - 1) + responseTime) / count;
-    
+
     // Update success rate
     if (success) {
       const successCount = Math.floor(this.metrics.successRate * (count - 1));
@@ -403,14 +403,14 @@ class SpecialistCoordinator extends EventEmitter {
       this.metrics.successRate = successCount / count;
     }
   }
-  
+
   /**
    * Generate task ID
    */
   generateTaskId() {
     return `task-${this.department}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   }
-  
+
   /**
    * Get current metrics
    */
@@ -421,13 +421,13 @@ class SpecialistCoordinator extends EventEmitter {
       completedTasks: this.completedTasks.size
     };
   }
-  
+
   /**
    * Clear completed tasks
    */
   clearHistory() {
     this.completedTasks.clear();
-    logger.info('📝 Task history cleared');
+    logger.info(' Task history cleared');
   }
 }
 

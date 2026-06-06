@@ -81,7 +81,7 @@ steps:
     qualityThreshold: 0.85
     description: Iteratively refine and prioritize features
     successCriteria: |
-      return results.consensusScore > 0.85 && 
+      return results.consensusScore > 0.85 &&
              results.alignmentScore > 0.8
     inputs:
       - market-insights
@@ -95,7 +95,7 @@ steps:
   - name: roadmap-synthesis
     type: task
     agent: product-manager
-    dependsOn: 
+    dependsOn:
       - market-analysis
       - stakeholder-gathering
       - prioritization-loop

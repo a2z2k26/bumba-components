@@ -159,7 +159,7 @@ class TemplateConverter {
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&apos;');
-      
+
       return `${indent}<${key}>${value}</${key}>\n`;
     };
 
@@ -177,26 +177,26 @@ class TemplateConverter {
   parseXml(xmlData) {
     // This is a simplified parser - for production use xml2js
     const obj = {};
-    
+
     // Remove XML declaration
     const content = xmlData.replace(/<\?xml[^>]*\?>/, '').trim();
-    
+
     // Extract root element
     const rootMatch = content.match(/<(\w+)>([\s\S]*)<\/\1>/);
     if (!rootMatch) {
       throw new Error('Invalid XML format');
     }
-    
+
     const rootContent = rootMatch[2];
-    
+
     // Parse elements
     const elementRegex = /<(\w+)>([^<]*)<\/\1>|<(\w+)>([\s\S]*?)<\/\3>/g;
     let match;
-    
+
     while ((match = elementRegex.exec(rootContent)) !== null) {
       const key = match[1] || match[3];
       const value = match[2] || match[4];
-      
+
       if (value && !value.includes('<')) {
         // Simple value
         obj[key] = this.parseValue(value.trim());
@@ -205,7 +205,7 @@ class TemplateConverter {
         obj[key] = this.parseXml(`<${key}>${value}</${key}>`);
       }
     }
-    
+
     return obj;
   }
 
@@ -320,7 +320,7 @@ class TemplateConverter {
       else if (currentSection === 'steps') {
         const stepTypes = ['TASK', 'ITERATIVE', 'LOOP', 'PARALLEL', 'CONDITION'];
         const stepType = stepTypes.find(t => trimmed.startsWith(t));
-        
+
         if (stepType) {
           const match = trimmed.match(new RegExp(`${stepType} "([^"]+)"`));
           if (match) {

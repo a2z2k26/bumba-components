@@ -41,7 +41,7 @@ class ModelComparison extends EventEmitter {
     this.results = [];
     const startTime = Date.now();
 
-    console.log(chalk.bold.cyan(`🔍 Comparing ${this.models.length} models...\n`));
+    console.log(chalk.bold.cyan(` Comparing ${this.models.length} models...\n`));
 
     // Run each model
     for (const model of this.models) {
@@ -280,7 +280,7 @@ class ModelComparison extends EventEmitter {
     // Overall ranking
     lines.push(chalk.bold('Overall Ranking:'));
     comparison.rankings.overall.forEach((result, index) => {
-      const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`;
+      const medal = index === 0 ? '' : index === 1 ? '' : index === 2 ? '' : `${index + 1}.`;
       lines.push(chalk.green(
         `${medal} ${result.model} - Score: ${result.compositeScore.toFixed(1)}`
       ));
@@ -291,7 +291,7 @@ class ModelComparison extends EventEmitter {
     lines.push(chalk.bold('Detailed Results:'));
     for (const result of comparison.results) {
       if (result.failed) {
-        lines.push(chalk.red(`\n❌ ${result.model} - Failed`));
+        lines.push(chalk.red(`\n ${result.model} - Failed`));
         lines.push(chalk.gray(`   Error: ${result.error}`));
         continue;
       }

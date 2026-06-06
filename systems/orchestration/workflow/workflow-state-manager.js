@@ -56,7 +56,7 @@ class WorkflowStateManager extends EventEmitter {
       await this.ensureStateDirectory();
     }
 
-    console.log(chalk.blue('📊 Workflow State Manager initialized'));
+    console.log(chalk.blue(' Workflow State Manager initialized'));
   }
 
   /**
@@ -128,7 +128,7 @@ class WorkflowStateManager extends EventEmitter {
     // Initialize transition history
     this.transitionHistory.set(workflowId, []);
 
-    console.log(chalk.green(`📝 Created workflow state: ${workflowId}`));
+    console.log(chalk.green(` Created workflow state: ${workflowId}`));
 
     this.emit('workflow:created', { workflowId, state });
 
@@ -188,7 +188,7 @@ class WorkflowStateManager extends EventEmitter {
 
     this.stats.stateTransitions++;
 
-    console.log(chalk.cyan(`📊 Workflow ${workflowId}: ${previousStatus} → ${newStatus}`));
+    console.log(chalk.cyan(` Workflow ${workflowId}: ${previousStatus} → ${newStatus}`));
 
     this.emit('workflow:state-changed', {
       workflowId,
@@ -221,7 +221,7 @@ class WorkflowStateManager extends EventEmitter {
     const key = `${workflowId}:${stepId}`;
     this.stepStates.set(key, state);
 
-    console.log(chalk.green(`📝 Created step state: ${stepId}`));
+    console.log(chalk.green(` Created step state: ${stepId}`));
 
     this.emit('step:created', { workflowId, stepId, state });
 
@@ -279,7 +279,7 @@ class WorkflowStateManager extends EventEmitter {
 
     this.stats.stateTransitions++;
 
-    console.log(chalk.cyan(`📊 Step ${stepId}: ${previousStatus} → ${newStatus}`));
+    console.log(chalk.cyan(` Step ${stepId}: ${previousStatus} → ${newStatus}`));
 
     this.emit('step:state-changed', {
       workflowId,
@@ -318,7 +318,7 @@ class WorkflowStateManager extends EventEmitter {
     const key = `${workflowId}:${parallelId}`;
     this.parallelExecutions.set(key, state);
 
-    console.log(chalk.green(`📝 Created parallel state: ${parallelId} with ${tracks.length} tracks`));
+    console.log(chalk.green(` Created parallel state: ${parallelId} with ${tracks.length} tracks`));
 
     this.emit('parallel:created', { workflowId, parallelId, state });
 
@@ -378,7 +378,7 @@ class WorkflowStateManager extends EventEmitter {
       state.endTime = Date.now();
     }
 
-    console.log(chalk.cyan(`📊 Parallel track ${trackId}: ${status}`));
+    console.log(chalk.cyan(` Parallel track ${trackId}: ${status}`));
 
     this.emit('parallel:track-updated', {
       workflowId,
@@ -424,7 +424,7 @@ class WorkflowStateManager extends EventEmitter {
 
     this.stats.checkpointsSaved++;
 
-    console.log(chalk.green(`💾 Created checkpoint: ${checkpoint.id}`));
+    console.log(chalk.green(` Created checkpoint: ${checkpoint.id}`));
 
     this.emit('checkpoint:created', { workflowId, checkpoint });
 
@@ -459,7 +459,7 @@ class WorkflowStateManager extends EventEmitter {
 
     this.stats.statesRestored++;
 
-    console.log(chalk.green(`♻️ Restored from checkpoint: ${checkpointId}`));
+    console.log(chalk.green(` Restored from checkpoint: ${checkpointId}`));
 
     this.emit('checkpoint:restored', {
       workflowId,
@@ -664,7 +664,7 @@ class WorkflowStateManager extends EventEmitter {
 
       this.workflowStates.set(workflowId, state);
 
-      console.log(chalk.green(`📂 Loaded persisted state: ${workflowId}`));
+      console.log(chalk.green(` Loaded persisted state: ${workflowId}`));
 
       return state;
     } catch (error) {
@@ -744,7 +744,7 @@ class WorkflowStateManager extends EventEmitter {
       statesRestored: 0
     };
 
-    console.log(chalk.yellow('🧹 State manager cleared'));
+    console.log(chalk.yellow(' State manager cleared'));
   }
 
   /**

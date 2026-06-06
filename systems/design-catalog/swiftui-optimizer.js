@@ -473,7 +473,7 @@ class SwiftUIOptimizer extends EventEmitter {
    * Test SwiftUI view generation
    */
   async testGeneration() {
-    console.log('🧪 Testing SwiftUI view generation...\n');
+    console.log(' Testing SwiftUI view generation...\n');
 
     const sampleView = {
       name: 'MyButton',
@@ -496,17 +496,17 @@ class SwiftUIOptimizer extends EventEmitter {
     };
 
     try {
-      console.log('1️⃣ Generating SwiftUI View...');
+      console.log('1⃣ Generating SwiftUI View...');
       const view = await this.generateView(sampleView);
-      console.log(`   ✓ Generated ${view.split('\n').length} lines of Swift\n`);
+      console.log(`    Generated ${view.split('\n').length} lines of Swift\n`);
 
-      console.log('2️⃣ Checking statistics...');
+      console.log('2⃣ Checking statistics...');
       const stats = this.getStats();
-      console.log(`   ✓ Views generated: ${stats.viewsGenerated}`);
-      console.log(`   ✓ State variables: ${stats.stateVariables}`);
-      console.log(`   ✓ Modifiers applied: ${stats.modifiers}\n`);
+      console.log(`    Views generated: ${stats.viewsGenerated}`);
+      console.log(`    State variables: ${stats.stateVariables}`);
+      console.log(`    Modifiers applied: ${stats.modifiers}\n`);
 
-      console.log('✅ SwiftUI generation test complete!\n');
+      console.log(' SwiftUI generation test complete!\n');
 
       return {
         success: true,
@@ -515,7 +515,7 @@ class SwiftUIOptimizer extends EventEmitter {
       };
 
     } catch (error) {
-      console.error('❌ SwiftUI test failed:', error.message);
+      console.error(' SwiftUI test failed:', error.message);
       throw error;
     }
   }

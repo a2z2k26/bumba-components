@@ -348,20 +348,20 @@ class NaturalLanguageProcessor extends BaseNLPProcessor {
     // From requirements
     extractedInfo.requirements?.forEach(req => {
       if (req.priority === 'required') {
-        criteria.push(`✓ ${req.text}`);
+        criteria.push(` ${req.text}`);
       }
     });
 
     // From constraints
     extractedInfo.constraints?.forEach(constraint => {
-      criteria.push(`✓ Meets ${constraint.type} constraint: ${constraint.context}`);
+      criteria.push(` Meets ${constraint.type} constraint: ${constraint.context}`);
     });
 
     // If no criteria generated, add default
     if (criteria.length === 0) {
-      criteria.push('✓ Implementation meets specified requirements');
-      criteria.push('✓ All tests pass');
-      criteria.push('✓ Documentation is updated');
+      criteria.push(' Implementation meets specified requirements');
+      criteria.push(' All tests pass');
+      criteria.push(' Documentation is updated');
     }
 
     return criteria;

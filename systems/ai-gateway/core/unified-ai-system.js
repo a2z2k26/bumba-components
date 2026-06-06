@@ -1,7 +1,7 @@
 /**
  * BUMBA Unified AI System
  * Phase F - Sprint 71: AI Foundation Layer
- * 
+ *
  * Provides unified interface for multiple AI providers with intelligent
  * orchestration, caching, and fallback capabilities.
  */
@@ -93,7 +93,7 @@ class UnifiedAISystem extends UnifiedManagerBase {
   }
 
   async onInitialize() {
-    logger.info('🤖 Initializing Unified AI System...');
+    logger.info(' Initializing Unified AI System...');
 
     // Initialize core components
     await this.initializeProviders();
@@ -119,11 +119,11 @@ class UnifiedAISystem extends UnifiedManagerBase {
       capabilities: this.getCapabilities()
     });
 
-    logger.info('🤖 Unified AI System initialized successfully');
+    logger.info(' Unified AI System initialized successfully');
   }
 
   async initializeProviders() {
-    logger.info('🤖 Initializing AI providers...');
+    logger.info(' Initializing AI providers...');
 
     // Provider abstraction interface
     this.providerInterface = {
@@ -308,7 +308,7 @@ class UnifiedAISystem extends UnifiedManagerBase {
   }
 
   async initializeModels() {
-    logger.info('🤖 Initializing AI models registry...');
+    logger.info(' Initializing AI models registry...');
 
     // Model registry structure
     this.modelRegistry = {
@@ -357,7 +357,7 @@ class UnifiedAISystem extends UnifiedManagerBase {
   }
 
   async initializePromptSystem() {
-    logger.info('🤖 Initializing prompt management system...');
+    logger.info(' Initializing prompt management system...');
 
     // Prompt template engine
     this.promptEngine = {
@@ -407,12 +407,12 @@ class UnifiedAISystem extends UnifiedManagerBase {
   }
 
   async initializeContextManager() {
-    logger.info('🤖 Initializing context management...');
+    logger.info(' Initializing context management...');
 
     this.contextManager = {
       // Active contexts
       contexts: new Map(),
-      
+
       // Context operations
       create(id, initialContext = {}) {
         const context = {
@@ -442,7 +442,7 @@ class UnifiedAISystem extends UnifiedManagerBase {
           context.messages.push(message);
           context.tokens += this.estimateTokens(message);
           context.updated = Date.now();
-          
+
           // Compress if needed
           if (context.tokens > 7000) {
             this.compress(id);
@@ -485,7 +485,7 @@ class UnifiedAISystem extends UnifiedManagerBase {
   }
 
   async initializeTokenManager() {
-    logger.info('🤖 Initializing token management...');
+    logger.info(' Initializing token management...');
 
     // Capture reference to parent's tokenTracking for use in tokenManager methods
     const tokenTracking = this.tokenTracking;
@@ -552,7 +552,7 @@ class UnifiedAISystem extends UnifiedManagerBase {
   }
 
   async initializeCognitiveServices() {
-    logger.info('🤖 Initializing cognitive services...');
+    logger.info(' Initializing cognitive services...');
 
     this.cognitiveServices = {
       // Natural Language Understanding
@@ -646,7 +646,7 @@ class UnifiedAISystem extends UnifiedManagerBase {
   }
 
   async initializeResponseProcessor() {
-    logger.info('🤖 Initializing response processor...');
+    logger.info(' Initializing response processor...');
 
     this.responseProcessor = new ResponseProcessor({
       enableValidation: true,
@@ -688,7 +688,7 @@ class UnifiedAISystem extends UnifiedManagerBase {
   }
 
   async initializePerformanceOptimizer() {
-    logger.info('🤖 Initializing performance optimizer...');
+    logger.info(' Initializing performance optimizer...');
 
     this.performanceOptimizer = new AIPerformanceOptimizer({
       enableCaching: true,
@@ -732,11 +732,11 @@ class UnifiedAISystem extends UnifiedManagerBase {
         latency: 0
       }
     });
-    
+
     // Add to fallback chain
     this.fallbackChain.push(id);
-    
-    logger.info(`🤖 Registered AI provider: ${id}`);
+
+    logger.info(` Registered AI provider: ${id}`);
     return true;
   }
 
@@ -761,12 +761,12 @@ class UnifiedAISystem extends UnifiedManagerBase {
       usage: 0,
       errors: 0
     });
-    
+
     // Set default for type if not set
     if (!this.defaultModels[config.type]) {
       this.defaultModels[config.type] = id;
     }
-    
+
     return true;
   }
 
@@ -784,7 +784,7 @@ class UnifiedAISystem extends UnifiedManagerBase {
       options,
       timestamp: Date.now()
     };
-    
+
     return this.executeRequest(request);
   }
 
@@ -795,7 +795,7 @@ class UnifiedAISystem extends UnifiedManagerBase {
       options,
       timestamp: Date.now()
     };
-    
+
     return this.executeRequest(request);
   }
 
@@ -806,7 +806,7 @@ class UnifiedAISystem extends UnifiedManagerBase {
       options,
       timestamp: Date.now()
     };
-    
+
     return this.executeRequest(request);
   }
 
@@ -821,7 +821,7 @@ class UnifiedAISystem extends UnifiedManagerBase {
       }
       this.metrics.cacheMisses++;
     }
-    
+
     // Add to queue
     return new Promise((resolve, reject) => {
       this.requestQueue.push({ request, resolve, reject });
@@ -832,15 +832,15 @@ class UnifiedAISystem extends UnifiedManagerBase {
   async processQueue() {
     if (this.processing || this.requestQueue.length === 0) return;
     if (this.activeRequests.size >= this.maxConcurrent) return;
-    
+
     this.processing = true;
-    
+
     while (this.requestQueue.length > 0 && this.activeRequests.size < this.maxConcurrent) {
       const { request, resolve, reject } = this.requestQueue.shift();
       const requestId = crypto.randomUUID();
-      
+
       this.activeRequests.add(requestId);
-      
+
       this.processRequest(request)
         .then(response => {
           // Cache response
@@ -850,14 +850,14 @@ class UnifiedAISystem extends UnifiedManagerBase {
               response,
               timestamp: Date.now()
             });
-            
+
             // Manage cache size
             if (this.responseCache.size > this.cacheOptions.maxSize) {
               const firstKey = this.responseCache.keys().next().value;
               this.responseCache.delete(firstKey);
             }
           }
-          
+
           resolve(response);
         })
         .catch(reject)
@@ -868,7 +868,7 @@ class UnifiedAISystem extends UnifiedManagerBase {
           }
         });
     }
-    
+
     this.processing = false;
   }
 
@@ -935,28 +935,28 @@ class UnifiedAISystem extends UnifiedManagerBase {
   async tryFallback(request, originalError) {
     for (const providerId of this.fallbackChain) {
       if (providerId === this.activeProvider) continue;
-      
+
       try {
         const provider = this.providers.get(providerId);
         if (provider && provider.status === 'active') {
-          logger.info(`🤖 Falling back to provider: ${providerId}`);
-          
+          logger.info(` Falling back to provider: ${providerId}`);
+
           // Temporarily switch provider
           const tempProvider = this.activeProvider;
           this.activeProvider = providerId;
-          
+
           const response = await this.processRequest(request);
-          
+
           // Restore provider
           this.activeProvider = tempProvider;
-          
+
           return response;
         }
       } catch (fallbackError) {
-        logger.error(`🤖 Fallback provider ${providerId} failed:`, fallbackError.message);
+        logger.error(` Fallback provider ${providerId} failed:`, fallbackError.message);
       }
     }
-    
+
     throw originalError;
   }
 
@@ -965,14 +965,14 @@ class UnifiedAISystem extends UnifiedManagerBase {
     if (modelInfo) {
       return this.providers.get(modelInfo.provider);
     }
-    
+
     // Search all providers
     for (const provider of this.providers.values()) {
       if (provider.models.includes(model)) {
         return provider;
       }
     }
-    
+
     return null;
   }
 
@@ -987,13 +987,13 @@ class UnifiedAISystem extends UnifiedManagerBase {
 
   updateMetrics(provider, model, response, latency, success) {
     this.metrics.totalRequests++;
-    
+
     if (success) {
       this.metrics.successfulRequests++;
-      this.metrics.averageLatency = 
-        (this.metrics.averageLatency * (this.metrics.successfulRequests - 1) + latency) / 
+      this.metrics.averageLatency =
+        (this.metrics.averageLatency * (this.metrics.successfulRequests - 1) + latency) /
         this.metrics.successfulRequests;
-      
+
       // Track tokens
       if (response.tokens) {
         this.tokenManager.track(provider, model, response.tokens);
@@ -1002,7 +1002,7 @@ class UnifiedAISystem extends UnifiedManagerBase {
     } else {
       this.metrics.failedRequests++;
     }
-    
+
     // Update provider metrics
     const providerInfo = this.providers.get(provider);
     if (providerInfo) {
@@ -1010,8 +1010,8 @@ class UnifiedAISystem extends UnifiedManagerBase {
       if (!success) {
         providerInfo.metrics.errors++;
       }
-      providerInfo.metrics.latency = 
-        (providerInfo.metrics.latency * (providerInfo.metrics.requests - 1) + latency) / 
+      providerInfo.metrics.latency =
+        (providerInfo.metrics.latency * (providerInfo.metrics.requests - 1) + latency) /
         providerInfo.metrics.requests;
     }
   }
@@ -1052,13 +1052,13 @@ class UnifiedAISystem extends UnifiedManagerBase {
       this.promptTemplates.get('task-planning').template,
       { task, context: JSON.stringify(context) }
     );
-    
+
     const response = await this.complete(prompt, {
       model: 'gpt-4',
       temperature: 0.7,
       maxTokens: 1000
     });
-    
+
     return this.parsePlan(response.text);
   }
 
@@ -1067,13 +1067,13 @@ class UnifiedAISystem extends UnifiedManagerBase {
       this.promptTemplates.get('code-generation').template,
       { language, requirement }
     );
-    
+
     const response = await this.complete(prompt, {
       model: 'gpt-4',
       temperature: 0.3,
       maxTokens: 2000
     });
-    
+
     return response.text;
   }
 
@@ -1082,13 +1082,13 @@ class UnifiedAISystem extends UnifiedManagerBase {
       this.promptTemplates.get('analysis').template,
       { data: JSON.stringify(data) }
     );
-    
+
     const response = await this.complete(prompt, {
       model: 'claude-3-opus',
       temperature: 0.5,
       maxTokens: 1500
     });
-    
+
     return this.parseAnalysis(response.text);
   }
 
@@ -1096,7 +1096,7 @@ class UnifiedAISystem extends UnifiedManagerBase {
     // Parse plan from AI response
     const lines = text.split('\n').filter(line => line.trim());
     const steps = [];
-    
+
     for (const line of lines) {
       const match = line.match(/^\d+\.\s+(.+)/);
       if (match) {
@@ -1107,7 +1107,7 @@ class UnifiedAISystem extends UnifiedManagerBase {
         });
       }
     }
-    
+
     return {
       steps,
       totalSteps: steps.length,
@@ -1165,26 +1165,26 @@ class UnifiedAISystem extends UnifiedManagerBase {
   }
 
   async onShutdown() {
-    logger.info('🤖 Shutting down Unified AI System...');
-    
+    logger.info(' Shutting down Unified AI System...');
+
     // Stop processors
     if (this.queueProcessor) {
       clearInterval(this.queueProcessor);
     }
-    
+
     if (this.metricsReporter) {
       clearInterval(this.metricsReporter);
     }
-    
+
     // Clear queues
     this.requestQueue = [];
     this.activeRequests.clear();
-    
+
     // Clear caches
     this.responseCache.clear();
     this.contextManager.clear();
-    
-    logger.info('🤖 Unified AI System shutdown complete');
+
+    logger.info(' Unified AI System shutdown complete');
   }
 }
 

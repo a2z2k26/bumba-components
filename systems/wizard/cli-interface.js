@@ -16,14 +16,14 @@ class CLIInterface {
       clearScreen: options.clearScreen || false,
       ...options
     };
-    
+
     // Readline interface for basic I/O
     this.rl = null;
-    
+
     // Progress tracking
     this.progressBar = null;
     this.spinner = null;
-    
+
     // Color themes
     this.theme = {
       primary: chalk.cyan,
@@ -34,23 +34,23 @@ class CLIInterface {
       muted: chalk.gray,
       highlight: chalk.bold.white
     };
-    
+
     // Emoji mappings
     this.emoji = {
-      success: '✅',
-      error: '❌',
-      warning: '⚠️',
-      info: 'ℹ️',
-      question: '❓',
-      key: '🔑',
-      server: '🖥️',
-      bridge: '🌉',
-      rocket: '🚀',
-      sparkles: '✨',
-      lock: '🔒',
-      unlock: '🔓',
-      check: '✓',
-      cross: '✗',
+      success: '',
+      error: '',
+      warning: '',
+      info: 'ℹ',
+      question: '',
+      key: '',
+      server: '',
+      bridge: '',
+      rocket: '',
+      sparkles: '',
+      lock: '',
+      unlock: '',
+      check: '',
+      cross: '',
       arrow: '→'
     };
   }
@@ -77,7 +77,7 @@ class CLIInterface {
       this.rl.close();
       this.rl = null;
     }
-    
+
     if (this.spinner) {
       this.spinner.stop();
       this.spinner = null;
@@ -133,7 +133,7 @@ class CLIInterface {
       format: options.format,
       result: options.transform
     });
-    
+
     try {
       const answer = await prompt.run();
       return answer;
@@ -154,7 +154,7 @@ class CLIInterface {
       validate: options.validate,
       mask: options.mask || '*'
     });
-    
+
     try {
       const answer = await prompt.run();
       return answer;
@@ -174,7 +174,7 @@ class CLIInterface {
       message: this.formatMessage(message, options.emoji || 'question'),
       initial: options.default !== false
     });
-    
+
     try {
       const answer = await prompt.run();
       return answer;
@@ -200,7 +200,7 @@ class CLIInterface {
       }),
       initial: options.default || 0
     });
-    
+
     try {
       const answer = await prompt.run();
       return answer;
@@ -219,14 +219,14 @@ class CLIInterface {
     if (this.spinner) {
       this.spinner.stop();
     }
-    
+
     this.spinner = ora({
       text: text,
       spinner: options.spinner || 'dots',
       color: options.color || 'cyan',
       prefixText: options.prefix
     });
-    
+
     this.spinner.start();
     return this.spinner;
   }
@@ -236,7 +236,7 @@ class CLIInterface {
    */
   updateSpinner(text, type = 'text') {
     if (!this.spinner) return;
-    
+
     switch (type) {
       case 'succeed':
         this.spinner.succeed(text);
@@ -266,19 +266,19 @@ class CLIInterface {
     const percentage = Math.round((current / total) * 100);
     const filled = Math.round((current / total) * 30);
     const empty = 30 - filled;
-    
+
     const bar = [
       this.theme.muted('['),
       this.theme.success('█'.repeat(filled)),
       this.theme.muted('░'.repeat(empty)),
       this.theme.muted(']')
     ].join('');
-    
+
     const progress = `${bar} ${percentage}% ${label}`;
-    
+
     // Update in place
     process.stdout.write('\r' + progress);
-    
+
     if (current === total) {
       process.stdout.write('\n');
     }
@@ -331,11 +331,11 @@ class CLIInterface {
     if (title) {
       console.log(this.theme.info.bold(title));
     }
-    
+
     items.forEach((item, index) => {
       const bullet = options.numbered ? `${index + 1}.` : '•';
       const status = item.completed ? this.getEmoji('check') : this.getEmoji('arrow');
-      
+
       if (item.name && item.description) {
         console.log(`  ${bullet} ${status} ${this.theme.highlight(item.name)}`);
         console.log(`      ${this.theme.muted(item.description)}`);
@@ -343,7 +343,7 @@ class CLIInterface {
         console.log(`  ${bullet} ${status} ${item}`);
       }
     });
-    
+
     console.log();
   }
 
@@ -357,18 +357,18 @@ class CLIInterface {
       const maxRowWidth = Math.max(...rows.map(r => String(r[i] || '').length));
       return Math.max(headerWidth, maxRowWidth) + 2;
     });
-    
+
     // Print headers
     const headerRow = headers.map((h, i) => h.padEnd(widths[i])).join('│');
     console.log(this.theme.info(headerRow));
     console.log(this.theme.muted('─'.repeat(headerRow.length)));
-    
+
     // Print rows
     rows.forEach(row => {
       const rowStr = row.map((cell, i) => String(cell || '').padEnd(widths[i])).join('│');
       console.log(rowStr);
     });
-    
+
     console.log();
   }
 
@@ -395,7 +395,7 @@ class CLIInterface {
    */
   async waitForKey(message = 'Press any key to continue...') {
     console.log(this.theme.muted(message));
-    
+
     return new Promise((resolve) => {
       process.stdin.setRawMode(true);
       process.stdin.resume();
@@ -414,18 +414,18 @@ class CLIInterface {
     const lines = content.split('\n');
     const maxLength = Math.max(...lines.map(l => l.length));
     const width = maxLength + 4;
-    
+
     const color = options.color || this.theme.primary;
-    
+
     // Top border
     console.log(color('┌' + '─'.repeat(width - 2) + '┐'));
-    
+
     // Content
     lines.forEach(line => {
       const padded = line.padEnd(maxLength);
       console.log(color('│ ') + padded + color(' │'));
     });
-    
+
     // Bottom border
     console.log(color('└' + '─'.repeat(width - 2) + '┘'));
     console.log();

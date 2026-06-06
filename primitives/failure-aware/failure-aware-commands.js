@@ -14,13 +14,13 @@ class FailureAwareCommandExecutor {
       recovered: 0
     };
   }
-  
+
   /**
    * Execute command with failure handling
    */
   async execute(command, args, context = {}) {
     this.commandStats.executed++;
-    
+
     try {
       // Create safe wrapper for command
       const safeCommand = createSafeAsync(command, {
@@ -28,28 +28,28 @@ class FailureAwareCommandExecutor {
         operation: command.name || 'unknown',
         ...context
       });
-      
+
       // Execute with failure handling
       const result = await safeCommand(args);
-      
+
       return {
         success: true,
         result
       };
-      
+
     } catch (error) {
       this.commandStats.failed++;
-      
+
       // Attempt recovery
       const recovery = await this.failureManager.handleFailure(error, {
         component: 'command',
         operation: command.name,
         metadata: { args }
       });
-      
+
       if (recovery.recovered) {
         this.commandStats.recovered++;
-        
+
         // Retry command
         const result = await command(args);
         return {
@@ -58,7 +58,7 @@ class FailureAwareCommandExecutor {
           recovered: true
         };
       }
-      
+
       return {
         success: false,
         error: error.message,
@@ -66,7 +66,7 @@ class FailureAwareCommandExecutor {
       };
     }
   }
-  
+
   /**
    * Get command execution statistics
    */

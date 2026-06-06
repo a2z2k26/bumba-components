@@ -1460,21 +1460,21 @@ class ModalityIntentDetector extends EventEmitter {
         level: 'high',
         description: 'Strong intent detected - auto-selecting',
         action: 'auto-select',
-        emoji: '✅'
+        emoji: ''
       };
     } else if (confidence >= this.config.suggestThreshold) {
       return {
         level: 'medium',
         description: 'Moderate intent detected - suggesting option',
         action: 'suggest',
-        emoji: '💡'
+        emoji: ''
       };
     } else {
       return {
         level: 'low',
         description: 'Weak or unclear intent - using default',
         action: 'default',
-        emoji: '⚪'
+        emoji: ''
       };
     }
   }

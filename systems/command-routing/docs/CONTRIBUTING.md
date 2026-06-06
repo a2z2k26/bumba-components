@@ -10,21 +10,21 @@
 # CONTRIBUTING TO Command Routing
 
 ╔══════════════════════════════════════════════════════════════════╗
-║ 🟢 **Community Guidelines** • Part of the BUMBA Platform         ║
+║  **Community Guidelines** • Part of the Agent Primitives         ║
 ║ Building Unified Multi-agent Business Applications               ║
 ╚══════════════════════════════════════════════════════════════════╝
 
 First off, thank you for considering contributing to Command Routing! It's people like you that make Command Routing such a great tool for the BUMBA platform.
 
-## 🏁 Code of Conduct
+##  Code of Conduct
 
 By participating in this project, you are expected to uphold our principles of respectful and constructive collaboration.
 
 ---
 
-## 🟡 How Can I Contribute?
+##  How Can I Contribute?
 
-### 🟢 Reporting Bugs
+###  Reporting Bugs
 **Backend Engineering Support**
 
 Before creating bug reports, please check existing issues as you might find that you don't need to create one. When you are creating a bug report, please include as many details as possible:
@@ -40,7 +40,7 @@ Before creating bug reports, please check existing issues as you might find that
 ║ • Include code samples and error messages if applicable         ║
 ╚══════════════════════════════════════════════════════════════════╝
 
-### 🟡 Suggesting Enhancements
+###  Suggesting Enhancements
 **Strategic Product Development**
 
 Enhancement suggestions are tracked as GitHub issues. When creating an enhancement suggestion, please include:
@@ -57,13 +57,13 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 
 ---
 
-## 🟢 Development Process
+##  Development Process
 
-### 🟢 Local Development Setup
+###  Local Development Setup
 
 ```bash
 # Clone the repository
-git clone https://github.com/a2z2k26/bumba-features.git
+git clone https://github.com/a2z2k26/agent-primitives.git
 cd command-routing
 
 # Install dependencies
@@ -76,7 +76,7 @@ npm test
 npm run test:watch
 ```
 
-### 🔴 Pull Request Process
+###  Pull Request Process
 
 1. **Fork & Branch** - Create your feature branch (`git checkout -b feature/amazing-feature`)
 2. **Code** - Make your changes following our style guidelines
@@ -85,7 +85,7 @@ npm run test:watch
 5. **Push** - Push to your branch (`git push origin feature/amazing-feature`)
 6. **PR** - Open a Pull Request with comprehensive description
 
-### 🟠 Testing Requirements
+###  Testing Requirements
 
 All contributions must include:
 - Unit tests for new functionality
@@ -95,18 +95,18 @@ All contributions must include:
 
 ---
 
-## 🟡 Style Guidelines
+##  Style Guidelines
 
 ### JavaScript/Node.js Conventions
 
 ```javascript
-// 🟢 Good - Clear intent, proper async handling
+//  Good - Clear intent, proper async handling
 router.registerHandler('build', async (analysis, context) => {
   // Implementation
   return { status: 'success' };
 });
 
-// 🔴 Bad - No error handling, unclear naming
+//  Bad - No error handling, unclear naming
 router.registerHandler('b', (a) => {
   // Implementation
 });
@@ -125,7 +125,7 @@ test: add integration tests for router
 
 ---
 
-## 🏁 Recognition
+##  Recognition
 
 Contributors will be recognized in our:
 - README contributors section
@@ -140,6 +140,6 @@ Contributors will be recognized in our:
 
 *Professional • Intelligent • Secure*
 
-Thank you for contributing to Command Routing! 🟢
+Thank you for contributing to Command Routing!
 
 </div>

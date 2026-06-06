@@ -518,12 +518,12 @@ class CompareEngine {
     // Recommendation 1: Based on winner
     if (winner.winner === 'orchestration') {
       recommendations.push(
-        `✅ Use orchestration mode for this type of query (${winner.confidence}% confidence)`
+        ` Use orchestration mode for this type of query (${winner.confidence}% confidence)`
       );
 
       if (metrics.specialists.count > 2) {
         recommendations.push(
-          `🎯 Complex tasks benefit from orchestration's ${metrics.specialists.count} specialized models`
+          ` Complex tasks benefit from orchestration's ${metrics.specialists.count} specialized models`
         );
       }
 
@@ -534,41 +534,41 @@ class CompareEngine {
       }
     } else if (winner.winner === 'simple') {
       recommendations.push(
-        `✅ Use simple mode for this type of query (${winner.confidence}% confidence)`
+        ` Use simple mode for this type of query (${winner.confidence}% confidence)`
       );
 
       if (metrics.duration.percentageDiff > 50) {
         recommendations.push(
-          `⚡ Simple mode is ${metrics.duration.percentageDiff}% faster with similar quality`
+          ` Simple mode is ${metrics.duration.percentageDiff}% faster with similar quality`
         );
       }
 
       if (metrics.quality.better === 'simple' || Math.abs(metrics.quality.difference) < 5) {
         recommendations.push(
-          `💡 Simple queries don't benefit from orchestration complexity`
+          ` Simple queries don't benefit from orchestration complexity`
         );
       }
     } else {
       recommendations.push(
-        `⚖️  Both modes perform similarly - use simple mode for faster responses`
+        `  Both modes perform similarly - use simple mode for faster responses`
       );
     }
 
     // Recommendation 2: Based on speed
     if (metrics.duration.orchestration > metrics.duration.simple * 2) {
       recommendations.push(
-        `⏱️  Orchestration overhead is significant (${Math.round(metrics.duration.percentageDiff)}%). Consider simple mode for time-sensitive queries.`
+        `⏱  Orchestration overhead is significant (${Math.round(metrics.duration.percentageDiff)}%). Consider simple mode for time-sensitive queries.`
       );
     }
 
     // Recommendation 3: Based on quality difference
     if (metrics.quality.difference > 15) {
       recommendations.push(
-        `📊 Large quality difference detected. Orchestration specialization is valuable here.`
+        ` Large quality difference detected. Orchestration specialization is valuable here.`
       );
     } else if (Math.abs(metrics.quality.difference) < 5) {
       recommendations.push(
-        `📊 Quality is similar between modes. Choose based on speed requirements.`
+        ` Quality is similar between modes. Choose based on speed requirements.`
       );
     }
 
@@ -576,11 +576,11 @@ class CompareEngine {
     if (!metrics.success.bothSucceeded) {
       if (metrics.success.orchestration && !metrics.success.simple) {
         recommendations.push(
-          `🔧 Orchestration succeeded where simple mode failed - complexity handling is crucial`
+          ` Orchestration succeeded where simple mode failed - complexity handling is crucial`
         );
       } else if (metrics.success.simple && !metrics.success.orchestration) {
         recommendations.push(
-          `⚠️  Orchestration failed - this query may be too simple or edge case handling needs improvement`
+          `  Orchestration failed - this query may be too simple or edge case handling needs improvement`
         );
       }
     }
@@ -592,34 +592,34 @@ class CompareEngine {
           metrics.tokens.simple.total) * 100
       );
       recommendations.push(
-        `💰 Orchestration uses ${tokenIncrease}% more tokens. Consider cost vs quality tradeoff.`
+        ` Orchestration uses ${tokenIncrease}% more tokens. Consider cost vs quality tradeoff.`
       );
     }
 
     // Recommendation 6: General guidance
     if (metrics.specialists.count === 1) {
       recommendations.push(
-        `💡 Only one specialist used - simple mode likely sufficient for similar queries`
+        ` Only one specialist used - simple mode likely sufficient for similar queries`
       );
     }
 
     if (metrics.overhead.orchestration > 1000) {
       // > 1 second overhead
       recommendations.push(
-        `⚙️  High orchestration overhead (${Math.round(metrics.overhead.orchestration)}ms). Best for complex tasks only.`
+        `  High orchestration overhead (${Math.round(metrics.overhead.orchestration)}ms). Best for complex tasks only.`
       );
     }
 
     // Recommendation 7: Query type specific
     if (this.comparison.query.length < 50 && winner.winner === 'simple') {
       recommendations.push(
-        `📝 Short queries typically don't benefit from orchestration complexity`
+        ` Short queries typically don't benefit from orchestration complexity`
       );
     }
 
     if (this.comparison.query.length > 200 && winner.winner === 'orchestration') {
       recommendations.push(
-        `📚 Complex, detailed queries benefit from orchestration's specialized approach`
+        ` Complex, detailed queries benefit from orchestration's specialized approach`
       );
     }
 
@@ -649,22 +649,22 @@ class CompareEngine {
     output += chalk.gray(`Total Duration: ${totalDuration}ms\n\n`);
 
     // Query
-    output += chalk.yellow('📝 Query:\n');
+    output += chalk.yellow(' Query:\n');
     output += chalk.white(`"${query.substring(0, 100)}${query.length > 100 ? '...' : ''}"\n\n`);
 
     // Winner
-    output += chalk.yellow('🏆 Winner:\n');
+    output += chalk.yellow(' Winner:\n');
     if (winner.winner === 'orchestration') {
-      output += chalk.green(`✅ Orchestration Mode (${winner.confidence}% confidence)\n`);
+      output += chalk.green(` Orchestration Mode (${winner.confidence}% confidence)\n`);
     } else if (winner.winner === 'simple') {
-      output += chalk.green(`✅ Simple Mode (${winner.confidence}% confidence)\n`);
+      output += chalk.green(` Simple Mode (${winner.confidence}% confidence)\n`);
     } else {
-      output += chalk.blue(`⚖️  Tie - Both modes performed equally\n`);
+      output += chalk.blue(`  Tie - Both modes performed equally\n`);
     }
     output += chalk.gray(`${winner.reason}\n\n`);
 
     // Metrics Comparison Table
-    output += chalk.yellow('📊 Metrics Comparison:\n\n');
+    output += chalk.yellow(' Metrics Comparison:\n\n');
 
     // Header
     output += chalk.white(`${'Metric'.padEnd(25)} ${'Orchestration'.padEnd(20)} ${'Simple'.padEnd(20)} ${'Difference'.padEnd(15)}\n`);
@@ -713,12 +713,12 @@ class CompareEngine {
 
     // Success
     output += chalk.white('Success'.padEnd(25));
-    output += (metrics.success.orchestration ? chalk.green('✅ Yes') : chalk.red('❌ No')).padEnd(29);
-    output += (metrics.success.simple ? chalk.green('✅ Yes') : chalk.red('❌ No')).padEnd(29);
+    output += (metrics.success.orchestration ? chalk.green(' Yes') : chalk.red(' No')).padEnd(29);
+    output += (metrics.success.simple ? chalk.green(' Yes') : chalk.red(' No')).padEnd(29);
     output += '-\n\n';
 
     // Recommendations
-    output += chalk.yellow('💡 Recommendations:\n\n');
+    output += chalk.yellow(' Recommendations:\n\n');
     recommendations.forEach((rec, index) => {
       output += chalk.white(`${index + 1}. ${rec}\n`);
     });

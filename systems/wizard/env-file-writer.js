@@ -17,7 +17,7 @@ class EnvFileWriter {
       preserveComments: options.preserveComments !== false,
       ...options
     };
-    
+
     // Tracking
     this.existingContent = null;
     this.backupPath = null;
@@ -33,33 +33,33 @@ class EnvFileWriter {
       if (this.options.createBackup) {
         await this.createBackup();
       }
-      
+
       // Load existing content
       await this.loadExisting();
-      
+
       // Generate new content
       const content = this.generateEnvContent(config);
-      
+
       // Write to file
       await fs.writeFile(this.options.envPath, content, 'utf8');
-      
+
       // Update .gitignore
       if (this.options.updateGitignore) {
         await this.updateGitignore();
       }
-      
+
       // Set file permissions (Unix-like systems)
       if (process.platform !== 'win32') {
         await fs.chmod(this.options.envPath, 0o600);
       }
-      
+
       return {
         success: true,
         path: this.options.envPath,
         backup: this.backupPath,
         changes: this.changes
       };
-      
+
     } catch (error) {
       return {
         success: false,
@@ -88,17 +88,17 @@ class EnvFileWriter {
   parseEnv(content) {
     const env = {};
     const lines = content.split('\n');
-    
+
     for (const line of lines) {
       if (line.startsWith('#') || !line.trim()) continue;
-      
+
       const [key, ...valueParts] = line.split('=');
       if (key && valueParts.length > 0) {
         const value = valueParts.join('=').trim();
         env[key.trim()] = value.replace(/^["']|["']$/g, '');
       }
     }
-    
+
     return env;
   }
 
@@ -108,26 +108,26 @@ class EnvFileWriter {
   generateEnvContent(config) {
     const lines = [];
     const timestamp = new Date().toISOString();
-    
+
     // Header
     lines.push('# ================================================');
     lines.push('# BUMBA Framework Configuration');
     lines.push(`# Generated: ${timestamp}`);
     lines.push('# ================================================');
     lines.push('');
-    
+
     // Environment
     lines.push('# Environment Settings');
     lines.push(`BUMBA_ENV=${config.environment || 'development'}`);
     lines.push('');
-    
+
     // AI Model API Keys
     if (config.apiKeys && Object.keys(config.apiKeys).length > 0) {
       lines.push('# ================================================');
       lines.push('# AI Model API Keys');
       lines.push('# ================================================');
       lines.push('');
-      
+
       // OpenAI
       if (config.apiKeys.openai) {
         lines.push('# OpenAI - GPT-4, GPT-3.5');
@@ -136,7 +136,7 @@ class EnvFileWriter {
         lines.push('');
         this.changes.push('Added OpenAI API key');
       }
-      
+
       // Anthropic
       if (config.apiKeys.anthropic) {
         lines.push('# Anthropic - Claude 3 Opus, Sonnet, Haiku');
@@ -146,7 +146,7 @@ class EnvFileWriter {
         lines.push('');
         this.changes.push('Added Anthropic API key');
       }
-      
+
       // Google
       if (config.apiKeys.google) {
         lines.push('# Google AI - Gemini Pro, Gemini Vision');
@@ -156,7 +156,7 @@ class EnvFileWriter {
         lines.push('');
         this.changes.push('Added Google AI API key');
       }
-      
+
       // OpenRouter
       if (config.apiKeys.openrouter) {
         lines.push('# OpenRouter - Access to 200+ AI models');
@@ -165,7 +165,7 @@ class EnvFileWriter {
         lines.push('');
         this.changes.push('Added OpenRouter API key');
       }
-      
+
       // DeepSeek
       if (config.apiKeys.deepseek) {
         lines.push('# DeepSeek - Cost-effective coding model');
@@ -173,7 +173,7 @@ class EnvFileWriter {
         lines.push('');
         this.changes.push('Added DeepSeek API key');
       }
-      
+
       // Qwen
       if (config.apiKeys.qwen) {
         lines.push('# Qwen - Alibaba Cloud AI model');
@@ -181,7 +181,7 @@ class EnvFileWriter {
         lines.push('');
         this.changes.push('Added Qwen API key');
       }
-      
+
       // Kimi
       if (config.apiKeys.kimi) {
         lines.push('# Kimi - Long context AI model');
@@ -190,7 +190,7 @@ class EnvFileWriter {
         this.changes.push('Added Kimi API key');
       }
     }
-    
+
     // Service APIs
     const hasServiceAPIs = config.apiKeys?.github || config.apiKeys?.notion || config.apiKeys?.pinecone;
     if (hasServiceAPIs) {
@@ -198,7 +198,7 @@ class EnvFileWriter {
       lines.push('# Service APIs');
       lines.push('# ================================================');
       lines.push('');
-      
+
       // GitHub
       if (config.apiKeys.github) {
         lines.push('# GitHub - Repository and PR management');
@@ -207,7 +207,7 @@ class EnvFileWriter {
         lines.push('');
         this.changes.push('Added GitHub token');
       }
-      
+
       // Notion
       if (config.apiKeys.notion) {
         lines.push('# Notion - Database and documentation');
@@ -222,7 +222,7 @@ class EnvFileWriter {
         lines.push('');
         this.changes.push('Added Notion API key');
       }
-      
+
       // Pinecone
       if (config.apiKeys.pinecone) {
         lines.push('# Pinecone - Vector database for embeddings');
@@ -238,7 +238,7 @@ class EnvFileWriter {
         this.changes.push('Added Pinecone API key');
       }
     }
-    
+
     // Bridge Configuration
     if (config.bridge) {
       lines.push('# ================================================');
@@ -254,7 +254,7 @@ class EnvFileWriter {
       lines.push('');
       this.changes.push('Configured Universal Tool Bridge');
     }
-    
+
     // BUMBA Settings
     lines.push('# ================================================');
     lines.push('# BUMBA Framework Settings');
@@ -267,7 +267,7 @@ class EnvFileWriter {
     lines.push(`BUMBA_LOG_LEVEL=${config.bumba?.logLevel || 'info'}`);
     lines.push(`BUMBA_TELEMETRY=${config.bumba?.telemetry || false}`);
     lines.push('');
-    
+
     // Security Settings
     if (config.security) {
       lines.push('# ================================================');
@@ -279,29 +279,29 @@ class EnvFileWriter {
       lines.push(`BUMBA_BACKUP_ON_CHANGE=${config.security.backupOnChange !== false}`);
       lines.push('');
     }
-    
+
     // Preserve custom variables from existing .env
     if (this.existingContent && this.options.preserveComments) {
       const existing = this.parseEnv(this.existingContent);
       const newKeys = new Set(lines.filter(l => l.includes('=')).map(l => l.split('=')[0]));
-      
+
       const customVars = Object.entries(existing)
         .filter(([key]) => !newKeys.has(key))
         .filter(([key]) => !key.startsWith('BUMBA_') && !key.endsWith('_API_KEY'));
-      
+
       if (customVars.length > 0) {
         lines.push('# ================================================');
         lines.push('# Custom Variables (Preserved)');
         lines.push('# ================================================');
         lines.push('');
-        
+
         for (const [key, value] of customVars) {
           lines.push(`${key}=${value}`);
         }
         lines.push('');
       }
     }
-    
+
     return lines.join('\n');
   }
 
@@ -317,22 +317,22 @@ class EnvFileWriter {
         return null;
       }
     }
-    
+
     // Create backup directory
     await fs.mkdir(this.options.backupDir, { recursive: true });
-    
+
     // Generate backup filename with timestamp
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const hash = crypto.createHash('md5').update(this.existingContent).digest('hex').substring(0, 6);
     const backupFilename = `env-backup-${timestamp}-${hash}.bak`;
     this.backupPath = path.join(this.options.backupDir, backupFilename);
-    
+
     // Write backup
     await fs.writeFile(this.backupPath, this.existingContent, 'utf8');
-    
+
     // Keep only last 10 backups
     await this.cleanOldBackups();
-    
+
     return this.backupPath;
   }
 
@@ -348,7 +348,7 @@ class EnvFileWriter {
           name: f,
           path: path.join(this.options.backupDir, f)
         }));
-      
+
       // Sort by modification time
       const stats = await Promise.all(
         backupFiles.map(async (f) => ({
@@ -356,9 +356,9 @@ class EnvFileWriter {
           mtime: (await fs.stat(f.path)).mtime
         }))
       );
-      
+
       stats.sort((a, b) => b.mtime - a.mtime);
-      
+
       // Remove old backups (keep 10)
       const toRemove = stats.slice(10);
       for (const file of toRemove) {
@@ -381,7 +381,7 @@ class EnvFileWriter {
       '.bumba/.key',
       '.bumba/backups/'
     ];
-    
+
     try {
       // Read existing .gitignore
       let content = '';
@@ -390,20 +390,20 @@ class EnvFileWriter {
       } catch (error) {
         // .gitignore doesn't exist
       }
-      
+
       // Check which entries are missing
       const lines = content.split('\n');
-      const missing = entriesToAdd.filter(entry => 
+      const missing = entriesToAdd.filter(entry =>
         !lines.some(line => line.trim() === entry)
       );
-      
+
       if (missing.length === 0) {
         return; // All entries already present
       }
-      
+
       // Add missing entries
       const newLines = [...lines];
-      
+
       // Add section if not exists
       if (!lines.some(line => line.includes('BUMBA'))) {
         newLines.push('');
@@ -416,10 +416,10 @@ class EnvFileWriter {
           newLines.splice(bumbaIndex + i + 1, 0, entry);
         });
       }
-      
+
       // Write updated .gitignore
       await fs.writeFile(gitignorePath, newLines.join('\n'), 'utf8');
-      
+
       this.changes.push('Updated .gitignore');
     } catch (error) {
       console.error('Warning: Could not update .gitignore:', error.message);
@@ -433,7 +433,7 @@ class EnvFileWriter {
     try {
       const content = await fs.readFile(backupPath, 'utf8');
       await fs.writeFile(this.options.envPath, content, 'utf8');
-      
+
       return {
         success: true,
         restored: backupPath
@@ -466,7 +466,7 @@ class EnvFileWriter {
             };
           })
       );
-      
+
       return backups.sort((a, b) => b.created - a.created);
     } catch (error) {
       return [];

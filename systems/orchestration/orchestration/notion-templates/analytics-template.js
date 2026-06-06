@@ -31,18 +31,18 @@ class AnalyticsTemplate extends BaseNotionTemplate {
     const blocks = [];
 
     // Analytics Header
-    blocks.push(this.createHeading('📊 Analytics Dashboard', 1));
+    blocks.push(this.createHeading(' Analytics Dashboard', 1));
     blocks.push(this.createParagraph('Project metrics, velocity, and performance analytics'));
     blocks.push(this.createDivider());
 
     // Key Metrics Summary
-    blocks.push(this.createHeading('🎯 Key Metrics', 2));
+    blocks.push(this.createHeading(' Key Metrics', 2));
 
     const metrics = this.calculateKeyMetrics(data);
 
     blocks.push(this.createCallout(
       `Overall Completion: ${metrics.overallCompletion}%`,
-      '📈',
+      '',
       'blue_background'
     ));
 
@@ -56,7 +56,7 @@ class AnalyticsTemplate extends BaseNotionTemplate {
     blocks.push(this.createDivider());
 
     // Velocity Chart
-    blocks.push(this.createHeading('🚀 Velocity Trend', 2));
+    blocks.push(this.createHeading(' Velocity Trend', 2));
     blocks.push(this.createParagraph('Tasks completed per sprint'));
     blocks.push(this.createParagraph(''));
 
@@ -81,7 +81,7 @@ class AnalyticsTemplate extends BaseNotionTemplate {
     blocks.push(this.createDivider());
 
     // Burndown Chart
-    blocks.push(this.createHeading('🔥 Burndown Analysis', 2));
+    blocks.push(this.createHeading(' Burndown Analysis', 2));
     blocks.push(this.createParagraph('Remaining work over time'));
     blocks.push(this.createParagraph(''));
 
@@ -94,7 +94,7 @@ class AnalyticsTemplate extends BaseNotionTemplate {
       blocks.push(this.createParagraph(''));
       blocks.push(this.createCallout(
         `Remaining Tasks: ${burndownData.remaining}\nTotal Tasks: ${burndownData.total}\nProgress: ${burndownData.completion}%`,
-        '🔥',
+        '',
         burndownData.onTrack ? 'green_background' : 'yellow_background'
       ));
     } else {
@@ -104,7 +104,7 @@ class AnalyticsTemplate extends BaseNotionTemplate {
     blocks.push(this.createDivider());
 
     // Task Distribution
-    blocks.push(this.createHeading('📊 Task Distribution', 2));
+    blocks.push(this.createHeading(' Task Distribution', 2));
 
     if (data.distribution) {
       // By Status
@@ -144,14 +144,14 @@ class AnalyticsTemplate extends BaseNotionTemplate {
     blocks.push(this.createDivider());
 
     // Timeline View
-    blocks.push(this.createHeading('📅 Timeline', 2));
+    blocks.push(this.createHeading(' Timeline', 2));
     blocks.push(this.createParagraph('Sprint timeline and milestones'));
     blocks.push(this.createParagraph(''));
 
     if (data.sprints && data.sprints.length > 0) {
       data.sprints.forEach(sprint => {
         const status = sprint.status || 'pending';
-        const icon = status === 'Complete' ? '✅' : status === 'In Progress' ? '🔄' : '⏸️';
+        const icon = status === 'Complete' ? '' : status === 'In Progress' ? '' : '⏸';
 
         blocks.push(this.createCallout(
           `${icon} Sprint ${sprint.sprintNumber}: ${sprint.title}\n${sprint.duration || 'Duration not specified'}`,
@@ -166,7 +166,7 @@ class AnalyticsTemplate extends BaseNotionTemplate {
     blocks.push(this.createDivider());
 
     // Performance Insights
-    blocks.push(this.createHeading('💡 Insights', 2));
+    blocks.push(this.createHeading(' Insights', 2));
 
     const insights = this.generateInsights(data, metrics);
     if (insights.length > 0) {
@@ -304,19 +304,19 @@ class AnalyticsTemplate extends BaseNotionTemplate {
     const insights = [];
 
     if (metrics.avgSprintCompletion >= 80) {
-      insights.push('🌟 Excellent sprint completion rate! Team is performing well.');
+      insights.push(' Excellent sprint completion rate! Team is performing well.');
     } else if (metrics.avgSprintCompletion >= 50) {
-      insights.push('✅ Good progress, but there\'s room for improvement in sprint completion.');
+      insights.push(' Good progress, but there\'s room for improvement in sprint completion.');
     } else if (metrics.avgSprintCompletion > 0) {
-      insights.push('⚠️ Sprint completion rate is below target. Consider reducing sprint scope.');
+      insights.push(' Sprint completion rate is below target. Consider reducing sprint scope.');
     }
 
     if (metrics.completedSprints > 0) {
-      insights.push(`✅ ${metrics.completedSprints} sprint(s) completed successfully.`);
+      insights.push(` ${metrics.completedSprints} sprint(s) completed successfully.`);
     }
 
     if (metrics.overallCompletion >= 75) {
-      insights.push('🎉 Project is nearing completion! Excellent progress.');
+      insights.push(' Project is nearing completion! Excellent progress.');
     }
 
     if (data.distribution?.byEffort) {
@@ -324,7 +324,7 @@ class AnalyticsTemplate extends BaseNotionTemplate {
       const totalTasks = metrics.totalTasks;
 
       if (highEffortCount > totalTasks * 0.3) {
-        insights.push('⚠️ High concentration of high-effort tasks. Consider breaking them down.');
+        insights.push(' High concentration of high-effort tasks. Consider breaking them down.');
       }
     }
 

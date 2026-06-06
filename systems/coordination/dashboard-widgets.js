@@ -11,13 +11,13 @@ class DashboardWidgets {
     this.screen = screen;
     this.theme = {
       primary: 'cyan',
-      success: 'green', 
+      success: 'green',
       warning: 'yellow',
       error: 'red',
       info: 'blue'
     };
   }
-  
+
   /**
    * Create a status summary widget
    */
@@ -32,15 +32,15 @@ class DashboardWidgets {
       tags: true,
       scrollable: true
     });
-    
+
     widget.updateStatus = (data) => {
       const content = this.formatStatusSummary(data);
       widget.setContent(content);
     };
-    
+
     return widget;
   }
-  
+
   /**
    * Create an agent monitor widget
    */
@@ -59,7 +59,7 @@ class DashboardWidgets {
         ...options.style
       }
     });
-    
+
     widget.updateAgents = (agents) => {
       const tableData = {
         headers: ['Agent ID', 'Type', 'Status', 'Department'],
@@ -72,10 +72,10 @@ class DashboardWidgets {
       };
       widget.setData(tableData);
     };
-    
+
     return widget;
   }
-  
+
   /**
    * Create a lock monitor widget
    */
@@ -93,25 +93,25 @@ class DashboardWidgets {
       vi: true,
       mouse: true
     });
-    
+
     widget.updateLocks = (locks) => {
       const items = [];
-      
+
       if (locks.locks && locks.locks.length > 0) {
         locks.locks.forEach(lock => {
           const fileName = lock.file.split('/').pop();
-          items.push(`🔒 ${fileName} [${lock.agent}] - ${lock.expiresIn}`);
+          items.push(` ${fileName} [${lock.agent}] - ${lock.expiresIn}`);
         });
       } else {
         items.push('{gray-fg}No active locks{/}');
       }
-      
+
       widget.setItems(items);
     };
-    
+
     return widget;
   }
-  
+
   /**
    * Create a conflict alert widget
    */
@@ -126,23 +126,23 @@ class DashboardWidgets {
       bufferLength: options.bufferLength || 50,
       tags: true
     });
-    
+
     widget.addAlert = (alert) => {
       const timestamp = new Date().toLocaleTimeString();
       const icon = this.getAlertIcon(alert.level);
       const color = this.getAlertColor(alert.level);
       widget.log(`{${color}-fg}[${timestamp}] ${icon} ${alert.message}{/}`);
     };
-    
+
     return widget;
   }
-  
+
   /**
    * Create a performance gauge cluster
    */
   createPerformanceGauges(grid, row, col, options = {}) {
     const gauges = {};
-    
+
     // CPU Gauge
     gauges.cpu = grid.set(row, col, 1.5, 3, contrib.gauge, {
       label: ' CPU ',
@@ -151,8 +151,8 @@ class DashboardWidgets {
       fill: 'white',
       ...options.cpu
     });
-    
-    // Memory Gauge  
+
+    // Memory Gauge
     gauges.memory = grid.set(row, col + 3, 1.5, 3, contrib.gauge, {
       label: ' Memory ',
       percent: 0,
@@ -160,7 +160,7 @@ class DashboardWidgets {
       fill: 'white',
       ...options.memory
     });
-    
+
     // Disk Gauge
     gauges.disk = grid.set(row + 1.5, col, 1.5, 3, contrib.gauge, {
       label: ' Disk ',
@@ -169,7 +169,7 @@ class DashboardWidgets {
       fill: 'white',
       ...options.disk
     });
-    
+
     // Network Gauge
     gauges.network = grid.set(row + 1.5, col + 3, 1.5, 3, contrib.gauge, {
       label: ' Network ',
@@ -178,17 +178,17 @@ class DashboardWidgets {
       fill: 'white',
       ...options.network
     });
-    
+
     gauges.updateAll = (data) => {
       if (data.cpu !== undefined) {gauges.cpu.setPercent(data.cpu);}
       if (data.memory !== undefined) {gauges.memory.setPercent(data.memory);}
       if (data.disk !== undefined) {gauges.disk.setPercent(data.disk);}
       if (data.network !== undefined) {gauges.network.setPercent(data.network);}
     };
-    
+
     return gauges;
   }
-  
+
   /**
    * Create a department breakdown bar chart
    */
@@ -203,26 +203,26 @@ class DashboardWidgets {
         ...options.style
       }
     });
-    
+
     widget.updateDepartments = (departments) => {
       const data = {
         titles: [],
         data: []
       };
-      
+
       if (departments.byDepartment) {
         for (const [dept, count] of Object.entries(departments.byDepartment)) {
           data.titles.push(dept.substring(0, 8));
           data.data.push(count);
         }
       }
-      
+
       widget.setData(data);
     };
-    
+
     return widget;
   }
-  
+
   /**
    * Create a performance history chart
    */
@@ -239,14 +239,14 @@ class DashboardWidgets {
         ...options.style
       }
     });
-    
+
     widget.historyData = {
       x: [],
       cpu: [],
       memory: [],
       maxPoints: options.maxPoints || 60
     };
-    
+
     widget.updateHistory = (data) => {
       const history = widget.historyData;
       const time = new Date().toLocaleTimeString('en-US', {
@@ -254,18 +254,18 @@ class DashboardWidgets {
         minute: '2-digit',
         second: '2-digit'
       });
-      
+
       history.x.push(time);
       history.cpu.push(data.cpu || 0);
       history.memory.push(data.memory || 0);
-      
+
       // Limit data points
       if (history.x.length > history.maxPoints) {
         history.x.shift();
         history.cpu.shift();
         history.memory.shift();
       }
-      
+
       widget.setData([
         {
           title: 'CPU %',
@@ -281,10 +281,10 @@ class DashboardWidgets {
         }
       ]);
     };
-    
+
     return widget;
   }
-  
+
   /**
    * Create a territory visualization widget
    */
@@ -300,15 +300,15 @@ class DashboardWidgets {
       scrollable: true,
       alwaysScroll: true
     });
-    
+
     widget.updateTerritories = (territories) => {
       const content = this.formatTerritoryMap(territories);
       widget.setContent(content);
     };
-    
+
     return widget;
   }
-  
+
   /**
    * Create a sparkline widget for quick metrics
    */
@@ -321,10 +321,10 @@ class DashboardWidgets {
         ...options.style
       }
     });
-    
+
     widget.dataBuffer = [];
     widget.maxBuffer = options.maxBuffer || 20;
-    
+
     widget.addDataPoint = (value) => {
       widget.dataBuffer.push(value);
       if (widget.dataBuffer.length > widget.maxBuffer) {
@@ -332,10 +332,10 @@ class DashboardWidgets {
       }
       widget.setData([widget.label || 'Metric'], [widget.dataBuffer]);
     };
-    
+
     return widget;
   }
-  
+
   /**
    * Create a quick stats widget
    */
@@ -349,62 +349,62 @@ class DashboardWidgets {
       },
       tags: true
     });
-    
+
     widget.updateStats = (stats) => {
       const content = this.formatQuickStats(stats);
       widget.setContent(content);
     };
-    
+
     return widget;
   }
-  
+
   /**
    * Format status summary content
    */
   formatStatusSummary(data) {
     let content = '';
-    
+
     content += `{cyan-fg}═══ SYSTEM STATUS ═══{/}\n\n`;
-    
+
     // Agents
-    content += `{white-fg}👥 Agents:{/} {green-fg}${data.agents.active}{/}/${data.agents.total}\n`;
-    
+    content += `{white-fg} Agents:{/} {green-fg}${data.agents.active}{/}/${data.agents.total}\n`;
+
     // Locks
-    content += `{white-fg}🔒 Locks:{/} {yellow-fg}${data.locks.activeLocks}{/} active\n`;
-    
+    content += `{white-fg} Locks:{/} {yellow-fg}${data.locks.activeLocks}{/} active\n`;
+
     // Conflicts
     const conflictColor = data.conflicts.totalConflicts > 5 ? 'red' : 'green';
-    content += `{white-fg}🟠️  Conflicts:{/} {${conflictColor}-fg}${data.conflicts.totalConflicts}{/}\n`;
-    
+    content += `{white-fg}  Conflicts:{/} {${conflictColor}-fg}${data.conflicts.totalConflicts}{/}\n`;
+
     // Territories
-    content += `{white-fg}🗺️  Territories:{/} {blue-fg}${data.territories.totalTerritories}{/}\n`;
-    
+    content += `{white-fg}  Territories:{/} {blue-fg}${data.territories.totalTerritories}{/}\n`;
+
     content += `\n{cyan-fg}═══════════════════{/}\n`;
-    
+
     return content;
   }
-  
+
   /**
    * Format territory map content
    */
   formatTerritoryMap(territories) {
     let content = '';
-    
+
     content += `{cyan-fg}Territory Overview{/}\n`;
     content += `{white-fg}${'─'.repeat(40)}{/}\n\n`;
-    
+
     content += `Total: {green-fg}${territories.totalTerritories}{/} | `;
     content += `Files: {yellow-fg}${territories.totalFiles}{/}\n`;
     content += `Exclusive: {red-fg}${territories.exclusiveFiles}{/} | `;
     content += `Shared: {blue-fg}${territories.sharedFiles}{/}\n\n`;
-    
+
     if (territories.territories && territories.territories.length > 0) {
       content += `{cyan-fg}Active Territories:{/}\n`;
-      
+
       territories.territories.forEach(territory => {
-        const icon = territory.type === 'exclusive' ? '🔒' : '🔓';
+        const icon = territory.type === 'exclusive' ? '' : '';
         const color = territory.type === 'exclusive' ? 'red' : 'green';
-        
+
         content += `\n${icon} {white-fg}${territory.agent}{/}\n`;
         content += `   Type: {${color}-fg}${territory.type}{/}\n`;
         content += `   Files: {yellow-fg}${territory.files}{/}\n`;
@@ -412,27 +412,27 @@ class DashboardWidgets {
     } else {
       content += `{gray-fg}No active territories{/}\n`;
     }
-    
+
     return content;
   }
-  
+
   /**
    * Format quick stats content
    */
   formatQuickStats(stats) {
     let content = '';
-    
+
     content += `{cyan-fg}Quick Stats{/}\n`;
     content += `{white-fg}${'─'.repeat(20)}{/}\n\n`;
-    
+
     for (const [key, value] of Object.entries(stats)) {
       const label = key.charAt(0).toUpperCase() + key.slice(1);
       content += `{white-fg}${label}:{/} {green-fg}${value}{/}\n`;
     }
-    
+
     return content;
   }
-  
+
   /**
    * Get status indicator
    */
@@ -446,20 +446,20 @@ class DashboardWidgets {
     };
     return indicators[status] || '{gray-fg}● UNKNOWN{/}';
   }
-  
+
   /**
    * Get alert icon
    */
   getAlertIcon(level) {
     const icons = {
-      critical: '🔴',
-      warning: '🟠️',
-      info: 'ℹ️',
-      success: '🏁'
+      critical: '',
+      warning: '',
+      info: 'ℹ',
+      success: ''
     };
     return icons[level] || '•';
   }
-  
+
   /**
    * Get alert color
    */

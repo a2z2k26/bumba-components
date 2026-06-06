@@ -10,7 +10,7 @@
 # CHANGELOG
 
 ╔══════════════════════════════════════════════════════════════════╗
-║ 🟢 **Command Routing Version History** • Part of the BUMBA Platform      ║
+║  **Command Routing Version History** • Part of the Agent Primitives      ║
 ║ Building Unified Multi-agent Business Applications               ║
 ╚══════════════════════════════════════════════════════════════════╝
 
@@ -21,10 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## 🏁 [1.2.0] - 2024-09-14
+##  [1.2.0] - 2024-09-14
 **Enterprise Production Release**
 
-### 🟢 Added
+###  Added
 - Full TypeScript definitions with comprehensive type coverage
 - OpenTelemetry native integration for distributed tracing
 - Health monitoring system with degradation detection
@@ -34,36 +34,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Event-driven architecture with EventEmitter
 - Telemetry hooks for custom instrumentation
 
-### 🟡 Changed
+###  Changed
 - Improved command analysis with confidence scoring
 - Enhanced pattern matching with priority levels
 - Better error context with retry history preservation
 
-### 🔴 Fixed
+###  Fixed
 - Memory leak prevention in long-running processes
 - Timeout enforcement for unreliable handlers
 
 ---
 
-## 🟠 [1.1.0] - 2024-08-01
+##  [1.1.0] - 2024-08-01
 **Feature Enhancement Release**
 
-### 🟢 Added
+###  Added
 - Middleware pipeline support
 - Handler priority configuration
 - Command complexity calculation
 - Analytics and statistics tracking
 
-### 🟡 Changed
+###  Changed
 - Improved intent detection algorithm
 - Better pattern matching accuracy
 
 ---
 
-## 🟢 [1.0.0] - 2024-07-01
+##  [1.0.0] - 2024-07-01
 **Initial Production Release**
 
-### 🟢 Added
+###  Added
 - Initial release of Command Routing
 - Core command routing functionality
 - Basic intent detection

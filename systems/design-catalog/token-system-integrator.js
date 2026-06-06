@@ -480,32 +480,32 @@ class TokenSystemIntegrator extends EventEmitter {
    * Test token flow
    */
   async testTokenFlow(sampleFigmaData) {
-    console.log('🧪 Testing token flow...\n');
+    console.log(' Testing token flow...\n');
 
     try {
       // Step 1: Extract
-      console.log('1️⃣ Extracting tokens...');
+      console.log('1⃣ Extracting tokens...');
       const extracted = await this.extractTokens(sampleFigmaData);
-      console.log(`   ✓ Extracted ${this.countTokens(extracted)} tokens\n`);
+      console.log(`    Extracted ${this.countTokens(extracted)} tokens\n`);
 
       // Step 2: Normalize
-      console.log('2️⃣ Normalizing tokens...');
+      console.log('2⃣ Normalizing tokens...');
       const normalized = this.normalizeTokens(extracted);
-      console.log(`   ✓ Normalized ${this.countTokens(normalized)} tokens\n`);
+      console.log(`    Normalized ${this.countTokens(normalized)} tokens\n`);
 
       // Step 3: Validate
-      console.log('3️⃣ Validating tokens...');
+      console.log('3⃣ Validating tokens...');
       const validation = await this.validateTokens(normalized);
-      console.log(`   ✓ Validation: ${validation.valid ? 'PASSED' : 'FAILED'}`);
+      console.log(`    Validation: ${validation.valid ? 'PASSED' : 'FAILED'}`);
       console.log(`   - Errors: ${validation.errors?.length || 0}`);
       console.log(`   - Warnings: ${validation.warnings?.length || 0}\n`);
 
       // Step 4: Feed to generators
-      console.log('4️⃣ Feeding to generators...');
+      console.log('4⃣ Feeding to generators...');
       this.feedToGenerators(normalized);
-      console.log(`   ✓ Fed to ${this.optimizerRegistry.getSupportedFrameworks().length} framework optimizers\n`);
+      console.log(`    Fed to ${this.optimizerRegistry.getSupportedFrameworks().length} framework optimizers\n`);
 
-      console.log('✅ Token flow test complete!\n');
+      console.log(' Token flow test complete!\n');
 
       return {
         success: true,
@@ -515,7 +515,7 @@ class TokenSystemIntegrator extends EventEmitter {
       };
 
     } catch (error) {
-      console.error('❌ Token flow test failed:', error.message);
+      console.error(' Token flow test failed:', error.message);
       throw error;
     }
   }

@@ -57,7 +57,7 @@ class LocalModelDetector {
       return;
     }
 
-    logger.info('🔍 Initializing local model detector...');
+    logger.info(' Initializing local model detector...');
 
     // Check for Ollama
     this.providers[LocalProvider.OLLAMA] = await this.checkOllama();
@@ -73,7 +73,7 @@ class LocalModelDetector {
 
     this.lastCheck = Date.now();
 
-    logger.info(`✅ Local model detector initialized: ${this.availableModels.length} models found`);
+    logger.info(` Local model detector initialized: ${this.availableModels.length} models found`);
   }
 
   /**
@@ -83,7 +83,7 @@ class LocalModelDetector {
     try {
       const response = await this.httpGet(`${this.config.ollamaEndpoint}/api/version`);
       if (response.statusCode === 200) {
-        logger.info('✅ Ollama detected and running');
+        logger.info(' Ollama detected and running');
         return true;
       }
     } catch (error) {
@@ -99,12 +99,12 @@ class LocalModelDetector {
     try {
       const { stdout } = await execAsync('docker --version');
       if (stdout.includes('Docker version')) {
-        logger.info('✅ Docker detected:', stdout.trim());
+        logger.info(' Docker detected:', stdout.trim());
 
         // Check if Docker daemon is running
         try {
           await execAsync('docker ps');
-          logger.info('✅ Docker daemon is running');
+          logger.info(' Docker daemon is running');
           return true;
         } catch (error) {
           logger.warn('Docker installed but daemon not running');
@@ -124,7 +124,7 @@ class LocalModelDetector {
     try {
       const response = await this.httpGet(`${this.config.localAIEndpoint}/readyz`);
       if (response.statusCode === 200) {
-        logger.info('✅ LocalAI detected and running');
+        logger.info(' LocalAI detected and running');
         return true;
       }
     } catch (error) {
@@ -157,7 +157,7 @@ class LocalModelDetector {
       this.availableModels.push(...localAIModels);
     }
 
-    logger.info(`📦 Discovered ${this.availableModels.length} local models`);
+    logger.info(` Discovered ${this.availableModels.length} local models`);
     return this.availableModels;
   }
 
@@ -280,7 +280,7 @@ class LocalModelDetector {
    * Refresh model availability (manual refresh)
    */
   async refresh() {
-    logger.info('🔄 Refreshing local model availability...');
+    logger.info(' Refreshing local model availability...');
     await this.initialize();
   }
 

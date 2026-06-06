@@ -36,9 +36,9 @@ class TaskPreparer {
       technologies: [],
       priority: 'normal'
     };
-    
+
     const lower = description.toLowerCase();
-    
+
     // Extract features
     if (lower.includes('crud')) {
       requirements.features.push('Create, Read, Update, Delete operations');
@@ -57,14 +57,14 @@ class TaskPreparer {
     if (lower.includes('test') || lower.includes('testing')) {
       requirements.features.push('Comprehensive testing');
     }
-    
+
     // Extract priority
     if (lower.includes('urgent') || lower.includes('asap') || lower.includes('critical')) {
       requirements.priority = 'high';
     } else if (lower.includes('when possible') || lower.includes('low priority')) {
       requirements.priority = 'low';
     }
-    
+
     // Extract technology hints
     if (lower.includes('react')) requirements.technologies.push('React');
     if (lower.includes('vue')) requirements.technologies.push('Vue');
@@ -75,7 +75,7 @@ class TaskPreparer {
     if (lower.includes('kubernetes') || lower.includes('k8s')) {
       requirements.technologies.push('Kubernetes');
     }
-    
+
     return requirements;
   }
 
@@ -87,21 +87,21 @@ class TaskPreparer {
   determineAgents(description) {
     const agents = new Set(['ProductStrategist']); // Always include strategist
     const lower = description.toLowerCase();
-    
+
     // Check for keywords
     Object.entries(this.agentMap).forEach(([keyword, agentList]) => {
       if (lower.includes(keyword)) {
         agentList.forEach(agent => agents.add(agent));
       }
     });
-    
+
     // Default agents if none specifically identified
     if (agents.size === 1) {
       agents.add('BackendEngineer');
       agents.add('DesignEngineer');
       agents.add('QualityAssurance');
     }
-    
+
     return Array.from(agents);
   }
 
@@ -114,7 +114,7 @@ class TaskPreparer {
     let score = 1; // Base complexity
     const factors = [];
     const lower = description.toLowerCase();
-    
+
     // Complexity factors
     if (lower.includes('simple') || lower.includes('basic')) {
       score *= 0.5;
@@ -144,21 +144,21 @@ class TaskPreparer {
       score *= 1.3;
       factors.push('Performance optimization');
     }
-    
+
     // Count feature mentions
     const features = lower.split(/[,;]/).length;
     if (features > 3) {
       score *= 1.5;
       factors.push('Multiple features');
     }
-    
+
     let level;
     if (score < 0.7) level = 'trivial';
     else if (score < 1.3) level = 'simple';
     else if (score < 2) level = 'moderate';
     else if (score < 3) level = 'complex';
     else level = 'very complex';
-    
+
     return {
       score: Math.round(score * 10) / 10,
       level,
@@ -177,9 +177,9 @@ class TaskPreparer {
     const requirements = this.parseRequirements(description);
     const complexity = this.estimateComplexity(description);
     const agents = this.determineAgents(description);
-    
+
     const phases = [];
-    
+
     // Planning phase
     phases.push({
       name: 'Strategic Planning',
@@ -191,7 +191,7 @@ class TaskPreparer {
         'Create technical specification'
       ]
     });
-    
+
     // Implementation phases based on agents
     if (agents.includes('BackendEngineer')) {
       phases.push({
@@ -206,7 +206,7 @@ class TaskPreparer {
         ]
       });
     }
-    
+
     if (agents.includes('DesignEngineer')) {
       phases.push({
         name: 'Frontend Development',
@@ -220,7 +220,7 @@ class TaskPreparer {
         ]
       });
     }
-    
+
     // Testing phase
     phases.push({
       name: 'Quality Assurance',
@@ -233,7 +233,7 @@ class TaskPreparer {
         'Performance testing'
       ]
     });
-    
+
     return {
       description,
       requirements,

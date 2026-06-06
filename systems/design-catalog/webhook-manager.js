@@ -26,7 +26,7 @@ class WebhookManager extends EventEmitter {
    * Register webhook with Figma
    */
   async register(fileKey, eventTypes = ['FILE_UPDATE', 'FILE_VERSION_UPDATE']) {
-    console.log(chalk.blue('📡 Registering Figma webhook...'));
+    console.log(chalk.blue(' Registering Figma webhook...'));
 
     try {
       // In production, this would call Figma API:
@@ -45,11 +45,11 @@ class WebhookManager extends EventEmitter {
 
       this.activeWebhooks.set(webhook.id, webhook);
 
-      console.log(chalk.green('✅ Webhook registered:'), webhook.id);
+      console.log(chalk.green(' Webhook registered:'), webhook.id);
 
       return webhook;
     } catch (error) {
-      console.error(chalk.red('❌ Webhook registration failed:'), error.message);
+      console.error(chalk.red(' Webhook registration failed:'), error.message);
       throw error;
     }
   }
@@ -86,7 +86,7 @@ class WebhookManager extends EventEmitter {
    * Process incoming webhook event
    */
   async processEvent(event) {
-    console.log(chalk.yellow('⚡ Processing webhook event:'), event.event_type);
+    console.log(chalk.yellow(' Processing webhook event:'), event.event_type);
 
     try {
       // Add to queue
@@ -103,7 +103,7 @@ class WebhookManager extends EventEmitter {
 
       return { success: true, queued: true };
     } catch (error) {
-      console.error(chalk.red('❌ Event processing failed:'), error.message);
+      console.error(chalk.red(' Event processing failed:'), error.message);
       throw error;
     }
   }
@@ -158,7 +158,7 @@ class WebhookManager extends EventEmitter {
 
     const handler = handlers[event.event_type];
     if (!handler) {
-      console.warn(chalk.yellow('⚠️  Unknown event type:'), event.event_type);
+      console.warn(chalk.yellow('  Unknown event type:'), event.event_type);
       return;
     }
 
@@ -169,7 +169,7 @@ class WebhookManager extends EventEmitter {
    * Handle file update event
    */
   async handleFileUpdate(event) {
-    console.log(chalk.blue('📝 File updated:'), event.file_key);
+    console.log(chalk.blue(' File updated:'), event.file_key);
 
     const changeData = {
       file_key: event.file_key,
@@ -190,7 +190,7 @@ class WebhookManager extends EventEmitter {
    * Handle version update event
    */
   async handleVersionUpdate(event) {
-    console.log(chalk.blue('🔄 Version updated:'), event.file_key);
+    console.log(chalk.blue(' Version updated:'), event.file_key);
 
     const versionData = {
       file_key: event.file_key,
@@ -213,7 +213,7 @@ class WebhookManager extends EventEmitter {
    * Handle file delete event
    */
   async handleFileDelete(event) {
-    console.log(chalk.red('🗑️  File deleted:'), event.file_key);
+    console.log(chalk.red('  File deleted:'), event.file_key);
 
     this.emit('file:delete', {
       file_key: event.file_key,
@@ -225,7 +225,7 @@ class WebhookManager extends EventEmitter {
    * Handle comment event
    */
   async handleComment(event) {
-    console.log(chalk.blue('💬 New comment:'), event.comment.message);
+    console.log(chalk.blue(' New comment:'), event.comment.message);
 
     const commentData = {
       file_key: event.file_key,
@@ -248,7 +248,7 @@ class WebhookManager extends EventEmitter {
    * Handle library publish event
    */
   async handleLibraryPublish(event) {
-    console.log(chalk.green('📚 Library published:'), event.library_name);
+    console.log(chalk.green(' Library published:'), event.library_name);
 
     const publishData = {
       file_key: event.file_key,
@@ -272,7 +272,7 @@ class WebhookManager extends EventEmitter {
    * Unregister webhook
    */
   async unregister(webhookId) {
-    console.log(chalk.yellow('🔌 Unregistering webhook:'), webhookId);
+    console.log(chalk.yellow(' Unregistering webhook:'), webhookId);
 
     try {
       // In production, this would call Figma API:
@@ -280,11 +280,11 @@ class WebhookManager extends EventEmitter {
 
       this.activeWebhooks.delete(webhookId);
 
-      console.log(chalk.green('✅ Webhook unregistered'));
+      console.log(chalk.green(' Webhook unregistered'));
 
       return { success: true };
     } catch (error) {
-      console.error(chalk.red('❌ Unregistration failed:'), error.message);
+      console.error(chalk.red(' Unregistration failed:'), error.message);
       throw error;
     }
   }
@@ -313,7 +313,7 @@ class WebhookManager extends EventEmitter {
       webhook_id: webhookId
     };
 
-    console.log(chalk.blue('🏓 Sending test ping...'));
+    console.log(chalk.blue(' Sending test ping...'));
 
     // Simulate webhook delivery
     await this.processEvent(testEvent);
@@ -362,7 +362,7 @@ class WebhookManager extends EventEmitter {
       }
     });
 
-    console.log(chalk.green('✅ Webhook routes configured'));
+    console.log(chalk.green(' Webhook routes configured'));
   }
 
   // Helper methods

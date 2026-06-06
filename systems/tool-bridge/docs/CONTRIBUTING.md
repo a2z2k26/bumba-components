@@ -1,20 +1,20 @@
-# 🟢 Contributing to Tool Bridge
+#  Contributing to Tool Bridge
 
 **Building Unified Multi-agent Business Applications**
 
 First off, thank you for considering contributing to Tool Bridge! It's people like you that make Tool Bridge such a great tool.
 
-## 🟡 Code of Conduct
+##  Code of Conduct
 
 This project and everyone participating in it is governed by our Code of Conduct. By participating, you are expected to uphold this code.
 
-## 🟢 How Can I Contribute?
+##  How Can I Contribute?
 
-### 🔴 Reporting Bugs
+###  Reporting Bugs
 
 Before creating bug reports, please check existing issues as you might find out that you don't need to create one. When you are creating a bug report, please include as many details as possible using our issue template.
 
-### 🟡 Suggesting Enhancements
+###  Suggesting Enhancements
 
 Enhancement suggestions are tracked as GitHub issues. Create an issue and provide the following information:
 
@@ -23,7 +23,7 @@ Enhancement suggestions are tracked as GitHub issues. Create an issue and provid
 - Provide specific examples to demonstrate the steps
 - Describe the current behavior and explain which behavior you expected to see instead
 
-### 🟢 Pull Requests
+###  Pull Requests
 
 1. Fork the repo and create your branch from `main`
 2. If you've added code that should be tested, add tests
@@ -32,11 +32,11 @@ Enhancement suggestions are tracked as GitHub issues. Create an issue and provid
 5. Make sure your code follows the existing style
 6. Issue that pull request!
 
-## 🔴 Development Setup
+##  Development Setup
 
 1. Fork and clone the repository
 ```bash
-git clone https://github.com/a2z2k26/bumba-features.git
+git clone https://github.com/a2z2k26/agent-primitives.git
 cd tool-bridge
 ```
 
@@ -62,7 +62,7 @@ git add .
 git commit -m "feat: add new feature"
 ```
 
-### 🟠 Commit Message Guidelines
+###  Commit Message Guidelines
 
 We follow the [Conventional Commits](https://www.conventionalcommits.org/) specification:
 
@@ -74,7 +74,7 @@ We follow the [Conventional Commits](https://www.conventionalcommits.org/) speci
 - `test:` Adding missing tests
 - `chore:` Changes to the build process or auxiliary tools
 
-## 🟠 Testing
+##  Testing
 
 ```bash
 # Run all tests
@@ -90,15 +90,15 @@ npm run lint
 npm audit
 ```
 
-## 🔴 Documentation
+##  Documentation
 
 - Update README.md with details of changes to the interface
 - Update the docs/ folder with any new guides or API documentation
 - Comment your code where necessary
 - Update the CHANGELOG.md with your changes
 
-## 🟡 Questions?
+##  Questions?
 
 Feel free to open an issue with your question or reach out to the maintainers.
 
-Thank you for contributing! 🏁
+Thank you for contributing!

@@ -52,14 +52,14 @@ class DocumentationGenerator extends EventEmitter {
   }
 
   async initialize() {
-    console.log('📚 Initializing Documentation Generator...');
+    console.log(' Initializing Documentation Generator...');
 
     await this.loadTemplates();
     await this.createOutputDirectories();
     this.setupDefaultContent();
 
     this.isInitialized = true;
-    console.log('✅ Documentation Generator initialized');
+    console.log(' Documentation Generator initialized');
     this.emit('generator-initialized');
   }
 
@@ -235,7 +235,7 @@ class DocumentationGenerator extends EventEmitter {
    * Generate enhanced Design Bridge documentation (Sprint 23)
    */
   async generateDesignBridgeDocumentation() {
-    console.log('📖 Generating Design Bridge documentation...');
+    console.log(' Generating Design Bridge documentation...');
     this.generationProgress = 0;
 
     const totalSteps = 5;
@@ -262,7 +262,7 @@ class DocumentationGenerator extends EventEmitter {
       await this.generateNavigationFiles();
       this.updateProgress(++currentStep, totalSteps, 'Navigation');
 
-      console.log('✅ Documentation generation complete');
+      console.log(' Documentation generation complete');
       this.emit('documentation-generated');
 
       return {
@@ -272,7 +272,7 @@ class DocumentationGenerator extends EventEmitter {
       };
 
     } catch (error) {
-      console.error('❌ Documentation generation failed:', error);
+      console.error(' Documentation generation failed:', error);
       this.emit('documentation-failed', error);
       throw error;
     }
@@ -280,7 +280,7 @@ class DocumentationGenerator extends EventEmitter {
 
   updateProgress(current, total, task) {
     this.generationProgress = (current / total) * 100;
-    console.log(`  📝 ${task}: ${this.generationProgress.toFixed(0)}%`);
+    console.log(`   ${task}: ${this.generationProgress.toFixed(0)}%`);
     this.emit('progress-updated', { progress: this.generationProgress, task });
   }
 
@@ -1324,9 +1324,9 @@ Welcome to the comprehensive documentation for the Design Bridge Enhancement sys
   }
 
   shutdown() {
-    console.log('📚 Shutting down Documentation Generator...');
+    console.log(' Shutting down Documentation Generator...');
     this.emit('generator-shutdown');
-    console.log('✅ Documentation Generator shutdown complete');
+    console.log(' Documentation Generator shutdown complete');
   }
 
   /**

@@ -1,7 +1,7 @@
 /**
  * Command Routing (@bumba/command-routing)
  * Intelligent command routing system with pattern matching and extensible handlers
- * Part of the BUMBA Platform
+ * Part of the Agent Primitives
  */
 
 const { EventEmitter } = require('events');
@@ -33,7 +33,7 @@ class CommandAnalyzer {
       confidence: this.calculateConfidence(fullCommand)
     };
   }
-  
+
   detectIntent(command) {
     const intents = {
       'build': ['build', 'create', 'implement', 'develop', 'make'],
@@ -44,16 +44,16 @@ class CommandAnalyzer {
       'deploy': ['deploy', 'release', 'publish', 'launch'],
       'document': ['document', 'write', 'explain', 'describe']
     };
-    
+
     for (const [intent, keywords] of Object.entries(intents)) {
       if (keywords.some(keyword => command.includes(keyword))) {
         return intent;
       }
     }
-    
+
     return 'general';
   }
-  
+
   matchPatterns(command) {
     const patterns = [
       {
@@ -82,38 +82,38 @@ class CommandAnalyzer {
         priority: 'medium'
       }
     ];
-    
+
     return patterns.filter(pattern => pattern.regex.test(command));
   }
-  
+
   calculateComplexity(command) {
     let complexity = 0;
-    
+
     // Base complexity factors
     complexity += command.length > 50 ? 0.2 : 0;
     complexity += (command.match(/and|also|then|plus/g) || []).length * 0.1;
     complexity += /enterprise|platform|architecture/.test(command) ? 0.3 : 0;
     complexity += (command.match(/api|database|security|deployment/g) || []).length * 0.1;
-    
+
     return Math.min(complexity, 1.0);
   }
-  
+
   calculateConfidence(command) {
     let confidence = 0.2; // Base confidence
-    
+
     // Increase confidence based on specificity
     confidence += /(?:build|create|implement|fix|deploy)/.test(command) ? 0.2 : 0;
     confidence += /(?:javascript|python|react|node|api)/.test(command) ? 0.2 : 0;
     confidence += this.matchPatterns(command).length > 0 ? 0.3 : 0;
     confidence += command.split(' ').length > 3 ? 0.1 : 0;
-    
+
     return Math.min(confidence, 1.0);
   }
 }
 
 /**
  * Command Routing CommandRouter
- * Core routing engine for the BUMBA Platform
+ * Core routing engine for the Agent Primitives
  */
 class CommandRouter extends EventEmitter {
   constructor(options = {}) {
@@ -159,7 +159,7 @@ class CommandRouter extends EventEmitter {
 
     this.setupDefaultHandlers();
   }
-  
+
   setupDefaultHandlers() {
     // Default handlers for common patterns
     this.registerHandler('build', async (analysis, context) => {
@@ -170,7 +170,7 @@ class CommandRouter extends EventEmitter {
         message: `Build task queued for: ${analysis.fullCommand}`
       };
     });
-    
+
     this.registerHandler('analyze', async (analysis, context) => {
       return {
         action: 'analyze',
@@ -179,7 +179,7 @@ class CommandRouter extends EventEmitter {
         message: `Analysis started for: ${analysis.fullCommand}`
       };
     });
-    
+
     this.registerHandler('general', async (analysis, context) => {
       return {
         action: 'general',
@@ -190,12 +190,12 @@ class CommandRouter extends EventEmitter {
       };
     });
   }
-  
+
   registerHandler(intent, handlerFunction, options = {}) {
     if (typeof handlerFunction !== 'function') {
       throw new Error('Handler must be a function');
     }
-    
+
     this.handlers.set(intent, {
       handler: handlerFunction,
       priority: options.priority || 'normal',
@@ -203,11 +203,11 @@ class CommandRouter extends EventEmitter {
       retries: options.retries !== undefined ? options.retries : this.config.maxRetries,
       middleware: options.middleware || []
     });
-    
+
     this.emit('handler:registered', { intent, options });
     return this;
   }
-  
+
   unregisterHandler(intent) {
     const removed = this.handlers.delete(intent);
     if (removed) {
@@ -215,16 +215,16 @@ class CommandRouter extends EventEmitter {
     }
     return removed;
   }
-  
+
   use(middleware) {
     if (typeof middleware !== 'function') {
       throw new Error('Middleware must be a function');
     }
-    
+
     this.middleware.push(middleware);
     return this;
   }
-  
+
   async route(command, args = [], context = {}) {
     const startTime = Date.now();
     const commandId = this.generateCommandId();
@@ -310,30 +310,30 @@ class CommandRouter extends EventEmitter {
       };
     }
   }
-  
+
   async executeHandler(analysis, context) {
-    const handlerInfo = this.handlers.get(analysis.intent) || 
+    const handlerInfo = this.handlers.get(analysis.intent) ||
                        this.handlers.get(this.config.defaultHandler);
-                       
+
     if (!handlerInfo) {
       throw new Error(`No handler found for intent: ${analysis.intent}`);
     }
-    
+
     const { handler, timeout, retries } = handlerInfo;
-    
+
     // Execute with timeout and retry logic
     return await this.executeWithRetry(
       () => this.executeWithTimeout(handler, analysis, context, timeout),
       retries
     );
   }
-  
+
   async executeWithTimeout(handler, analysis, context, timeout) {
     return new Promise(async (resolve, reject) => {
       const timeoutId = setTimeout(() => {
         reject(new Error(`Handler timeout after ${timeout}ms`));
       }, timeout);
-      
+
       try {
         const result = await handler(analysis, context);
         clearTimeout(timeoutId);
@@ -344,7 +344,7 @@ class CommandRouter extends EventEmitter {
       }
     });
   }
-  
+
   async executeWithRetry(operation, maxRetries) {
     let lastError;
     const errors = [];
@@ -377,7 +377,7 @@ class CommandRouter extends EventEmitter {
     lastError.totalAttempts = maxRetries + 1;
     throw lastError;
   }
-  
+
   async applyMiddleware(context) {
     for (const middleware of this.middleware) {
       try {
@@ -388,7 +388,7 @@ class CommandRouter extends EventEmitter {
       }
     }
   }
-  
+
   updateStats(analysis, startTime, success) {
     const duration = Date.now() - startTime;
 
@@ -427,22 +427,22 @@ class CommandRouter extends EventEmitter {
     this.stats.commandsByIntent[analysis.intent] =
       (this.stats.commandsByIntent[analysis.intent] || 0) + 1;
   }
-  
+
   generateCommandId() {
     return `cmd_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
-  
+
   getStats() {
     return {
       ...this.stats,
-      successRate: this.stats.totalCommands > 0 
-        ? (this.stats.successfulCommands / this.stats.totalCommands) * 100 
+      successRate: this.stats.totalCommands > 0
+        ? (this.stats.successfulCommands / this.stats.totalCommands) * 100
         : 0,
       registeredHandlers: Array.from(this.handlers.keys()),
       middlewareCount: this.middleware.length
     };
   }
-  
+
   reset() {
     this.stats = {
       totalCommands: 0,
@@ -452,10 +452,10 @@ class CommandRouter extends EventEmitter {
       commandsByIntent: {},
       handlerStats: {}
     };
-    
+
     this.emit('stats:reset');
   }
-  
+
   listHandlers() {
     return Array.from(this.handlers.entries()).map(([intent, info]) => ({
       intent,

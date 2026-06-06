@@ -13,7 +13,7 @@ const fs = require('fs').promises;
 class BumbaSetupWizard extends EventEmitter {
   constructor(options = {}) {
     super();
-    
+
     // Configuration
     this.config = new ConfigurationState();
     this.options = {
@@ -24,18 +24,18 @@ class BumbaSetupWizard extends EventEmitter {
       mcpConfigPath: this.getMCPConfigPath(),
       ...options
     };
-    
+
     // State management
     this.steps = [];
     this.currentStep = 0;
     this.completedSteps = new Set();
     this.errors = [];
     this.warnings = [];
-    
+
     // Progress tracking
     this.startTime = null;
     this.endTime = null;
-    
+
     // Initialize steps
     this.initializeSteps();
   }
@@ -117,37 +117,37 @@ class BumbaSetupWizard extends EventEmitter {
   async run() {
     this.startTime = Date.now();
     this.emit('start');
-    
+
     try {
-      console.log(chalk.cyan('\n🚀 BUMBA Setup Wizard\n'));
+      console.log(chalk.cyan('\n BUMBA Setup Wizard\n'));
       console.log(chalk.gray('━'.repeat(50)));
-      
+
       // Execute each step
       for (let i = 0; i < this.steps.length; i++) {
         this.currentStep = i;
         const step = this.steps[i];
-        
+
         // Skip optional steps if configured
         if (!step.required && this.shouldSkipStep(step)) {
           continue;
         }
-        
+
         await this.executeStep(step);
       }
-      
+
       this.endTime = Date.now();
       this.emit('complete', this.config);
-      
+
       return {
         success: true,
         config: this.config.config,
         duration: this.endTime - this.startTime
       };
-      
+
     } catch (error) {
       this.emit('error', error);
       this.endTime = Date.now();
-      
+
       return {
         success: false,
         error: error.message,
@@ -166,42 +166,42 @@ class BumbaSetupWizard extends EventEmitter {
       text: step.description,
       prefixText: chalk.cyan(`[${this.currentStep + 1}/${this.steps.length}]`)
     });
-    
+
     try {
       this.emit('step:start', step);
-      
+
       if (this.options.verbose) {
         console.log(chalk.blue(`\n▶ ${step.name}`));
       } else {
         spinner.start();
       }
-      
+
       await step.execute();
-      
+
       this.completedSteps.add(step.id);
-      
+
       if (!this.options.verbose) {
         spinner.succeed(chalk.green(step.description));
       }
-      
+
       this.emit('step:complete', step);
-      
+
     } catch (error) {
       if (!this.options.verbose) {
         spinner.fail(chalk.red(`${step.description} - ${error.message}`));
       } else {
-        console.error(chalk.red(`✗ ${step.name}: ${error.message}`));
+        console.error(chalk.red(` ${step.name}: ${error.message}`));
       }
-      
+
       this.errors.push({
         step: step.id,
         error: error.message
       });
-      
+
       if (step.required) {
         throw error;
       }
-      
+
       this.emit('step:error', { step, error });
     }
   }
@@ -213,12 +213,12 @@ class BumbaSetupWizard extends EventEmitter {
     if (step.id === 'backup' && this.options.skipBackup) {
       return true;
     }
-    
+
     if (step.id === 'mcp-servers' && !this.isClaudeEnvironment()) {
       this.warnings.push('MCP servers can only be configured in Claude environment');
       return true;
     }
-    
+
     return false;
   }
 
@@ -228,7 +228,7 @@ class BumbaSetupWizard extends EventEmitter {
   getMCPConfigPath() {
     const platform = process.platform;
     const homeDir = process.env.HOME || process.env.USERPROFILE;
-    
+
     switch (platform) {
       case 'darwin': // macOS
         return path.join(homeDir, 'Library', 'Application Support', 'Claude', 'claude_desktop_config.json');
@@ -245,7 +245,7 @@ class BumbaSetupWizard extends EventEmitter {
    * Check if running in Claude environment
    */
   isClaudeEnvironment() {
-    return process.env.CLAUDE_ENVIRONMENT === 'true' || 
+    return process.env.CLAUDE_ENVIRONMENT === 'true' ||
            process.env.MCP_ENABLED === 'true';
   }
 
@@ -254,14 +254,14 @@ class BumbaSetupWizard extends EventEmitter {
    */
   async showWelcome() {
     if (!this.options.interactive) return;
-    
-    console.log(chalk.cyan('\nWelcome to BUMBA Setup Wizard! 🎉\n'));
+
+    console.log(chalk.cyan('\nWelcome to BUMBA Setup Wizard! \n'));
     console.log('This wizard will help you configure:');
     console.log('  • AI model API keys (OpenAI, Anthropic, etc.)');
     console.log('  • MCP servers for Claude');
     console.log('  • Universal Tool Bridge for multi-model support');
     console.log('  • Testing and validation\n');
-    
+
     console.log(chalk.yellow('Estimated time: 2-5 minutes\n'));
   }
 
@@ -304,16 +304,16 @@ class BumbaSetupWizard extends EventEmitter {
   }
 
   async completeSetup() {
-    console.log(chalk.green('\n✅ Setup Complete!\n'));
-    
+    console.log(chalk.green('\n Setup Complete!\n'));
+
     const duration = ((this.endTime - this.startTime) / 1000).toFixed(1);
     console.log(chalk.gray(`Total time: ${duration} seconds`));
-    
+
     if (this.warnings.length > 0) {
-      console.log(chalk.yellow(`\n⚠️  Warnings: ${this.warnings.length}`));
+      console.log(chalk.yellow(`\n  Warnings: ${this.warnings.length}`));
       this.warnings.forEach(w => console.log(chalk.yellow(`  • ${w}`)));
     }
-    
+
     console.log(chalk.cyan('\nNext steps:'));
     console.log('  1. Run: bumba test');
     console.log('  2. Start bridge: bumba bridge start');

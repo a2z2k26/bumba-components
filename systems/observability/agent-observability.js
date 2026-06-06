@@ -1,9 +1,9 @@
 /**
  * BUMBA Comprehensive Agent Observability System
- * 
+ *
  * Provides deep insights into agent behavior, system performance, and decision-making processes
  * while respecting privacy and consciousness principles.
- * 
+ *
  * Features:
  * - Distributed tracing for agent interactions
  * - Visual debugging tools for agent flows
@@ -29,7 +29,7 @@ const { logger } = require('@bumba/shared');
 class AgentObservabilitySystem extends EventEmitter {
   constructor(options = {}) {
     super();
-    
+
     this.options = {
       enableTracing: options.enableTracing !== false,
       enableMetrics: options.enableMetrics !== false,
@@ -50,12 +50,12 @@ class AgentObservabilitySystem extends EventEmitter {
     this.anomalies = []; // Detected anomalies
     this.dashboards = new Map(); // Real-time dashboard data
     this.decisions = new Map(); // Decision tracking
-    
+
     // Correlation tracking
     this.correlationIds = new Map();
     this.activeSpans = new Map();
     this.spanStack = new Map(); // Stack of active spans per agent
-    
+
     // Performance tracking
     this.performanceBaselines = new Map();
     this.bottlenecks = [];
@@ -65,11 +65,11 @@ class AgentObservabilitySystem extends EventEmitter {
       memory_usage_threshold: 1024, // 1GB
       cpu_usage_threshold: 0.8 // 80%
     };
-    
+
     // Anomaly detection
     this.anomalyDetectors = new Map();
     this.behaviorBaselines = new Map();
-    
+
     this.initialize();
   }
 
@@ -77,20 +77,20 @@ class AgentObservabilitySystem extends EventEmitter {
    * Initialize the observability system
    */
   async initialize() {
-    logger.info('🟢 Initializing BUMBA Agent Observability System');
-    
+    logger.info(' Initializing BUMBA Agent Observability System');
+
     // Initialize anomaly detectors
     this.initializeAnomalyDetectors();
-    
+
     // Start background processes
     this.startMetricsAggregation();
     this.startAnomalyDetection();
     this.startDataRetention();
-    
+
     // Initialize dashboard
     this.initializeDashboard();
-    
-    logger.info('🟢 Agent Observability System ready');
+
+    logger.info(' Agent Observability System ready');
   }
 
   /**
@@ -107,7 +107,7 @@ class AgentObservabilitySystem extends EventEmitter {
 
     const traceId = this.generateTraceId();
     const correlationId = this.generateCorrelationId();
-    
+
     const trace = {
       traceId,
       correlationId,
@@ -129,9 +129,9 @@ class AgentObservabilitySystem extends EventEmitter {
 
     this.traces.set(traceId, trace);
     this.correlationIds.set(correlationId, traceId);
-    
-    logger.debug(`🟢 Started trace ${traceId} for agent ${agentId} operation ${operation}`);
-    
+
+    logger.debug(` Started trace ${traceId} for agent ${agentId} operation ${operation}`);
+
     return { traceId, correlationId };
   }
 
@@ -145,7 +145,7 @@ class AgentObservabilitySystem extends EventEmitter {
 
     const spanId = this.generateSpanId();
     const parentSpanId = this.getActiveSpan(agentId);
-    
+
     const span = {
       spanId,
       traceId,
@@ -166,9 +166,9 @@ class AgentObservabilitySystem extends EventEmitter {
     this.spans.set(spanId, span);
     this.traces.get(traceId).spans.push(spanId);
     this.setActiveSpan(agentId, spanId);
-    
-    logger.debug(`🟢 Started span ${spanId} (${spanName}) for agent ${agentId}`);
-    
+
+    logger.debug(` Started span ${spanId} (${spanName}) for agent ${agentId}`);
+
     return spanId;
   }
 
@@ -220,18 +220,18 @@ class AgentObservabilitySystem extends EventEmitter {
     span.duration = span.endTime - span.startTime;
     span.status = status;
     span.result = this.sanitizeContext(result);
-    
+
     // Update performance metrics
     this.updateSpanMetrics(span);
-    
+
     // Remove from active spans
     this.clearActiveSpan(span.agentId, spanId);
-    
+
     // Record metrics
     this.recordSpanMetrics(span);
-    
-    logger.debug(`🟢 Finished span ${spanId} (${span.spanName}) - ${status} in ${span.duration}ms`);
-    
+
+    logger.debug(` Finished span ${spanId} (${span.spanName}) - ${status} in ${span.duration}ms`);
+
     // Emit span completion event
     this.emit('span.completed', span);
   }
@@ -249,15 +249,15 @@ class AgentObservabilitySystem extends EventEmitter {
     trace.duration = trace.endTime - trace.startTime;
     trace.status = status;
     trace.result = this.sanitizeContext(result);
-    
+
     // Calculate trace statistics
     trace.statistics = this.calculateTraceStatistics(trace);
-    
-    logger.info(`🟢 Finished trace ${traceId} - ${status} in ${trace.duration}ms`);
-    
+
+    logger.info(` Finished trace ${traceId} - ${status} in ${trace.duration}ms`);
+
     // Emit trace completion event
     this.emit('trace.completed', trace);
-    
+
     // Run anomaly detection on the completed trace
     this.detectTraceAnomalies(trace);
   }
@@ -280,13 +280,13 @@ class AgentObservabilitySystem extends EventEmitter {
   recordError(agentId, operation, error, timestamp = Date.now()) {
     const key = `errors.${agentId}.${operation}`;
     this.incrementMetric(key, timestamp);
-    
+
     // Store error details
     const errorKey = `error_details.${agentId}.${operation}`;
     if (!this.metrics.has(errorKey)) {
       this.metrics.set(errorKey, []);
     }
-    
+
     this.metrics.get(errorKey).push({
       timestamp,
       error: {
@@ -305,7 +305,7 @@ class AgentObservabilitySystem extends EventEmitter {
     if (!this.metrics.has(key)) {
       this.metrics.set(key, []);
     }
-    
+
     this.metrics.get(key).push({
       timestamp,
       duration,
@@ -352,7 +352,7 @@ class AgentObservabilitySystem extends EventEmitter {
 
     const profile = this.profiles.get(agentId);
     profile.lastUpdated = Date.now();
-    
+
     // Add behavior record
     profile.behaviors.push({
       timestamp: Date.now(),
@@ -363,11 +363,11 @@ class AgentObservabilitySystem extends EventEmitter {
 
     // Update patterns
     this.updateBehaviorPatterns(profile, behavior);
-    
+
     // Update performance metrics
     this.updateProfilePerformance(profile);
-    
-    logger.debug(`🟢 Updated profile for agent ${agentId}`);
+
+    logger.debug(` Updated profile for agent ${agentId}`);
   }
 
   /**
@@ -380,19 +380,19 @@ class AgentObservabilitySystem extends EventEmitter {
   analyzeBottlenecks(timeWindow = 60 * 60 * 1000) { // 1 hour default
     const now = Date.now();
     const cutoff = now - timeWindow;
-    
+
     const bottlenecks = [];
-    
+
     // Analyze duration metrics
     for (const [key, durations] of this.metrics.entries()) {
       if (!key.startsWith('duration.')) {continue;}
-      
+
       const recentDurations = durations.filter(d => d.timestamp >= cutoff);
       if (recentDurations.length < 10) {continue;} // Need sufficient data
-      
+
       const [agentId, operation] = key.replace('duration.', '').split('.');
       const stats = this.calculateDurationStats(recentDurations);
-      
+
       // Check for bottlenecks
       if (stats.p95 > this.performanceThresholds.response_time_p95) {
         bottlenecks.push({
@@ -404,7 +404,7 @@ class AgentObservabilitySystem extends EventEmitter {
           recommendations: this.generateLatencyRecommendations(stats)
         });
       }
-      
+
       if (stats.errorRate > this.performanceThresholds.error_rate_threshold) {
         bottlenecks.push({
           type: 'high_error_rate',
@@ -416,12 +416,12 @@ class AgentObservabilitySystem extends EventEmitter {
         });
       }
     }
-    
+
     // Store bottleneck analysis
     this.bottlenecks = bottlenecks;
-    
-    logger.info(`🟢 Identified ${bottlenecks.length} performance bottlenecks`);
-    
+
+    logger.info(` Identified ${bottlenecks.length} performance bottlenecks`);
+
     return bottlenecks;
   }
 
@@ -444,7 +444,7 @@ class AgentObservabilitySystem extends EventEmitter {
       bottlenecks: this.getBottlenecksSummary(),
       consciousness_metrics: this.getConsciousnessOverview()
     };
-    
+
     return dashboard;
   }
 
@@ -457,7 +457,7 @@ class AgentObservabilitySystem extends EventEmitter {
    */
   trackDecision(agentId, decision, context = {}) {
     const decisionId = this.generateDecisionId();
-    
+
     const record = {
       decisionId,
       agentId,
@@ -477,11 +477,11 @@ class AgentObservabilitySystem extends EventEmitter {
         adaptations: []
       }
     };
-    
+
     this.decisions.set(decisionId, record);
-    
-    logger.debug(`🟢 Tracked decision ${decisionId} for agent ${agentId}`);
-    
+
+    logger.debug(` Tracked decision ${decisionId} for agent ${agentId}`);
+
     return decisionId;
   }
 
@@ -492,16 +492,16 @@ class AgentObservabilitySystem extends EventEmitter {
     if (!this.decisions.has(decisionId)) {
       return;
     }
-    
+
     const decision = this.decisions.get(decisionId);
     decision.outcome = this.sanitizeContext(outcome);
     decision.learning.lessons = lessons;
     decision.completedAt = Date.now();
-    
+
     // Analyze decision quality
     decision.quality_score = this.analyzeDecisionQuality(decision);
-    
-    logger.debug(`🟢 Updated decision outcome for ${decisionId}`);
+
+    logger.debug(` Updated decision outcome for ${decisionId}`);
   }
 
   /**
@@ -518,21 +518,21 @@ class AgentObservabilitySystem extends EventEmitter {
       windowSize: 100, // Last 100 measurements
       detector: this.detectResponseTimeAnomalies.bind(this)
     });
-    
+
     this.anomalyDetectors.set('error_burst', {
       name: 'Error Burst Detection',
       threshold: 5, // 5 errors in window
       windowSize: 300000, // 5 minutes
       detector: this.detectErrorBursts.bind(this)
     });
-    
+
     this.anomalyDetectors.set('behavior_drift', {
       name: 'Agent Behavior Drift',
       threshold: 0.8, // Similarity threshold
       windowSize: 1000, // Last 1000 behaviors
       detector: this.detectBehaviorDrift.bind(this)
     });
-    
+
     this.anomalyDetectors.set('consciousness_deviation', {
       name: 'Consciousness State Deviation',
       threshold: 0.7, // Consciousness score threshold
@@ -546,25 +546,25 @@ class AgentObservabilitySystem extends EventEmitter {
    */
   async runAnomalyDetection() {
     const anomalies = [];
-    
+
     for (const [type, detector] of this.anomalyDetectors.entries()) {
       try {
         const detectedAnomalies = await detector.detector();
         anomalies.push(...detectedAnomalies.map(a => ({ ...a, type, detector: detector.name })));
       } catch (error) {
-        logger.warn(`🟢 Anomaly detector ${type} failed: ${error.message}`);
+        logger.warn(` Anomaly detector ${type} failed: ${error.message}`);
       }
     }
-    
+
     // Store new anomalies
     const newAnomalies = anomalies.filter(a => !this.isDuplicateAnomaly(a));
     this.anomalies.push(...newAnomalies);
-    
+
     if (newAnomalies.length > 0) {
-      logger.warn(`🟢 Detected ${newAnomalies.length} new anomalies`);
+      logger.warn(` Detected ${newAnomalies.length} new anomalies`);
       this.emit('anomalies.detected', newAnomalies);
     }
-    
+
     return newAnomalies;
   }
 
@@ -579,10 +579,10 @@ class AgentObservabilitySystem extends EventEmitter {
     if (!this.traces.has(traceId)) {
       return null;
     }
-    
+
     const trace = this.traces.get(traceId);
     const spans = trace.spans.map(spanId => this.spans.get(spanId)).filter(Boolean);
-    
+
     return {
       trace,
       spans,
@@ -600,10 +600,10 @@ class AgentObservabilitySystem extends EventEmitter {
    */
   generateAgentFlowDiagram(agentId, timeWindow = 60 * 60 * 1000) {
     const cutoff = Date.now() - timeWindow;
-    
+
     const agentSpans = Array.from(this.spans.values())
       .filter(span => span.agentId === agentId && span.startTime >= cutoff);
-    
+
     return {
       agentId,
       timeWindow,
@@ -623,15 +623,15 @@ class AgentObservabilitySystem extends EventEmitter {
   generateTraceId() {
     return crypto.randomBytes(16).toString('hex');
   }
-  
+
   generateSpanId() {
     return crypto.randomBytes(8).toString('hex');
   }
-  
+
   generateCorrelationId() {
     return crypto.randomBytes(12).toString('hex');
   }
-  
+
   generateDecisionId() {
     return `decision-${Date.now()}-${crypto.randomBytes(4).toString('hex')}`;
   }
@@ -643,20 +643,20 @@ class AgentObservabilitySystem extends EventEmitter {
     if (this.options.privacyMode === 'strict') {
       return { _sanitized: true };
     }
-    
+
     if (this.options.privacyMode === 'respectful') {
       const sanitized = { ...context };
       const sensitiveKeys = ['password', 'token', 'key', 'secret', 'apiKey', 'personal', 'private'];
-      
+
       for (const key of Object.keys(sanitized)) {
         if (sensitiveKeys.some(sensitive => key.toLowerCase().includes(sensitive))) {
           sanitized[key] = '[REDACTED]';
         }
       }
-      
+
       return sanitized;
     }
-    
+
     return context; // 'open' mode
   }
 
@@ -681,19 +681,19 @@ class AgentObservabilitySystem extends EventEmitter {
     const stack = this.spanStack.get(agentId) || [];
     return stack.length > 0 ? stack[stack.length - 1] : null;
   }
-  
+
   setActiveSpan(agentId, spanId) {
     if (!this.spanStack.has(agentId)) {
       this.spanStack.set(agentId, []);
     }
     this.spanStack.get(agentId).push(spanId);
   }
-  
+
   clearActiveSpan(agentId, spanId) {
     if (!this.spanStack.has(agentId)) {
       return;
     }
-    
+
     const stack = this.spanStack.get(agentId);
     const index = stack.indexOf(spanId);
     if (index !== -1) {
@@ -708,7 +708,7 @@ class AgentObservabilitySystem extends EventEmitter {
     if (!this.metrics.has(key)) {
       this.metrics.set(key, []);
     }
-    
+
     this.metrics.get(key).push({ timestamp, value: 1 });
   }
 
@@ -730,7 +730,7 @@ class AgentObservabilitySystem extends EventEmitter {
   updateSpanMetrics(span) {
     const memoryUsage = process.memoryUsage();
     const cpuUsage = process.cpuUsage(span.performance_metrics.cpu_start);
-    
+
     span.performance_metrics.memory_end = memoryUsage.heapUsed;
     span.performance_metrics.memory_peak = Math.max(
       span.performance_metrics.memory_peak,
@@ -745,7 +745,7 @@ class AgentObservabilitySystem extends EventEmitter {
   recordSpanMetrics(span) {
     this.recordRate(span.agentId, span.spanName);
     this.recordDuration(span.agentId, span.spanName, span.duration);
-    
+
     if (span.status === 'error') {
       this.recordError(span.agentId, span.spanName, new Error(span.tags.last_error || 'Unknown error'));
     }
@@ -756,7 +756,7 @@ class AgentObservabilitySystem extends EventEmitter {
    */
   calculateTraceStatistics(trace) {
     const spans = trace.spans.map(spanId => this.spans.get(spanId)).filter(Boolean);
-    
+
     return {
       total_spans: spans.length,
       successful_spans: spans.filter(s => s.status === 'success').length,
@@ -785,7 +785,7 @@ class AgentObservabilitySystem extends EventEmitter {
 
   getAgentStatusOverview() {
     const agents = {};
-    
+
     for (const span of this.spans.values()) {
       if (!agents[span.agentId]) {
         agents[span.agentId] = {
@@ -796,20 +796,20 @@ class AgentObservabilitySystem extends EventEmitter {
           last_activity: 0
         };
       }
-      
+
       const agent = agents[span.agentId];
       agent.total_spans++;
       if (span.status === 'active') {agent.active_spans++;}
       agent.last_activity = Math.max(agent.last_activity, span.startTime);
     }
-    
+
     return agents;
   }
 
   getPerformanceOverview() {
     const now = Date.now();
     const hour = 60 * 60 * 1000;
-    
+
     return {
       requests_per_hour: this.calculateRequestRate(hour),
       error_rate: this.calculateErrorRate(hour),
@@ -855,7 +855,7 @@ class AgentObservabilitySystem extends EventEmitter {
 
   getConsciousnessOverview() {
     const decisions = Array.from(this.decisions.values());
-    
+
     if (decisions.length === 0) {
       return {
         average_consciousness_score: 0.85,
@@ -864,13 +864,13 @@ class AgentObservabilitySystem extends EventEmitter {
         total_decisions: 0
       };
     }
-    
+
     return {
-      average_consciousness_score: decisions.reduce((sum, d) => 
+      average_consciousness_score: decisions.reduce((sum, d) =>
         sum + (d.consciousness_state?.awareness_level || 0.8), 0) / decisions.length,
-      ethical_alignment: decisions.reduce((sum, d) => 
+      ethical_alignment: decisions.reduce((sum, d) =>
         sum + (d.consciousness_state?.ethical_alignment || 0.9), 0) / decisions.length,
-      decision_quality: decisions.reduce((sum, d) => 
+      decision_quality: decisions.reduce((sum, d) =>
         sum + (d.quality_score || 0.8), 0) / decisions.length,
       total_decisions: decisions.length
     };
@@ -912,26 +912,26 @@ class AgentObservabilitySystem extends EventEmitter {
     // Aggregate hourly metrics
     const now = Date.now();
     const hour = 60 * 60 * 1000;
-    
+
     // This would be enhanced with proper time-series aggregation
-    logger.debug('🟢 Aggregating metrics');
+    logger.debug(' Aggregating metrics');
   }
 
   cleanupOldData() {
     const now = Date.now();
-    
+
     // Clean up old traces
     for (const [traceId, trace] of this.traces.entries()) {
       if (trace.endTime && (now - trace.endTime) > this.options.maxTraceRetention) {
         this.traces.delete(traceId);
-        
+
         // Clean up associated spans
         for (const spanId of trace.spans) {
           this.spans.delete(spanId);
         }
       }
     }
-    
+
     // Clean up old metrics
     for (const [key, metrics] of this.metrics.entries()) {
       if (Array.isArray(metrics)) {
@@ -941,11 +941,11 @@ class AgentObservabilitySystem extends EventEmitter {
         }
       }
     }
-    
+
     // Clean up old anomalies
     this.anomalies = this.anomalies.filter(a => (now - a.timestamp) <= this.options.maxMetricsRetention);
-    
-    logger.debug('🟢 Cleaned up old observability data');
+
+    logger.debug(' Cleaned up old observability data');
   }
 
   /**
@@ -977,14 +977,14 @@ class AgentObservabilitySystem extends EventEmitter {
   calculateSystemHealth() {
     const activeSpans = Array.from(this.spans.values()).filter(s => s.status === 'active');
     const recentErrors = this.anomalies.filter(a => (Date.now() - a.timestamp) < 300000); // 5 minutes
-    
+
     let healthScore = 1.0;
-    
+
     // Reduce score for active issues
     if (activeSpans.length > 100) {healthScore -= 0.2;}
     if (recentErrors.length > 5) {healthScore -= 0.3;}
     if (this.bottlenecks.length > 0) {healthScore -= 0.1 * this.bottlenecks.length;}
-    
+
     return Math.max(0, healthScore);
   }
 
@@ -1011,13 +1011,13 @@ class AgentObservabilitySystem extends EventEmitter {
       decisions: Array.from(this.decisions.values()),
       bottlenecks: this.bottlenecks
     };
-    
+
     if (timeRange) {
       data.traces = data.traces.filter(t => this.isInTimeRange(t.startTime, timeRange));
       data.spans = data.spans.filter(s => this.isInTimeRange(s.startTime, timeRange));
       data.anomalies = data.anomalies.filter(a => this.isInTimeRange(a.timestamp, timeRange));
     }
-    
+
     return data;
   }
 

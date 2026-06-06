@@ -467,7 +467,7 @@ class TraceRecorder extends EventEmitter {
 
     // Option A: Warn if storage is getting high
     if (totalStorageMB > STORAGE_WARNING_THRESHOLD && totalStorageMB < STORAGE_CLEANUP_THRESHOLD) {
-      console.warn(`⚠️  Trace storage is ${totalStorageMB.toFixed(1)}MB (${STORAGE_WARNING_THRESHOLD}MB threshold)`);
+      console.warn(`  Trace storage is ${totalStorageMB.toFixed(1)}MB (${STORAGE_WARNING_THRESHOLD}MB threshold)`);
       console.warn(`   Old traces will be auto-deleted at ${STORAGE_CLEANUP_THRESHOLD}MB or after ${this.config.traceRetentionDays} days`);
     }
 
@@ -476,7 +476,7 @@ class TraceRecorder extends EventEmitter {
       // Sprint 7: Run cleanup async without blocking trace save
       setImmediate(async () => {
         try {
-          console.log(`🧹 Storage at ${totalStorageMB.toFixed(1)}MB - running auto-cleanup...`);
+          console.log(` Storage at ${totalStorageMB.toFixed(1)}MB - running auto-cleanup...`);
           const cleanupResult = await this.cleanupOldTraces();
           if (cleanupResult.deletedCount > 0) {
             const newStorageMB = await this.calculateTotalStorageSize();

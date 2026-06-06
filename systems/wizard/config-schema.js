@@ -42,10 +42,10 @@ const bridgeSchema = Joi.object({
 const configSchema = Joi.object({
   // Environment
   environment: Joi.string().valid('development', 'staging', 'production').default('development'),
-  
+
   // API Keys
   apiKeys: Joi.object(apiKeySchemas),
-  
+
   // MCP Servers
   mcpServers: Joi.object({
     filesystem: mcpServerSchema,
@@ -57,10 +57,10 @@ const configSchema = Joi.object({
     semgrep: mcpServerSchema,
     brave: mcpServerSchema
   }).default({}),
-  
+
   // Bridge Configuration
   bridge: bridgeSchema,
-  
+
   // BUMBA Settings
   bumba: Joi.object({
     defaultModel: Joi.string().default('gpt-4-turbo'),
@@ -70,14 +70,14 @@ const configSchema = Joi.object({
     telemetry: Joi.boolean().default(false),
     logLevel: Joi.string().valid('debug', 'info', 'warn', 'error').default('info')
   }),
-  
+
   // Security
   security: Joi.object({
     encryptKeys: Joi.boolean().default(true),
     auditLogging: Joi.boolean().default(true),
     backupOnChange: Joi.boolean().default(true)
   }),
-  
+
   // Metadata
   metadata: Joi.object({
     version: Joi.string().default('1.0.0'),
@@ -125,14 +125,14 @@ class ConfigurationState {
   set(path, value) {
     const keys = path.split('.');
     let current = this.config;
-    
+
     for (let i = 0; i < keys.length - 1; i++) {
       if (!current[keys[i]]) {
         current[keys[i]] = {};
       }
       current = current[keys[i]];
     }
-    
+
     current[keys[keys.length - 1]] = value;
     return this.validate();
   }
@@ -140,14 +140,14 @@ class ConfigurationState {
   get(path) {
     const keys = path.split('.');
     let current = this.config;
-    
+
     for (const key of keys) {
       if (current[key] === undefined) {
         return undefined;
       }
       current = current[key];
     }
-    
+
     return current;
   }
 

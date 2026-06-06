@@ -8,7 +8,7 @@ const EventEmitter = require('events');
 class WebSearchConnector extends EventEmitter {
   constructor(options = {}) {
     super();
-    
+
     this.options = {
       provider: options.provider || 'duckduckgo', // Default to DuckDuckGo (no API key needed)
       googleApiKey: options.googleApiKey || process.env.GOOGLE_SEARCH_API_KEY,
@@ -22,7 +22,7 @@ class WebSearchConnector extends EventEmitter {
 
   async search(query, options = {}) {
     const provider = options.provider || this.options.provider;
-    
+
     switch (provider) {
       case 'google':
         return this.googleSearch(query, options);
@@ -40,7 +40,7 @@ class WebSearchConnector extends EventEmitter {
     if (!this.options.googleApiKey || !this.options.googleCseId) {
       throw new Error('Google Search API key and CSE ID required');
     }
-    
+
     const params = new URLSearchParams({
       key: this.options.googleApiKey,
       cx: this.options.googleCseId,
@@ -48,18 +48,18 @@ class WebSearchConnector extends EventEmitter {
       num: options.limit || 10,
       start: options.offset || 1
     });
-    
+
     const response = await fetch(
       `https://www.googleapis.com/customsearch/v1?${params}`,
       { signal: AbortSignal.timeout(this.options.timeout) }
     );
-    
+
     if (!response.ok) {
       throw new Error(`Google Search error: ${response.status}`);
     }
-    
+
     const data = await response.json();
-    
+
     return {
       provider: 'google',
       query,
@@ -77,13 +77,13 @@ class WebSearchConnector extends EventEmitter {
     if (!this.options.bingApiKey) {
       throw new Error('Bing API key required');
     }
-    
+
     const params = new URLSearchParams({
       q: query,
       count: options.limit || 10,
       offset: options.offset || 0
     });
-    
+
     const response = await fetch(
       `https://api.bing.microsoft.com/v7.0/search?${params}`,
       {
@@ -93,13 +93,13 @@ class WebSearchConnector extends EventEmitter {
         signal: AbortSignal.timeout(this.options.timeout)
       }
     );
-    
+
     if (!response.ok) {
       throw new Error(`Bing Search error: ${response.status}`);
     }
-    
+
     const data = await response.json();
-    
+
     return {
       provider: 'bing',
       query,
@@ -117,12 +117,12 @@ class WebSearchConnector extends EventEmitter {
     if (!this.options.braveApiKey) {
       throw new Error('Brave API key required');
     }
-    
+
     const params = new URLSearchParams({
       q: query,
       count: options.limit || 10
     });
-    
+
     const response = await fetch(
       `https://api.search.brave.com/res/v1/web/search?${params}`,
       {
@@ -132,13 +132,13 @@ class WebSearchConnector extends EventEmitter {
         signal: AbortSignal.timeout(this.options.timeout)
       }
     );
-    
+
     if (!response.ok) {
       throw new Error(`Brave Search error: ${response.status}`);
     }
-    
+
     const data = await response.json();
-    
+
     return {
       provider: 'brave',
       query,
@@ -159,20 +159,20 @@ class WebSearchConnector extends EventEmitter {
       no_html: '1',
       skip_disambig: '1'
     });
-    
+
     const response = await fetch(
       `https://api.duckduckgo.com/?${params}`,
       { signal: AbortSignal.timeout(this.options.timeout) }
     );
-    
+
     if (!response.ok) {
       throw new Error(`DuckDuckGo Search error: ${response.status}`);
     }
-    
+
     const data = await response.json();
-    
+
     const results = [];
-    
+
     // Add abstract if available
     if (data.AbstractURL) {
       results.push({
@@ -182,7 +182,7 @@ class WebSearchConnector extends EventEmitter {
         source: data.AbstractSource
       });
     }
-    
+
     // Add related topics
     data.RelatedTopics?.forEach(topic => {
       if (topic.FirstURL) {
@@ -194,7 +194,7 @@ class WebSearchConnector extends EventEmitter {
         });
       }
     });
-    
+
     return {
       provider: 'duckduckgo',
       query,
@@ -205,7 +205,7 @@ class WebSearchConnector extends EventEmitter {
   async imageSearch(query, options = {}) {
     // Implement image search based on provider
     const provider = options.provider || this.options.provider;
-    
+
     if (provider === 'google' && this.options.googleApiKey) {
       const params = new URLSearchParams({
         key: this.options.googleApiKey,
@@ -214,14 +214,14 @@ class WebSearchConnector extends EventEmitter {
         searchType: 'image',
         num: options.limit || 10
       });
-      
+
       const response = await fetch(
         `https://www.googleapis.com/customsearch/v1?${params}`,
         { signal: AbortSignal.timeout(this.options.timeout) }
       );
-      
+
       const data = await response.json();
-      
+
       return {
         provider: 'google',
         query,
@@ -236,19 +236,19 @@ class WebSearchConnector extends EventEmitter {
         })) || []
       };
     }
-    
+
     throw new Error('Image search not available for this provider');
   }
 
   async newsSearch(query, options = {}) {
     const provider = options.provider || this.options.provider;
-    
+
     if (provider === 'bing' && this.options.bingApiKey) {
       const params = new URLSearchParams({
         q: query,
         count: options.limit || 10
       });
-      
+
       const response = await fetch(
         `https://api.bing.microsoft.com/v7.0/news/search?${params}`,
         {
@@ -258,9 +258,9 @@ class WebSearchConnector extends EventEmitter {
           signal: AbortSignal.timeout(this.options.timeout)
         }
       );
-      
+
       const data = await response.json();
-      
+
       return {
         provider: 'bing',
         query,
@@ -275,7 +275,7 @@ class WebSearchConnector extends EventEmitter {
         })) || []
       };
     }
-    
+
     // Fallback to regular search with news filter
     return this.search(`${query} news`, options);
   }

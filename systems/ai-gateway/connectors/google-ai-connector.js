@@ -8,7 +8,7 @@ const EventEmitter = require('events');
 class GoogleAIConnector extends EventEmitter {
   constructor(options = {}) {
     super();
-    
+
     this.options = {
       apiKey: options.apiKey || process.env.GOOGLE_API_KEY,
       baseURL: options.baseURL || 'https://generativelanguage.googleapis.com',
@@ -17,18 +17,18 @@ class GoogleAIConnector extends EventEmitter {
       maxRetries: options.maxRetries || 3,
       ...options
     };
-    
+
     // Validate API key
     if (!this.options.apiKey) {
       throw new Error('Google AI API key is required');
     }
-    
+
     // Rate limiting
     this.rateLimits = {
       requests: { limit: 60, window: 60000, current: 0, lastReset: Date.now() },
       tokens: { limit: 1000000, window: 60000, current: 0, lastReset: Date.now() }
     };
-    
+
     // Usage tracking
     this.usage = {
       totalPromptTokens: 0,
@@ -38,13 +38,13 @@ class GoogleAIConnector extends EventEmitter {
       requests: 0,
       cachedContentTokens: 0
     };
-    
+
     // Model configurations with pricing
     this.models = {
       'gemini-1.5-pro': {
         maxInputTokens: 2097152,
         maxOutputTokens: 8192,
-        costPer1M: { 
+        costPer1M: {
           input: { under128k: 1.25, over128k: 2.50 },
           output: { under128k: 5.00, over128k: 10.00 }
         }
@@ -52,7 +52,7 @@ class GoogleAIConnector extends EventEmitter {
       'gemini-1.5-pro-002': {
         maxInputTokens: 2097152,
         maxOutputTokens: 8192,
-        costPer1M: { 
+        costPer1M: {
           input: { under128k: 1.25, over128k: 2.50 },
           output: { under128k: 5.00, over128k: 10.00 }
         }
@@ -60,7 +60,7 @@ class GoogleAIConnector extends EventEmitter {
       'gemini-1.5-flash': {
         maxInputTokens: 1048576,
         maxOutputTokens: 8192,
-        costPer1M: { 
+        costPer1M: {
           input: { under128k: 0.075, over128k: 0.15 },
           output: { under128k: 0.30, over128k: 0.60 }
         }
@@ -68,7 +68,7 @@ class GoogleAIConnector extends EventEmitter {
       'gemini-1.5-flash-002': {
         maxInputTokens: 1048576,
         maxOutputTokens: 8192,
-        costPer1M: { 
+        costPer1M: {
           input: { under128k: 0.075, over128k: 0.15 },
           output: { under128k: 0.30, over128k: 0.60 }
         }
@@ -76,7 +76,7 @@ class GoogleAIConnector extends EventEmitter {
       'gemini-1.0-pro': {
         maxInputTokens: 32768,
         maxOutputTokens: 8192,
-        costPer1M: { 
+        costPer1M: {
           input: { default: 0.50 },
           output: { default: 1.50 }
         }
@@ -84,13 +84,13 @@ class GoogleAIConnector extends EventEmitter {
       'gemini-pro-vision': {
         maxInputTokens: 16384,
         maxOutputTokens: 2048,
-        costPer1M: { 
+        costPer1M: {
           input: { default: 0.50 },
           output: { default: 1.50 }
         }
       }
     };
-    
+
     // Safety settings
     this.defaultSafetySettings = [
       {
@@ -117,15 +117,15 @@ class GoogleAIConnector extends EventEmitter {
    */
   async makeRequest(endpoint, options = {}) {
     const url = `${this.options.baseURL}/${this.options.apiVersion}${endpoint}?key=${this.options.apiKey}`;
-    
+
     const headers = {
       'Content-Type': 'application/json',
       ...options.headers
     };
-    
+
     // Check rate limits
     await this.checkRateLimits();
-    
+
     let lastError;
     for (let attempt = 0; attempt < this.options.maxRetries; attempt++) {
       try {
@@ -135,43 +135,43 @@ class GoogleAIConnector extends EventEmitter {
           body: options.body ? JSON.stringify(options.body) : undefined,
           signal: AbortSignal.timeout(this.options.timeout)
         });
-        
+
         if (!response.ok) {
           const error = await response.json().catch(() => ({}));
-          
+
           if (response.status === 429) {
             // Rate limited
             await this.delay(Math.pow(2, attempt) * 1000);
             continue;
           }
-          
+
           if (response.status === 503) {
             // Service unavailable
             await this.delay(Math.pow(2, attempt) * 1000);
             continue;
           }
-          
+
           throw new Error(error.error?.message || `API error: ${response.status}`);
         }
-        
+
         const data = await response.json();
-        
+
         // Track usage
         if (data.usageMetadata) {
           this.trackUsage(data.usageMetadata, options.model);
         }
-        
+
         return data;
-        
+
       } catch (error) {
         lastError = error;
-        
+
         if (attempt < this.options.maxRetries - 1) {
           await this.delay(Math.pow(2, attempt) * 1000);
         }
       }
     }
-    
+
     throw lastError;
   }
 
@@ -180,10 +180,10 @@ class GoogleAIConnector extends EventEmitter {
    */
   async generateContent(prompt, options = {}) {
     const model = options.model || 'gemini-1.5-pro';
-    
+
     // Convert prompt to contents format
     const contents = this.formatContents(prompt);
-    
+
     const body = {
       contents,
       generationConfig: {
@@ -197,42 +197,42 @@ class GoogleAIConnector extends EventEmitter {
       },
       safetySettings: options.safetySettings || this.defaultSafetySettings
     };
-    
+
     // Add system instruction if provided
     if (options.systemInstruction) {
       body.systemInstruction = {
         parts: [{ text: options.systemInstruction }]
       };
     }
-    
+
     // Add tools if provided
     if (options.tools) {
       body.tools = options.tools;
       body.toolConfig = options.toolConfig;
     }
-    
+
     // Add cached content if provided
     if (options.cachedContent) {
       body.cachedContent = options.cachedContent;
     }
-    
+
     const endpoint = `/models/${model}:generateContent`;
-    
+
     if (options.stream) {
       return this.streamGenerateContent(endpoint, body);
     }
-    
+
     const response = await this.makeRequest(endpoint, {
       method: 'POST',
       body
     });
-    
+
     this.emit('generation', {
       model,
       prompt: contents.length,
       response: response.candidates?.[0]?.content
     });
-    
+
     return response;
   }
 
@@ -241,7 +241,7 @@ class GoogleAIConnector extends EventEmitter {
    */
   async streamGenerateContent(endpoint, body) {
     const url = `${this.options.baseURL}/${this.options.apiVersion}${endpoint}?key=${this.options.apiKey}&alt=sse`;
-    
+
     const response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -249,32 +249,32 @@ class GoogleAIConnector extends EventEmitter {
       },
       body: JSON.stringify(body)
     });
-    
+
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.error?.message || 'Stream request failed');
     }
-    
+
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
-    
+
     return {
       async *[Symbol.asyncIterator]() {
         let buffer = '';
-        
+
         while (true) {
           const { done, value } = await reader.read();
-          
+
           if (done) break;
-          
+
           buffer += decoder.decode(value, { stream: true });
           const lines = buffer.split('\n');
           buffer = lines.pop() || '';
-          
+
           for (const line of lines) {
             if (line.startsWith('data: ')) {
               const data = line.slice(6);
-              
+
               try {
                 const parsed = JSON.parse(data);
                 yield parsed;
@@ -293,10 +293,10 @@ class GoogleAIConnector extends EventEmitter {
    */
   async chat(messages, options = {}) {
     const model = options.model || 'gemini-1.5-pro';
-    
+
     // Convert messages to Gemini format
     const contents = this.convertMessagesToContents(messages);
-    
+
     return this.generateContent(contents, options);
   }
 
@@ -305,7 +305,7 @@ class GoogleAIConnector extends EventEmitter {
    */
   async embedContent(content, options = {}) {
     const model = options.model || 'embedding-001';
-    
+
     const body = {
       model: `models/${model}`,
       content: {
@@ -314,12 +314,12 @@ class GoogleAIConnector extends EventEmitter {
       taskType: options.taskType || 'RETRIEVAL_DOCUMENT',
       title: options.title
     };
-    
+
     const response = await this.makeRequest(`/models/${model}:embedContent`, {
       method: 'POST',
       body
     });
-    
+
     return response;
   }
 
@@ -328,7 +328,7 @@ class GoogleAIConnector extends EventEmitter {
    */
   async batchEmbedContents(contents, options = {}) {
     const model = options.model || 'embedding-001';
-    
+
     const requests = contents.map(content => ({
       model: `models/${model}`,
       content: {
@@ -336,12 +336,12 @@ class GoogleAIConnector extends EventEmitter {
       },
       taskType: options.taskType || 'RETRIEVAL_DOCUMENT'
     }));
-    
+
     const response = await this.makeRequest(`/models/${model}:batchEmbedContents`, {
       method: 'POST',
       body: { requests }
     });
-    
+
     return response;
   }
 
@@ -350,17 +350,17 @@ class GoogleAIConnector extends EventEmitter {
    */
   async countTokens(content, options = {}) {
     const model = options.model || 'gemini-1.5-pro';
-    
+
     const body = {
       contents: this.formatContents(content),
       generateContentRequest: options.generateContentRequest
     };
-    
+
     const response = await this.makeRequest(`/models/${model}:countTokens`, {
       method: 'POST',
       body
     });
-    
+
     return response;
   }
 
@@ -375,7 +375,7 @@ class GoogleAIConnector extends EventEmitter {
         parameters: fn.parameters
       }))
     }];
-    
+
     const response = await this.generateContent(prompt, {
       ...options,
       tools,
@@ -386,7 +386,7 @@ class GoogleAIConnector extends EventEmitter {
         }
       }
     });
-    
+
     // Extract function calls
     const functionCalls = [];
     if (response.candidates?.[0]?.content?.parts) {
@@ -399,7 +399,7 @@ class GoogleAIConnector extends EventEmitter {
         }
       }
     }
-    
+
     return {
       ...response,
       functionCalls
@@ -421,7 +421,7 @@ class GoogleAIConnector extends EventEmitter {
         }
       }
     ];
-    
+
     return this.generateContent(prompt, {
       ...options,
       tools: [{
@@ -442,7 +442,7 @@ class GoogleAIConnector extends EventEmitter {
         }
       }
     }];
-    
+
     return this.generateContent(prompt, {
       ...options,
       tools
@@ -468,7 +468,7 @@ class GoogleAIConnector extends EventEmitter {
         ]
       }
     ];
-    
+
     return this.generateContent(contents, {
       ...options,
       model: options.model || 'gemini-1.5-pro'
@@ -494,7 +494,7 @@ class GoogleAIConnector extends EventEmitter {
         ]
       }
     ];
-    
+
     return this.generateContent(contents, {
       ...options,
       model: options.model || 'gemini-1.5-pro'
@@ -520,7 +520,7 @@ class GoogleAIConnector extends EventEmitter {
         ]
       }
     ];
-    
+
     return this.generateContent(contents, {
       ...options,
       model: options.model || 'gemini-1.5-pro'
@@ -533,26 +533,26 @@ class GoogleAIConnector extends EventEmitter {
   async uploadFile(file, options = {}) {
     const formData = new FormData();
     formData.append('file', file);
-    
+
     const uploadUrl = `https://generativelanguage.googleapis.com/upload/v1beta/files?key=${this.options.apiKey}`;
-    
+
     const response = await fetch(uploadUrl, {
       method: 'POST',
       body: formData
     });
-    
+
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.error?.message || 'File upload failed');
     }
-    
+
     const fileData = await response.json();
-    
+
     // Wait for file to be processed
     if (options.waitForProcessing) {
       return this.waitForFile(fileData.name);
     }
-    
+
     return fileData;
   }
 
@@ -561,21 +561,21 @@ class GoogleAIConnector extends EventEmitter {
    */
   async waitForFile(fileName, maxWait = 60000) {
     const startTime = Date.now();
-    
+
     while (Date.now() - startTime < maxWait) {
       const file = await this.getFile(fileName);
-      
+
       if (file.state === 'ACTIVE') {
         return file;
       }
-      
+
       if (file.state === 'FAILED') {
         throw new Error(`File processing failed: ${file.error?.message}`);
       }
-      
+
       await this.delay(2000);
     }
-    
+
     throw new Error('File processing timeout');
   }
 
@@ -586,7 +586,7 @@ class GoogleAIConnector extends EventEmitter {
     const response = await this.makeRequest(`/files/${fileName}`, {
       method: 'GET'
     });
-    
+
     return response;
   }
 
@@ -597,11 +597,11 @@ class GoogleAIConnector extends EventEmitter {
     const params = new URLSearchParams();
     if (options.pageSize) params.append('pageSize', String(options.pageSize));
     if (options.pageToken) params.append('pageToken', options.pageToken);
-    
+
     const response = await this.makeRequest(`/files?${params}`, {
       method: 'GET'
     });
-    
+
     return response;
   }
 
@@ -612,7 +612,7 @@ class GoogleAIConnector extends EventEmitter {
     const response = await this.makeRequest(`/files/${fileName}`, {
       method: 'DELETE'
     });
-    
+
     return response;
   }
 
@@ -621,7 +621,7 @@ class GoogleAIConnector extends EventEmitter {
    */
   async createCachedContent(content, options = {}) {
     const model = options.model || 'gemini-1.5-pro';
-    
+
     const body = {
       model: `models/${model}`,
       contents: this.formatContents(content),
@@ -631,12 +631,12 @@ class GoogleAIConnector extends EventEmitter {
       ttl: options.ttl || '3600s',
       displayName: options.displayName
     };
-    
+
     const response = await this.makeRequest('/cachedContents', {
       method: 'POST',
       body
     });
-    
+
     return response;
   }
 
@@ -647,7 +647,7 @@ class GoogleAIConnector extends EventEmitter {
     const response = await this.makeRequest(`/cachedContents/${name}`, {
       method: 'GET'
     });
-    
+
     return response;
   }
 
@@ -658,11 +658,11 @@ class GoogleAIConnector extends EventEmitter {
     const params = new URLSearchParams();
     if (options.pageSize) params.append('pageSize', String(options.pageSize));
     if (options.pageToken) params.append('pageToken', options.pageToken);
-    
+
     const response = await this.makeRequest(`/cachedContents?${params}`, {
       method: 'GET'
     });
-    
+
     return response;
   }
 
@@ -673,7 +673,7 @@ class GoogleAIConnector extends EventEmitter {
     const response = await this.makeRequest(`/cachedContents/${name}`, {
       method: 'DELETE'
     });
-    
+
     return response;
   }
 
@@ -697,12 +697,12 @@ class GoogleAIConnector extends EventEmitter {
         }
       }
     };
-    
+
     const response = await this.makeRequest('/tunedModels', {
       method: 'POST',
       body
     });
-    
+
     return response;
   }
 
@@ -713,7 +713,7 @@ class GoogleAIConnector extends EventEmitter {
     const response = await this.makeRequest('/models', {
       method: 'GET'
     });
-    
+
     return response;
   }
 
@@ -724,7 +724,7 @@ class GoogleAIConnector extends EventEmitter {
     const response = await this.makeRequest(`/models/${modelId}`, {
       method: 'GET'
     });
-    
+
     return response;
   }
 
@@ -735,22 +735,22 @@ class GoogleAIConnector extends EventEmitter {
     if (typeof input === 'string') {
       return [{ parts: [{ text: input }] }];
     }
-    
+
     if (Array.isArray(input)) {
       // Already formatted
       if (input[0]?.parts) {
         return input;
       }
-      
+
       // Array of strings
       return [{ parts: input.map(text => ({ text })) }];
     }
-    
+
     // Single content object
     if (input.parts) {
       return [input];
     }
-    
+
     // Single part
     return [{ parts: [input] }];
   }
@@ -760,10 +760,10 @@ class GoogleAIConnector extends EventEmitter {
    */
   convertMessagesToContents(messages) {
     const contents = [];
-    
+
     for (const msg of messages) {
       const role = msg.role === 'assistant' ? 'model' : 'user';
-      
+
       if (typeof msg.content === 'string') {
         contents.push({
           role,
@@ -781,7 +781,7 @@ class GoogleAIConnector extends EventEmitter {
         });
       }
     }
-    
+
     return contents;
   }
 
@@ -790,18 +790,18 @@ class GoogleAIConnector extends EventEmitter {
    */
   async checkRateLimits() {
     const now = Date.now();
-    
+
     // Reset counters if window has passed
     if (now - this.rateLimits.requests.lastReset > this.rateLimits.requests.window) {
       this.rateLimits.requests.current = 0;
       this.rateLimits.requests.lastReset = now;
     }
-    
+
     if (now - this.rateLimits.tokens.lastReset > this.rateLimits.tokens.window) {
       this.rateLimits.tokens.current = 0;
       this.rateLimits.tokens.lastReset = now;
     }
-    
+
     // Check if at limit
     if (this.rateLimits.requests.current >= this.rateLimits.requests.limit) {
       const waitTime = this.rateLimits.requests.window - (now - this.rateLimits.requests.lastReset);
@@ -809,7 +809,7 @@ class GoogleAIConnector extends EventEmitter {
       this.rateLimits.requests.current = 0;
       this.rateLimits.requests.lastReset = Date.now();
     }
-    
+
     this.rateLimits.requests.current++;
   }
 
@@ -821,19 +821,19 @@ class GoogleAIConnector extends EventEmitter {
     this.usage.totalCandidatesTokens += usageMetadata.candidatesTokenCount || 0;
     this.usage.totalTokens += usageMetadata.totalTokenCount || 0;
     this.usage.requests++;
-    
+
     if (usageMetadata.cachedContentTokenCount) {
       this.usage.cachedContentTokens += usageMetadata.cachedContentTokenCount;
     }
-    
+
     // Calculate costs
     if (model && this.models[model]) {
       const costs = this.models[model].costPer1M;
       const promptTokens = usageMetadata.promptTokenCount || 0;
       const candidateTokens = usageMetadata.candidatesTokenCount || 0;
-      
+
       let inputCost, outputCost;
-      
+
       if (costs.input.under128k) {
         // Tiered pricing
         if (promptTokens <= 128000) {
@@ -842,7 +842,7 @@ class GoogleAIConnector extends EventEmitter {
           inputCost = (128000 * costs.input.under128k / 1000000) +
                      ((promptTokens - 128000) * costs.input.over128k / 1000000);
         }
-        
+
         if (candidateTokens <= 128000) {
           outputCost = candidateTokens * costs.output.under128k / 1000000;
         } else {
@@ -854,10 +854,10 @@ class GoogleAIConnector extends EventEmitter {
         inputCost = promptTokens * costs.input.default / 1000000;
         outputCost = candidateTokens * costs.output.default / 1000000;
       }
-      
+
       this.usage.totalCost += inputCost + outputCost;
     }
-    
+
     this.emit('usage', {
       promptTokens: usageMetadata.promptTokenCount,
       candidateTokens: usageMetadata.candidatesTokenCount,

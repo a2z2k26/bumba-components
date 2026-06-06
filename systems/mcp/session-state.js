@@ -52,7 +52,7 @@ class MCPSessionState extends EventEmitter {
       // Load history
       await this.loadHistory();
 
-      console.log('✓ MCP session state initialized');
+      console.log(' MCP session state initialized');
       return true;
     } catch (error) {
       console.error('Failed to initialize session state:', error);
@@ -116,7 +116,7 @@ class MCPSessionState extends EventEmitter {
         // Restore preferences
         this.currentSession.preferences = stateData.preferences || {};
 
-        console.log(`✓ Restored ${stateData.servers.length} server states from previous session`);
+        console.log(` Restored ${stateData.servers.length} server states from previous session`);
         this.emit('state:loaded', stateData);
       }
 

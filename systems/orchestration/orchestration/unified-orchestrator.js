@@ -49,7 +49,7 @@ class UnifiedOrchestrator extends UnifiedManagerBase {
   }
 
   async onInitialize() {
-    logger.info('🎼 Initializing Unified Orchestrator System...');
+    logger.info(' Initializing Unified Orchestrator System...');
 
     // Initialize subsystems
     await this.initializeTaskOrchestration();
@@ -66,7 +66,7 @@ class UnifiedOrchestrator extends UnifiedManagerBase {
       capabilities: this.getCapabilities()
     });
 
-    logger.info('🎼 Unified Orchestrator System initialized successfully');
+    logger.info(' Unified Orchestrator System initialized successfully');
   }
 
   async initializeTaskOrchestration() {
@@ -101,7 +101,7 @@ class UnifiedOrchestrator extends UnifiedManagerBase {
       }
     };
 
-    logger.info('🎼 Task orchestration subsystem initialized');
+    logger.info(' Task orchestration subsystem initialized');
   }
 
   async initializeAgentOrchestration() {
@@ -164,7 +164,7 @@ class UnifiedOrchestrator extends UnifiedManagerBase {
       }
     };
 
-    logger.info('🎼 Agent orchestration subsystem initialized');
+    logger.info(' Agent orchestration subsystem initialized');
   }
 
   async initializeWaveOrchestration() {
@@ -220,7 +220,7 @@ class UnifiedOrchestrator extends UnifiedManagerBase {
       }
     };
 
-    logger.info('🎼 Wave orchestration subsystem initialized');
+    logger.info(' Wave orchestration subsystem initialized');
   }
 
   async initializeGitAwareOrchestration() {
@@ -255,7 +255,7 @@ class UnifiedOrchestrator extends UnifiedManagerBase {
       }
     };
 
-    logger.info('🎼 Git-aware orchestration subsystem initialized');
+    logger.info(' Git-aware orchestration subsystem initialized');
   }
 
   async initializeSmartHandoff() {
@@ -293,7 +293,7 @@ class UnifiedOrchestrator extends UnifiedManagerBase {
       }
     };
 
-    logger.info('🎼 Smart handoff management initialized');
+    logger.info(' Smart handoff management initialized');
   }
 
   setupCrossSystemCoordination() {
@@ -316,7 +316,7 @@ class UnifiedOrchestrator extends UnifiedManagerBase {
       this.updateMetrics();
     });
 
-    logger.info('🎼 Cross-system coordination established');
+    logger.info(' Cross-system coordination established');
   }
 
   // Public API methods
@@ -497,7 +497,7 @@ class UnifiedOrchestrator extends UnifiedManagerBase {
   }
 
   async onShutdown() {
-    logger.info('🎼 Shutting down Unified Orchestrator System...');
+    logger.info(' Shutting down Unified Orchestrator System...');
 
     // Process any remaining handoffs
     if (this.smartHandoffManager) {
@@ -514,7 +514,7 @@ class UnifiedOrchestrator extends UnifiedManagerBase {
     this.activeTasks.clear();
     this.activeWaves.clear();
 
-    logger.info('🎼 Unified Orchestrator System shutdown complete');
+    logger.info(' Unified Orchestrator System shutdown complete');
   }
 
   // Integration test compatibility wrappers

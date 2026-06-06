@@ -450,7 +450,7 @@ class ComponentSchemaValidator extends EventEmitter {
    * Test validation
    */
   testValidation() {
-    console.log('🧪 Testing component schema validation...\n');
+    console.log(' Testing component schema validation...\n');
 
     const testComponents = [
       {
@@ -478,7 +478,7 @@ class ComponentSchemaValidator extends EventEmitter {
     testComponents.forEach((component, index) => {
       console.log(`Test ${index + 1}: ${component.name}`);
       const result = this.autoValidate(component);
-      console.log(`  Valid: ${result.valid ? '✓' : '✗'}`);
+      console.log(`  Valid: ${result.valid ? '' : ''}`);
       console.log(`  Errors: ${result.errors.length}`);
       console.log(`  Warnings: ${result.warnings.length}`);
 
@@ -488,7 +488,7 @@ class ComponentSchemaValidator extends EventEmitter {
       console.log('');
     });
 
-    console.log('✅ Schema validation test complete!\n');
+    console.log(' Schema validation test complete!\n');
   }
 }
 

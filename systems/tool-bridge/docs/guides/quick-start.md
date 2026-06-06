@@ -1,23 +1,23 @@
-# 🟢 Tool Bridge Quick Start Guide
+#  Tool Bridge Quick Start Guide
 
-**Part of the BUMBA Platform Suite**
+**Part of the Agent Primitives Suite**
 
 Get Tool Bridge up and running in 5 minutes!
 
-## 🟡 Prerequisites
+##  Prerequisites
 
 - Node.js 16+ installed
 - At least one AI API key (OpenAI, Anthropic, or Google)
 
-## 🔴 Installation
+##  Installation
 
-### 🟠 Option 1: NPM (Recommended)
+###  Option 1: NPM (Recommended)
 
 ```bash
 npm install -g tool-bridge
 ```
 
-### 🟢 Option 2: From Source
+###  Option 2: From Source
 
 ```bash
 git clone https://github.com/bumba-platform/tool-bridge.git
@@ -26,7 +26,7 @@ npm install
 npm link
 ```
 
-## 🟡 Initial Setup
+##  Initial Setup
 
 1. **Run the setup wizard:**
 ```bash
@@ -44,9 +44,9 @@ tool-bridge setup
 tool-bridge start
 ```
 
-Your Tool Bridge gateway is now running at `http://localhost:3456`! 🏁
+Your Tool Bridge gateway is now running at `http://localhost:3456`!
 
-## 🔴 Your First API Call
+##  Your First API Call
 
 ### Using cURL
 ```bash
@@ -72,14 +72,14 @@ const response = await axios.post('http://localhost:3456/api/chat', {
 console.log(response.data);
 ```
 
-## 🟠 Next Steps
+##  Next Steps
 
 - [Configure additional providers](./providers.md)
 - [Set up authentication](./authentication.md)
 - [Deploy with Docker](./docker.md)
 - [Integrate MCP servers](./mcp-servers.md)
 
-## 🟢 Troubleshooting
+##  Troubleshooting
 
 ### Port already in use
 ```bash
@@ -96,7 +96,7 @@ tool-bridge test --api openai
 tool-bridge setup --reset
 ```
 
-## 🏁 Getting Help
+##  Getting Help
 
 - Check the [FAQ](./faq.md)
 - Open an [issue on GitHub](https://github.com/bumba-platform/tool-bridge/issues)
@@ -104,4 +104,4 @@ tool-bridge setup --reset
 
 ---
 
-**Tool Bridge** - Part of the **BUMBA Platform Suite**
+**Tool Bridge** - Part of the **Agent Primitives Suite**

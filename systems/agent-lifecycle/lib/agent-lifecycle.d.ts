@@ -1,6 +1,6 @@
 /**
  * Agent Lifecycle TypeScript Definitions
- * Part of the BUMBA Platform
+ * Part of the Agent Primitives
  */
 /// <reference types="node" />
 import { EventEmitter } from 'events';

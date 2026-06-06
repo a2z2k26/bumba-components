@@ -89,7 +89,7 @@ class ProjectHooks {
         const catalogPath = path.join(projectPath, '.design-catalog');
         try {
           await fs.access(catalogPath);
-          console.log(chalk.yellow('📁 Design System Catalog already exists'));
+          console.log(chalk.yellow(' Design System Catalog already exists'));
         } catch {
           // Create new catalog
           await this.createCatalogForProject(projectName, projectPath);
@@ -139,7 +139,7 @@ class ProjectHooks {
    * Create catalog for new project
    */
   async createCatalogForProject(projectName, projectPath) {
-    console.log(chalk.cyan('🎨 Auto-generating Design System Catalog...'));
+    console.log(chalk.cyan(' Auto-generating Design System Catalog...'));
 
     try {
       // Create catalog through orchestrator
@@ -157,14 +157,14 @@ class ProjectHooks {
       // Generate initial documentation
       await this.generateInitialDocs(catalog, projectPath);
 
-      console.log(chalk.green('✅ Design System Catalog ready'));
+      console.log(chalk.green(' Design System Catalog ready'));
       console.log(chalk.gray('   • Visual catalog at: .design-catalog/index.html'));
       console.log(chalk.gray('   • AI API available via catalog.getAIAPI()'));
       console.log(chalk.gray('   • Sandbox ready for component iteration'));
 
     } catch (error) {
       logger.error('Failed to create catalog:', error);
-      console.error(chalk.red('❌ Failed to create Design System Catalog'));
+      console.error(chalk.red(' Failed to create Design System Catalog'));
     }
   }
 

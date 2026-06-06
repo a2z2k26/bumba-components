@@ -30,7 +30,7 @@ class LazyDashboard {
    */
   isNeeded() {
     // Dashboard only needed for interactive/development modes
-    return process.env.NODE_ENV === 'development' || 
+    return process.env.NODE_ENV === 'development' ||
            process.env.BUMBA_INTERACTIVE === 'true';
   }
 
@@ -104,7 +104,7 @@ function getInstance() {
   return lazyInstance;
 }
 
-module.exports = { 
+module.exports = {
   LazyDashboard,
-  getInstance 
+  getInstance
 };

@@ -1,7 +1,7 @@
 /**
  * Agent Lifecycle LLM Agent Orchestration Example
  * Demonstrates managing multiple LLM agents with rate limiting and retries
- * Part of the BUMBA Platform
+ * Part of the Agent Primitives
  */
 
 const { AgentOrchestrator, StateEvent, AgentState } = require('../src/index');
@@ -34,7 +34,7 @@ class LLMAgentManager {
     this.orchestrator.on('agent:completed', ({ agentId, stats }) => {
       const duration = stats.totalLifetime;
       const retries = stats.retryCount;
-      console.log(`✅ Agent ${agentId} completed in ${duration}ms with ${retries} retries`);
+      console.log(` Agent ${agentId} completed in ${duration}ms with ${retries} retries`);
     });
   }
 
@@ -84,7 +84,7 @@ class LLMAgentManager {
       return response;
 
     } catch (error) {
-      console.error(`❌ Error in agent ${queryId}:`, error.message);
+      console.error(` Error in agent ${queryId}:`, error.message);
 
       if (agent.retryCount < agent.config.maxRetries) {
         await agent.retry({ error: error.message });
@@ -108,7 +108,7 @@ class LLMAgentManager {
 
   async callLLMAPI(prompt, agent) {
     const metadata = agent.getMetadata();
-    console.log(`🤖 Calling LLM API for ${agent.agentId} with model ${metadata.spawnData.model}`);
+    console.log(` Calling LLM API for ${agent.agentId} with model ${metadata.spawnData.model}`);
 
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
@@ -134,12 +134,12 @@ class LLMAgentManager {
   async validateResponse(response, rules = {}) {
     // Simulate validation
     if (rules.minConfidence && response.confidence < rules.minConfidence) {
-      console.log(`⚠️  Confidence ${response.confidence} below threshold ${rules.minConfidence}`);
+      console.log(`  Confidence ${response.confidence} below threshold ${rules.minConfidence}`);
       return false;
     }
 
     if (rules.maxTokens && response.tokens > rules.maxTokens) {
-      console.log(`⚠️  Token count ${response.tokens} exceeds limit ${rules.maxTokens}`);
+      console.log(`  Token count ${response.tokens} exceeds limit ${rules.maxTokens}`);
       return false;
     }
 
@@ -179,7 +179,7 @@ class LLMAgentManager {
 
 // Demo
 async function demo() {
-  console.log('🚀 LLM Agent Orchestration Demo\n');
+  console.log(' LLM Agent Orchestration Demo\n');
 
   const manager = new LLMAgentManager();
 
@@ -201,7 +201,7 @@ async function demo() {
   // Monitor status
   const statusInterval = setInterval(() => {
     const status = manager.getStatus();
-    console.log('\n📊 Status:', {
+    console.log('\n Status:', {
       active: status.activeAgents,
       total: status.totalAgents,
       completed: status.totalCompleted
@@ -214,17 +214,17 @@ async function demo() {
   clearInterval(statusInterval);
 
   // Show results
-  console.log('\n📋 Results:');
+  console.log('\n Results:');
   results.forEach(r => {
     if (r.success) {
-      console.log(`✅ ${r.id}: ${JSON.stringify(r.result)}`);
+      console.log(` ${r.id}: ${JSON.stringify(r.result)}`);
     } else {
-      console.log(`❌ ${r.id}: ${r.error}`);
+      console.log(` ${r.id}: ${r.error}`);
     }
   });
 
   // Final metrics
-  console.log('\n📊 Final Metrics:', manager.getStatus());
+  console.log('\n Final Metrics:', manager.getStatus());
 
   process.exit(0);
 }

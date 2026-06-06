@@ -50,7 +50,7 @@ class DesignBridge extends EventEmitter {
         this.setupWebSocketHandlers();
       }
 
-      logger.info('🌉 Design Bridge initialized');
+      logger.info(' Design Bridge initialized');
       this.emit('initialized');
 
     } catch (error) {
@@ -508,7 +508,7 @@ class DesignBridge extends EventEmitter {
     this.designCache.clear();
     this.removeAllListeners();
 
-    logger.info('🌉 Design Bridge shut down');
+    logger.info(' Design Bridge shut down');
   }
 }
 

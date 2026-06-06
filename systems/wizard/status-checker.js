@@ -12,7 +12,7 @@ const execAsync = promisify(exec);
 class StatusChecker {
   constructor(options = {}) {
     this.options = options;
-    
+
     // Status results
     this.status = {
       apiKeys: {},
@@ -27,7 +27,7 @@ class StatusChecker {
       system: {},
       overall: 'not-configured'
     };
-    
+
     // API endpoints for testing
     this.apiEndpoints = {
       openai: 'https://api.openai.com/v1/models',
@@ -48,10 +48,10 @@ class StatusChecker {
       this.checkDependencies(),
       this.checkSystem()
     ]);
-    
+
     // Calculate overall status
     this.calculateOverallStatus();
-    
+
     return this.status;
   }
 
@@ -60,34 +60,34 @@ class StatusChecker {
    */
   async checkAPIKeys() {
     const env = process.env;
-    
+
     // OpenAI
     if (env.OPENAI_API_KEY) {
       this.status.apiKeys.openai = await this.validateOpenAI(env.OPENAI_API_KEY);
     }
-    
+
     // Anthropic
     if (env.ANTHROPIC_API_KEY || env.CLAUDE_API_KEY) {
       const key = env.ANTHROPIC_API_KEY || env.CLAUDE_API_KEY;
       this.status.apiKeys.anthropic = await this.validateAnthropic(key);
     }
-    
+
     // Google
     if (env.GOOGLE_API_KEY || env.GEMINI_API_KEY) {
       const key = env.GOOGLE_API_KEY || env.GEMINI_API_KEY;
       this.status.apiKeys.google = await this.validateGoogle(key);
     }
-    
+
     // GitHub
     if (env.GITHUB_TOKEN) {
       this.status.apiKeys.github = await this.validateGitHub(env.GITHUB_TOKEN);
     }
-    
+
     // Notion
     if (env.NOTION_API_KEY) {
       this.status.apiKeys.notion = await this.validateNotion(env.NOTION_API_KEY);
     }
-    
+
     // OpenRouter
     if (env.OPENROUTER_API_KEY) {
       this.status.apiKeys.openrouter = {
@@ -96,7 +96,7 @@ class StatusChecker {
         provider: 'openrouter'
       };
     }
-    
+
     return this.status.apiKeys;
   }
 
@@ -110,7 +110,7 @@ class StatusChecker {
           'Authorization': `Bearer ${apiKey}`
         }
       });
-      
+
       return {
         configured: true,
         valid: response.status === 200,
@@ -133,7 +133,7 @@ class StatusChecker {
     // Note: Anthropic doesn't have a simple validation endpoint
     // We check key format
     const validFormat = /^sk-ant-[a-zA-Z0-9\-]{95}$/.test(apiKey);
-    
+
     return {
       configured: true,
       valid: validFormat,
@@ -148,7 +148,7 @@ class StatusChecker {
   async validateGoogle(apiKey) {
     try {
       const response = await fetch(`${this.apiEndpoints.google}?key=${apiKey}`);
-      
+
       return {
         configured: true,
         valid: response.status === 200,
@@ -174,7 +174,7 @@ class StatusChecker {
           'Authorization': `token ${token}`
         }
       });
-      
+
       return {
         configured: true,
         valid: response.status === 200,
@@ -201,7 +201,7 @@ class StatusChecker {
           'Notion-Version': '2022-06-28'
         }
       });
-      
+
       return {
         configured: true,
         valid: response.status === 200,
@@ -226,7 +226,7 @@ class StatusChecker {
           'Authorization': `Bearer ${apiKey}`
         }
       });
-      
+
       if (response.status === 200) {
         const data = await response.json();
         return data.data
@@ -237,7 +237,7 @@ class StatusChecker {
     } catch (error) {
       // Silent fail
     }
-    
+
     return [];
   }
 
@@ -247,21 +247,21 @@ class StatusChecker {
   async checkMCPServers() {
     // Check if Claude is running
     const isClaudeRunning = await this.isProcessRunning('Claude');
-    
+
     // Check MCP config file
     const mcpConfigPath = this.getMCPConfigPath();
-    
+
     try {
       const content = await fs.readFile(mcpConfigPath, 'utf8');
       const config = JSON.parse(content);
-      
+
       this.status.mcpServers = {
         configured: true,
         configPath: mcpConfigPath,
         claudeRunning: isClaudeRunning,
         servers: {}
       };
-      
+
       // Check each server
       if (config.mcpServers) {
         for (const [name, serverConfig] of Object.entries(config.mcpServers)) {
@@ -279,7 +279,7 @@ class StatusChecker {
         error: error.message
       };
     }
-    
+
     return this.status.mcpServers;
   }
 
@@ -290,13 +290,13 @@ class StatusChecker {
     try {
       const platform = process.platform;
       let command;
-      
+
       if (platform === 'darwin' || platform === 'linux') {
         command = `ps aux | grep -i ${processName} | grep -v grep`;
       } else if (platform === 'win32') {
         command = `tasklist | findstr /i ${processName}`;
       }
-      
+
       const { stdout } = await execAsync(command);
       return stdout.trim().length > 0;
     } catch (error) {
@@ -310,22 +310,22 @@ class StatusChecker {
   async checkBridge() {
     // Check if bridge is configured
     const bridgeConfigPath = path.join(process.cwd(), '.bumba', 'bridge-config.json');
-    
+
     try {
       const content = await fs.readFile(bridgeConfigPath, 'utf8');
       const config = JSON.parse(content);
-      
+
       this.status.bridge.configured = true;
       this.status.bridge.port = config.port || 3456;
-      
+
       // Check if bridge is running
       const isRunning = await this.isPortInUse(this.status.bridge.port);
       this.status.bridge.running = isRunning;
-      
+
     } catch (error) {
       this.status.bridge.configured = false;
     }
-    
+
     return this.status.bridge;
   }
 
@@ -336,13 +336,13 @@ class StatusChecker {
     try {
       const platform = process.platform;
       let command;
-      
+
       if (platform === 'darwin' || platform === 'linux') {
         command = `lsof -i :${port}`;
       } else if (platform === 'win32') {
         command = `netstat -an | findstr :${port}`;
       }
-      
+
       const { stdout } = await execAsync(command);
       return stdout.trim().length > 0;
     } catch (error) {
@@ -362,9 +362,9 @@ class StatusChecker {
       'express',
       'joi'
     ];
-    
+
     const packageJsonPath = path.join(process.cwd(), 'package.json');
-    
+
     try {
       const content = await fs.readFile(packageJsonPath, 'utf8');
       const packageJson = JSON.parse(content);
@@ -372,7 +372,7 @@ class StatusChecker {
         ...packageJson.dependencies,
         ...packageJson.devDependencies
       };
-      
+
       for (const dep of requiredDeps) {
         this.status.dependencies[dep] = {
           required: true,
@@ -383,7 +383,7 @@ class StatusChecker {
     } catch (error) {
       this.status.dependencies.error = error.message;
     }
-    
+
     return this.status.dependencies;
   }
 
@@ -392,7 +392,7 @@ class StatusChecker {
    */
   async checkSystem() {
     const os = require('os');
-    
+
     this.status.system = {
       platform: process.platform,
       arch: process.arch,
@@ -405,7 +405,7 @@ class StatusChecker {
       homeDir: os.homedir(),
       user: os.userInfo().username
     };
-    
+
     return this.status.system;
   }
 
@@ -415,7 +415,7 @@ class StatusChecker {
   getMCPConfigPath() {
     const platform = process.platform;
     const homeDir = require('os').homedir();
-    
+
     switch (platform) {
       case 'darwin':
         return path.join(homeDir, 'Library', 'Application Support', 'Claude', 'claude_desktop_config.json');
@@ -436,7 +436,7 @@ class StatusChecker {
     const hasValidAPIKeys = Object.values(this.status.apiKeys).some(k => k.valid);
     const hasMCPServers = this.status.mcpServers.configured;
     const hasBridge = this.status.bridge.configured;
-    
+
     if (hasValidAPIKeys && hasMCPServers && hasBridge) {
       this.status.overall = 'fully-configured';
     } else if (hasValidAPIKeys) {
@@ -446,16 +446,16 @@ class StatusChecker {
     } else {
       this.status.overall = 'not-configured';
     }
-    
+
     // Calculate percentage
     let score = 0;
     if (hasAPIKeys) score += 25;
     if (hasValidAPIKeys) score += 25;
     if (hasMCPServers) score += 25;
     if (hasBridge) score += 25;
-    
+
     this.status.completionPercentage = score;
-    
+
     return this.status.overall;
   }
 

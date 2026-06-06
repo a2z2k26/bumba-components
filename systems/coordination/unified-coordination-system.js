@@ -35,7 +35,7 @@ class DepartmentCoordinationSubsystem {
   }
 
   async initialize() {
-    logger.info('🏁 Department coordination subsystem initializing...');
+    logger.info(' Department coordination subsystem initializing...');
     return true;
   }
 
@@ -177,7 +177,7 @@ class PairingManagementSubsystem {
   }
 
   async initialize() {
-    logger.info('👥 Pairing management subsystem initializing...');
+    logger.info(' Pairing management subsystem initializing...');
     return true;
   }
 
@@ -265,7 +265,7 @@ class TerritoryManagementSubsystem {
   }
 
   async initialize() {
-    logger.info('🗺️ Territory management subsystem initializing...');
+    logger.info(' Territory management subsystem initializing...');
     return true;
   }
 
@@ -355,7 +355,7 @@ class DashboardCoordinationSubsystem {
   }
 
   async initialize() {
-    logger.info('📊 Dashboard coordination subsystem initializing...');
+    logger.info(' Dashboard coordination subsystem initializing...');
     this.startDashboardUpdates();
     return true;
   }
@@ -426,7 +426,7 @@ class CoordinationAnalyticsSubsystem {
   }
 
   async initialize() {
-    logger.info('📊 Coordination analytics subsystem initializing...');
+    logger.info(' Coordination analytics subsystem initializing...');
     this.startPerformanceReporting();
     return true;
   }
@@ -592,7 +592,7 @@ class UnifiedCoordinationSystem extends UnifiedManagerBase {
   }
 
   async onInitialize() {
-    logger.info('🔗 Unified Coordination System initializing...');
+    logger.info(' Unified Coordination System initializing...');
 
     // Initialize all subsystems
     for (const subsystem of this.subsystems) {
@@ -611,7 +611,7 @@ class UnifiedCoordinationSystem extends UnifiedManagerBase {
       enhancedCapabilities: this.enhancedCoordination ? this.enhancedCoordination.getCapabilities().length : 0
     });
 
-    logger.info('🔗 Unified Coordination System initialized successfully');
+    logger.info(' Unified Coordination System initialized successfully');
   }
 
   registerCoordinationHooks() {
@@ -778,14 +778,14 @@ class UnifiedCoordinationSystem extends UnifiedManagerBase {
   }
 
   async onShutdown() {
-    logger.info('🔗 Shutting down Unified Coordination System...');
+    logger.info(' Shutting down Unified Coordination System...');
 
     // Shutdown all subsystems
     for (const subsystem of this.subsystems) {
       await subsystem.shutdown();
     }
 
-    logger.info('🔗 Unified Coordination System shut down');
+    logger.info(' Unified Coordination System shut down');
   }
 }
 

@@ -13,7 +13,7 @@ const dotenv = require('dotenv');
 const projectEnvPath = path.join(process.cwd(), '.env');
 if (fs.existsSync(projectEnvPath)) {
   dotenv.config({ path: projectEnvPath });
-  console.log(chalk.gray('📋 Loaded project .env file for AI providers'));
+  console.log(chalk.gray(' Loaded project .env file for AI providers'));
 }
 
 class MultiAPIOrchestrator {
@@ -32,7 +32,7 @@ class MultiAPIOrchestrator {
   }
 
   initializeProviders() {
-    console.log(chalk.yellow('\n🔍 Detecting available AI providers...'));
+    console.log(chalk.yellow('\n Detecting available AI providers...'));
 
     // Initialize all available providers
     const providers = [];
@@ -91,14 +91,14 @@ class MultiAPIOrchestrator {
     }
 
     if (providers.length > 0) {
-      console.log(chalk.green(`\n✅ ${providers.length} AI Providers Available:`));
+      console.log(chalk.green(`\n ${providers.length} AI Providers Available:`));
       providers.forEach(p => console.log(chalk.cyan(`   • ${p}`)));
 
       if (fromEnv.length > 0) {
-        console.log(chalk.gray(`\n📋 Credentials loaded from .env: ${fromEnv.join(', ')}`));
+        console.log(chalk.gray(`\n Credentials loaded from .env: ${fromEnv.join(', ')}`));
       }
     } else {
-      console.log(chalk.red('\n❌ No AI providers configured'));
+      console.log(chalk.red('\n No AI providers configured'));
       console.log(chalk.yellow('Please add API keys to your project .env file'));
       console.log(chalk.gray('  1. Copy .env.example to .env'));
       console.log(chalk.gray('  2. Add your API keys'));
@@ -113,12 +113,12 @@ class MultiAPIOrchestrator {
    */
   async orchestrate(task, options = {}) {
     console.log(chalk.cyan('\n' + '═'.repeat(70)));
-    console.log(chalk.cyan('🚀 MULTI-API INTELLIGENT ORCHESTRATION'));
+    console.log(chalk.cyan(' MULTI-API INTELLIGENT ORCHESTRATION'));
     console.log(chalk.cyan('═'.repeat(70)));
 
     // Analyze task to determine requirements
     const analysis = this.analyzeTask(task);
-    console.log(chalk.yellow('\n📊 Task Analysis:'));
+    console.log(chalk.yellow('\n Task Analysis:'));
     console.log(chalk.gray(`   Type: ${analysis.type}`));
     console.log(chalk.gray(`   Complexity: ${analysis.complexity}`));
     console.log(chalk.gray(`   Requirements: ${analysis.requirements.join(', ')}`));
@@ -126,7 +126,7 @@ class MultiAPIOrchestrator {
     // Select optimal model from EACH provider (now async with free tier prioritization)
     const selectedModels = await this.selectOptimalModels(analysis);
 
-    console.log(chalk.yellow('\n🎯 Selected Models from Available Providers:'));
+    console.log(chalk.yellow('\n Selected Models from Available Providers:'));
     selectedModels.forEach(model => {
       console.log(chalk.cyan(`   ${model.icon} ${model.role}`));
       console.log(chalk.gray(`      Provider: ${model.provider}`));
@@ -136,7 +136,7 @@ class MultiAPIOrchestrator {
 
     // Execute with each selected model
     const responses = [];
-    console.log(chalk.yellow('🔄 Executing parallel API calls...\n'));
+    console.log(chalk.yellow(' Executing parallel API calls...\n'));
 
     for (let i = 0; i < selectedModels.length; i++) {
       const model = selectedModels[i];
@@ -156,7 +156,7 @@ class MultiAPIOrchestrator {
         );
 
         const duration = ((Date.now() - startTime) / 1000).toFixed(2);
-        console.log(chalk.green(`     ✅ Success (${duration}s)`));
+        console.log(chalk.green(`      Success (${duration}s)`));
 
         const content = response?.content || response?.text || response;
         const preview = String(content).slice(0, 100).replace(/\n/g, ' ');
@@ -178,7 +178,7 @@ class MultiAPIOrchestrator {
         }
 
       } catch (error) {
-        console.log(chalk.red(`     ❌ Failed: ${error.message}\n`));
+        console.log(chalk.red(`      Failed: ${error.message}\n`));
         responses.push({
           provider: model.provider,
           model: model.model,
@@ -190,13 +190,13 @@ class MultiAPIOrchestrator {
     }
 
     // Synthesize responses
-    console.log(chalk.green('🎨 Synthesizing responses from all providers...\n'));
+    console.log(chalk.green(' Synthesizing responses from all providers...\n'));
     const synthesis = await this.synthesizeResponses(responses, task);
 
     // Show final statistics
     const successful = responses.filter(r => r.success).length;
     console.log(chalk.cyan('═'.repeat(70)));
-    console.log(chalk.green(`📊 Orchestration Complete:`));
+    console.log(chalk.green(` Orchestration Complete:`));
     console.log(chalk.gray(`   • ${successful}/${selectedModels.length} models responded successfully`));
     console.log(chalk.gray(`   • ${this.providers.size} providers used`));
     console.log(chalk.gray(`   • Total time: ${responses.reduce((a, r) => a + parseFloat(r.duration || 0), 0).toFixed(2)}s`));
@@ -293,7 +293,7 @@ class MultiAPIOrchestrator {
         provider: 'google',
         model: 'gemini-pro',
         role: 'Creative Thinker',
-        icon: '🎨',
+        icon: '',
         specialty: 'Creative solutions and broad knowledge'
       });
       this.trackModelUsage('gemini-pro');
@@ -307,7 +307,7 @@ class MultiAPIOrchestrator {
           provider: 'anthropic',
           model: 'claude-3-haiku-20240307',
           role: 'Reasoning Expert',
-          icon: '🧠',
+          icon: '',
           specialty: 'Deep reasoning and careful analysis'
         });
         this.trackModelUsage('claude-3-haiku-20240307');
@@ -319,7 +319,7 @@ class MultiAPIOrchestrator {
           provider: 'openai',
           model: 'gpt-4o-mini',
           role: 'Fast Responder',
-          icon: '⚡',
+          icon: '',
           specialty: 'Quick, efficient responses'
         });
         this.trackModelUsage('gpt-4o-mini');
@@ -335,14 +335,14 @@ class MultiAPIOrchestrator {
           provider: firstProvider,
           model: defaultModel,
           role: 'Synthesis Specialist',
-          icon: '🎯',
+          icon: '',
           specialty: 'Combining insights from all models'
         });
         this.trackModelUsage(defaultModel);
       }
     }
 
-    console.log(chalk.green(`✅ Selected ${models.length} diverse models (${models.filter(m => m.isFree).length} free)`));
+    console.log(chalk.green(` Selected ${models.length} diverse models (${models.filter(m => m.isFree).length} free)`));
     return models;
   }
 
@@ -370,9 +370,9 @@ class MultiAPIOrchestrator {
     };
 
     const icons = {
-      reasoning: '🔬',
-      coding: '💻',
-      general: isPrimary ? '🎯' : '🌟'
+      reasoning: '',
+      coding: '',
+      general: isPrimary ? '' : ''
     };
 
     const taskType = freeTierModel.specialization || 'general';
@@ -781,7 +781,7 @@ Provide a single, synthesized answer that represents the collective intelligence
 
         return synthesisResult.content || synthesisResult.text || this.fallbackSynthesis(successful, originalTask);
       } catch (error) {
-        console.log(chalk.yellow('⚠️  Synthesis failed, using fallback'));
+        console.log(chalk.yellow('  Synthesis failed, using fallback'));
         return this.fallbackSynthesis(successful, originalTask);
       }
     }

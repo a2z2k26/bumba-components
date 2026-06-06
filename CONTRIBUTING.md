@@ -5,8 +5,8 @@ Thanks for your interest in contributing. This repo houses a workspace of indepe
 ## Getting started
 
 ```bash
-git clone https://github.com/a2z2k26/bumba-features.git
-cd bumba-features
+git clone https://github.com/a2z2k26/agent-primitives.git
+cd agent-primitives
 npm install
 ```
 

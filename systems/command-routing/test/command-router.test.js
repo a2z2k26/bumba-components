@@ -1,6 +1,6 @@
 /**
  * Command Routing Test Suite
- * Part of the BUMBA Platform
+ * Part of the Agent Primitives
  */
 
 const { CommandRouter, CommandAnalyzer, Intent } = require('../src/index');

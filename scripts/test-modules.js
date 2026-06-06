@@ -37,10 +37,10 @@ prims.forEach(p => {
   const entry = resolveEntry(path.join(primDir, p));
   try {
     require(entry);
-    console.log('✓', p);
+    console.log('', p);
     primPassed++;
   } catch(e) {
-    console.log('✗', p, '-', e.message.split('\n')[0].slice(0,80));
+    console.log('', p, '-', e.message.split('\n')[0].slice(0,80));
     primFailed++;
   }
 });
@@ -60,10 +60,10 @@ systems.forEach(sys => {
   const entry = resolveEntry(path.join(sysDir, sys));
   try {
     require(entry);
-    console.log('✓', sys);
+    console.log('', sys);
     sysPassed++;
   } catch(e) {
-    console.log('✗', sys, '-', e.message.split('\n')[0].slice(0,80));
+    console.log('', sys, '-', e.message.split('\n')[0].slice(0,80));
     sysFailed++;
   }
 });
