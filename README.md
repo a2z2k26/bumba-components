@@ -1,10 +1,15 @@
 ```
-██████╗ ██╗   ██╗███╗   ███╗██████╗  █████╗      ██████╗ ██████╗ ███╗   ███╗██████╗  ██████╗ ███╗   ██╗███████╗███╗   ██╗████████╗███████╗
-██╔══██╗██║   ██║████╗ ████║██╔══██╗██╔══██╗    ██╔════╝██╔═══██╗████╗ ████║██╔══██╗██╔═══██╗████╗  ██║██╔════╝████╗  ██║╚══██╔══╝██╔════╝
-██████╔╝██║   ██║██╔████╔██║██████╔╝███████║    ██║     ██║   ██║██╔████╔██║██████╔╝██║   ██║██╔██╗ ██║█████╗  ██╔██╗ ██║   ██║   ███████╗
-██╔══██╗██║   ██║██║╚██╔╝██║██╔══██╗██╔══██║    ██║     ██║   ██║██║╚██╔╝██║██╔═══╝ ██║   ██║██║╚██╗██║██╔══╝  ██║╚██╗██║   ██║   ╚════██║
-██████╔╝╚██████╔╝██║ ╚═╝ ██║██████╔╝██║  ██║    ╚██████╗╚██████╔╝██║ ╚═╝ ██║██║     ╚██████╔╝██║ ╚████║███████╗██║ ╚████║   ██║   ███████║
-╚═════╝  ╚═════╝ ╚═╝     ╚═╝╚═════╝ ╚═╝  ╚═╝     ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝      ╚═════╝ ╚═╝  ╚═══╝╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝
+    _    ____ _____ _   _ _____
+   / \  / ___| ____| \ | |_   _|
+  / _ \| |  _|  _| |  \| | | |
+ / ___ \ |_| | |___| |\  | | |
+/_/   \_\____|_____|_| \_| |_|
+
+ ____  ____  ___ __  __ ___ _____ _____     _______ ____
+|  _ \|  _ \|_ _|  \/  |_ _|_   _|_ _\ \   / / ____/ ___|
+| |_) | |_) || || |\/| || |  | |  | | \ \ / /|  _| \___ \
+|  __/|  _ < | || |  | || |  | |  | |  \ V / | |___ ___) |
+|_|   |_| \_\___|_|  |_|___| |_| |___|  \_/  |_____|____/
 ```
 
 <br>
@@ -13,9 +18,9 @@
 
 ---
 
-### 🔴 What This Is ###
+### What This Is ###
 
-Bumba Components is a public snapshot of primitives and systems extracted from Bumba 1.0, a private multi-agent AI experiment. The code explores orchestration, cost tracking, provider routing, memory, setup workflows, and design-to-code infrastructure.
+Agent Primitives is a public snapshot of primitives and systems extracted from Bumba 1.0, a private multi-agent AI experiment. The code explores orchestration, cost tracking, provider routing, memory, setup workflows, and design-to-code infrastructure.
 
 These modules were first built for a larger internal project, not as polished standalone packages. Some pieces are usable as-is, some are better treated as references, and maturity varies by package. The goal of this repo is to share **31 focused packages** that capture practical patterns for the infrastructure problems that show up around agentic AI systems.
 
@@ -23,7 +28,7 @@ If you're building an LLM tool, a multi-agent workflow, or an AI gateway, these 
 
 ---
 
-### 🟡 Why It Exists ###
+### Why It Exists ###
 
 Building AI systems tends to surface the same operational problems:
 
@@ -34,11 +39,11 @@ Building AI systems tends to surface the same operational problems:
 - **Context windows overflow silently** — you need truncation strategies before the API rejects your request
 - **Agent state evaporates** — you need memory that survives process restarts
 
-Bumba Components exists because these were the problems Bumba 1.0 had to solve during development. Rather than leave the work buried inside a private repo, this project makes the patterns available for others to inspect, reuse, or improve.
+Agent Primitives exists because these were the problems Bumba 1.0 had to solve during development. Rather than leave the work buried inside a private repo, this project makes the patterns available for others to inspect, reuse, or improve.
 
 ---
 
-### 🟢 What's Included ###
+### What's Included ###
 
 31 packages split into two tiers. Many can be used standalone; others are more useful as examples of how the larger Bumba 1.0 system was structured.
 
@@ -85,11 +90,11 @@ Bumba Components exists because these were the problems Bumba 1.0 had to solve d
 
 ---
 
-### 🏁 Quick Start ###
+### Quick Start ###
 
 ```bash
-git clone https://github.com/a2z2k26/bumba-components.git
-cd bumba-components
+git clone https://github.com/a2z2k26/agent-primitives.git
+cd agent-primitives
 npm install
 ```
 
@@ -106,7 +111,7 @@ For now, cloning the workspace and importing locally is the most reliable way to
 
 ---
 
-### 🏁 Examples ###
+### Examples ###
 
 **Rate limiting across multiple AI providers:**
 
@@ -173,10 +178,10 @@ const safe = manager.truncate(messages, { strategy: 'drop-oldest' });
 
 ---
 
-### 🏁 Architecture ###
+### Architecture ###
 
 ```
-bumba-components/
+agent-primitives/
 ├── primitives/    # 20 zero-/light-dependency, single-purpose modules
 ├── systems/       # 11 higher-level systems composed from primitives
 ├── shared/        # Common utilities: logger, events, resilience, types
@@ -193,21 +198,21 @@ bumba-components/
 
 ---
 
-### 🏁 Status ###
+### Status ###
 
 This is an early public extraction from a larger private system. Maturity varies:
 
-- All 31 packages are present in the workspace and expose intended APIs ✓
-- `agent-lifecycle`, `command-routing`, and `tool-bridge` ship with examples and tests ✓
+- All 31 packages are present in the workspace and expose intended APIs
+- `agent-lifecycle`, `command-routing`, and `tool-bridge` ship with examples and tests
 - The remaining packages have READMEs — example suites and test coverage are in progress
 
 If you adopt a package and hit a rough edge, open an issue. Contributions welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---
 
-### 🏁 Origin ###
+### Origin ###
 
-Bumba Components was extracted from **Bumba 1.0** — a private multi-agent orchestration project built to explore AI-assisted product and software development workflows. These packages represent the infrastructure layer: the modules that handled coordination, configuration, routing, memory, costs, and setup.
+Agent Primitives was extracted from **Bumba 1.0** — a private multi-agent orchestration project built to explore AI-assisted product and software development workflows. These packages represent the infrastructure layer: the modules that handled coordination, configuration, routing, memory, costs, and setup.
 
 The extraction was deliberate. The code is imperfect, but the patterns are useful enough to share, document, and improve in the open.
 

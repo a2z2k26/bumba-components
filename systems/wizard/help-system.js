@@ -144,7 +144,7 @@ The wizard will guide you through each step with validation and error recovery.
         },
         github: {
           name: 'GitHub',
-          format: 'ghp_...',
+          format: '<github-token>',
           length: 40,
           docs: 'https://github.com/settings/tokens',
           steps: [

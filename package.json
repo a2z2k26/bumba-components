@@ -33,12 +33,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/a2z2k26/bumba-components.git"
+    "url": "git+https://github.com/a2z2k26/agent-primitives.git"
   },
   "bugs": {
-    "url": "https://github.com/a2z2k26/bumba-components/issues"
+    "url": "https://github.com/a2z2k26/agent-primitives/issues"
   },
-  "homepage": "https://github.com/a2z2k26/bumba-components#readme",
+  "homepage": "https://github.com/a2z2k26/agent-primitives#readme",
   "overrides": {
     "inquirer": "^8.2.6",
     "boxen": "^5.1.2"
